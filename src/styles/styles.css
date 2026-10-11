@@ -451,3 +451,25 @@ p { text-wrap: pretty; }
   [dir="rtl"] .btn:hover .arr, [dir="rtl"] .link:hover .arr, [dir="rtl"] .pcard:hover .pcard-more .arr { transform: scaleX(-1); }
   .pcard:hover .pv-body, .dpv:hover .pv-body { transform: none; }
 }
+
+/* 13 ── PROJECT CARD ACTIONS: one tidy footer row (details link + visit button) */
+.pcard-b { padding: 22px 24px 18px; }
+.pcard-act { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 16px 24px; margin-block-start: auto; border-block-start: 1px solid var(--line); }
+.pcard-more { position: static; padding-block: 8px 6px; min-height: 44px; display: inline-flex; align-items: center; }
+.pcard-more::after { content: ""; position: absolute; inset: 0; z-index: 1; }   /* stretched link: whole card opens the project */
+.pcard-visit { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; font-weight: 600; font-size: .92rem; white-space: nowrap; color: var(--fg); background: color-mix(in srgb, var(--ac) 38%, transparent); border: 1px solid color-mix(in srgb, var(--ac) 70%, transparent); transition: background-color .3s var(--ease), color .3s, transform .3s var(--ease); }
+.pcard-visit .ext { width: 1.05em; height: 1.05em; flex: none; transition: transform .3s var(--ease); }
+.pcard-visit:hover { background: var(--ac); color: var(--ink); transform: translateY(-1px); }
+.pcard-visit:hover .ext { transform: translate(2px, -2px); }
+.pcard-visit:active { transform: scale(.97); }
+.pcard-visit:focus-visible, .pcard-more:focus-visible { outline-offset: 3px; }
+.pcard:has(.pcard-more:focus-visible) { outline: 2px solid var(--focus); outline-offset: 3px; }
+@media (hover: none) { .pcard-visit:hover { transform: none; background: color-mix(in srgb, var(--ac) 38%, transparent); color: var(--fg); } .pcard-visit:hover .ext { transform: none; } }
+@media (max-width: 340px) { .pcard-visit { flex: 1 1 100%; justify-content: center; } }
+@media (max-width: 380px) { .pcard-b { padding: 18px 18px 14px; } .pcard-act { padding: 14px 18px; } }
+/* keep both actions on one line even on 360px phones */
+.pcard-act { padding: 14px 20px; gap: 10px; }
+.pcard-more { font-size: .9rem; gap: 6px; }
+.pcard-visit { padding: 0 14px; gap: 6px; font-size: .88rem; }
+@media (max-width: 380px) { .pcard-act { padding: 12px 16px; } }
+.pcard-more { min-height: 0; padding-block: 6px 5px; }

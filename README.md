@@ -32,7 +32,7 @@ Each project is an object in the `projects` array in `src/data.js`:
   dashShots: ["assets/img/my-site-admin-1.jpg"]        // dashboard slider (shown only if not empty)
 }
 ```
-Put the image files in `public/assets/img/` (16:9, e.g. 1600x900). The first `shots` image is also the card cover.
+Put the image files in `public/assets/img/` as **.webp** (16:9, e.g. 1600x900, quality ~90). Keep the original PNG/JPG in `design/originals/`. The first `shots` image is also the card cover.
 Dots and arrows appear automatically when a slider has more than one image. The project page `/projects/<slug>` is created automatically.
 
 ## Contact form
@@ -40,4 +40,4 @@ No server. The form validates the fields, then opens WhatsApp with the message r
 If WhatsApp is empty it falls back to email, then to copying the message.
 
 ## Logo
-`public/assets/logo/darcx-monogram.png` is used in the header and footer. The original source logo is kept in `design/`.
+`public/assets/logo/darcx-monogram.webp` is used in the header and footer. The original source logo is kept in `design/`.

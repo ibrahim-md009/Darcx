@@ -68,8 +68,8 @@ const DARCX_DATA = {
       },
       tech: ["React", "Css", "React Router"],
       link: "https://elbalad-water.vercel.app/",
-      shots: ["assets/img/keo-dash.png", "assets/img/ibrahim.jfif"],
-      dashShots: ["assets/img/keo-dash.png", "assets/img/ibrahim.jfif"],
+      shots: ["assets/img/keo-dash.webp", "assets/img/ibrahim.webp"],
+      dashShots: ["assets/img/keo-dash.webp", "assets/img/ibrahim.webp"],
     },
     {
       slug: "keo-studio",

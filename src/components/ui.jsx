@@ -8,7 +8,7 @@ export const Arrow = () => (
 );
 
 export const Logo = ({ className = "mark" }) => (
-  <img className={className} src="/assets/logo/darcx-monogram.png" alt="DARCX" width="584" height="339" decoding="async" />
+  <img className={className} src="/assets/logo/darcx-monogram.webp" alt="DARCX" width="584" height="339" decoding="async" />
 );
 
 const svg = (children) => <svg viewBox="0 0 48 48">{children}</svg>;
@@ -52,24 +52,31 @@ export function Preview({ p, big }) {
   );
 }
 
+const ExtIcon = () => (
+  <svg className="ext" viewBox="0 0 20 20" aria-hidden="true">
+    <path d="M6 14L14 6M7.5 6H14v6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 export function ProjectCard({ p, i }) {
   const { L, t } = useApp();
   return (
     <article className="pcard rv" style={{ "--ac": p.accent, "--d": i * 0.07 + "s" }}>
-      <Link className="pcard-main" to={"/projects/" + p.slug}>
-        <div className="pcard-pv reveal-img"><Preview p={p} /></div>
-        <div className="pcard-b">
-          <span className="badge">{L(p.cat)}</span>
-          <h3>{L(p.name)}</h3>
-          <p>{L(p.short)}</p>
-          <span className="pcard-more">{t("more")}<Arrow /></span>
-        </div>
-      </Link>
-      {p.link && (
-        <div className="pcard-act">
-          <a className="btn btn-line btn-sm" href={p.link} target="_blank" rel="noopener noreferrer">{t("visit")}<Arrow /></a>
-        </div>
-      )}
+      <div className="pcard-pv reveal-img"><Preview p={p} /></div>
+      <div className="pcard-b">
+        <span className="badge">{L(p.cat)}</span>
+        <h3>{L(p.name)}</h3>
+        <p>{L(p.short)}</p>
+      </div>
+      <div className="pcard-act">
+        {/* the whole card is clickable through this link (stretched), the visit button sits above it */}
+        <Link className="pcard-more" to={"/projects/" + p.slug}>{t("more")}<Arrow /></Link>
+        {p.link && (
+          <a className="pcard-visit" href={p.link} target="_blank" rel="noopener noreferrer">
+            <span>{t("visit")}</span><ExtIcon />
+          </a>
+        )}
+      </div>
     </article>
   );
 }
