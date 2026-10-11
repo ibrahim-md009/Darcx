@@ -14,6 +14,7 @@ export default function Contact() {
   const [message, setMessage] = useState("");
   const [service, setService] = useState(D.services[0].id);
   const [note, setNote] = useState({ text: "", err: false });
+  const [tried, setTried] = useState(false);
 
   /* /contact?service=websites pre-selects the project type */
   useEffect(() => {
@@ -28,13 +29,13 @@ export default function Contact() {
   const sLabel = options.find(o => o.value === service).label;
   const methods = channels(D);
 
-  const reset = () => { setName(""); setContact(""); setMessage(""); setService(D.services[0].id); };
+  const reset = () => { setTried(false); setName(""); setContact(""); setMessage(""); setService(D.services[0].id); };
 
   /* No server needed: the request opens WhatsApp with the message ready (email / clipboard if WhatsApp is not set in data.js) */
   function submit(e) {
     e.preventDefault();
     const n = name.trim(), c = contact.trim(), m = message.trim();
-    if (!n || !c || !m) { setNote({ text: t("c_err"), err: true }); return; }
+    if (!n || !c || !m) { setTried(true); setNote({ text: t("c_err"), err: true }); return; }
     const text = t("c_name") + ": " + n + "\n" + t("c_contact") + ": " + c + "\n" + t("c_service") + ": " + sLabel + "\n\n" + m;
     const ct = D.contact;
     if (ct.whatsapp) {
@@ -56,21 +57,21 @@ export default function Contact() {
         <div className="wrap cgrid">
           <form className="cform rv" onSubmit={submit} noValidate>
             <h2>{t("c_form_t")}</h2>
-            <div className="fld">
-              <input id="cn" placeholder=" " autoComplete="name" required value={name} onChange={e => setName(e.target.value)} />
+            <div className={"fld" + (tried && !name.trim() ? " bad" : "")}>
+              <input id="cn" placeholder=" " autoComplete="name" required aria-invalid={tried && !name.trim()} value={name} onChange={e => setName(e.target.value)} />
               <label htmlFor="cn">{t("c_name")}</label>
             </div>
-            <div className="fld">
-              <input id="cc" placeholder=" " autoComplete="email" required dir="auto" value={contact} onChange={e => setContact(e.target.value)} />
+            <div className={"fld" + (tried && !contact.trim() ? " bad" : "")}>
+              <input id="cc" placeholder=" " autoComplete="email" required dir="auto" aria-invalid={tried && !contact.trim()} value={contact} onChange={e => setContact(e.target.value)} />
               <label htmlFor="cc">{t("c_contact")}</label>
             </div>
             <SelectSheet label={t("c_service")} options={options} value={service} onChange={setService} />
-            <div className="fld">
-              <textarea id="cm" placeholder=" " required value={message} onChange={e => setMessage(e.target.value)} />
+            <div className={"fld" + (tried && !message.trim() ? " bad" : "")}>
+              <textarea id="cm" placeholder=" " required aria-invalid={tried && !message.trim()} value={message} onChange={e => setMessage(e.target.value)} />
               <label htmlFor="cm">{t("c_msg")}</label>
             </div>
             <button className="btn btn-fill" type="submit">{t("c_send")}<Arrow /></button>
-            <p className={"note" + (note.err ? " err" : "")} role="status">{note.text}</p>
+            <p className={"note" + (note.err ? " err" : "")} role={note.err ? "alert" : "status"}>{note.text}</p>
           </form>
 
           <aside className="cside rv" style={{ "--d": ".1s" }}>

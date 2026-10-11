@@ -369,3 +369,85 @@ html.tx *, html.tx *::before, html.tx *::after { transition: background-color .4
 @media (max-width: 380px) { .pcard-b { padding: 18px; } }
 
 
+
+/* 12 ── VISUAL POLISH (appearance only — no content, routes or data changed) ─ */
+:root { --focus: #A9BCD0; color-scheme: dark; }
+:root[data-theme="light"] { --focus: #3E5A78; color-scheme: light; }
+:root[data-theme="light"] .band-sand, :root[data-theme="light"] .band-a { --mut: #2F353B; }
+:focus-visible { outline-color: var(--focus); outline-width: 2px; }
+p { text-wrap: pretty; }
+
+/* spacing rhythm: one scale for every section */
+.sec, .band { padding-block: clamp(48px, 7vw, 96px); }
+.phead { padding-block: clamp(112px, 13vw, 160px) clamp(24px, 4vw, 48px); }
+.dpre { padding-block-start: 0; }
+
+/* hero: brand shapes (same motif as the CTA band), so the first screen is not empty */
+.hero { overflow: hidden; }
+.hero-in { position: relative; z-index: 1; }
+.hero::before, .hero::after { content: ""; position: absolute; pointer-events: none; }
+.hero::before { inset-block-start: 0; inset-inline-end: 0; width: clamp(150px, 30vw, 360px); aspect-ratio: 1; background: var(--sage); opacity: .22; border-end-start-radius: 100%; }
+:root[data-theme="light"] .hero::before { opacity: .45; }
+.hero::after { inset-block-start: -40px; inset-inline-end: clamp(120px, 24vw, 300px); width: 1px; height: clamp(220px, 40vw, 420px); background: var(--mut); opacity: .35; transform: rotate(32deg); transform-origin: top; }
+
+/* buttons: one height, one radius everywhere */
+.btn { min-height: 48px; }
+.btn-sm { min-height: 40px; }
+.btn:focus-visible { outline-offset: 3px; }
+
+/* touch targets ≥ 44px */
+.ib { width: 44px; height: 44px; }
+.lang button { min-height: 34px; min-width: 40px; }
+.soc { width: 44px; height: 44px; }
+.chipf { min-height: 42px; }
+.cm { min-height: 64px; }
+.car-dot { position: relative; }
+.car-dot::after { content: ""; position: absolute; inset: -14px -6px; }
+
+/* checklists: a real check mark inside a circle (the old rotated tick looked like a dropdown chevron) */
+.ticks li { padding-inline-start: 34px; }
+.ticks li::before { width: 20px; height: 20px; top: calc((1.7em - 20px) / 2); border: 0; border-radius: 50%; background: color-mix(in srgb, var(--ac, var(--sage)) 40%, transparent); transform: none; }
+[dir="rtl"] .ticks li::before { transform: none; }
+:root[lang="ar"] .ticks li::before { top: calc((1.95em - 20px) / 2); }
+.ticks li::after { content: ""; position: absolute; inset-inline-start: 7.5px; top: calc((1.7em - 20px) / 2 + 4px); width: 5px; height: 9px; border-inline-end: 2px solid var(--fg); border-block-end: 2px solid var(--fg); transform: rotate(45deg); }
+:root[lang="ar"] .ticks li::after { top: calc((1.95em - 20px) / 2 + 4px); }
+
+/* tags are labels, not buttons: no lift on hover */
+.tag { cursor: default; }
+.tag:hover { transform: none; border-color: var(--line); }
+
+/* project / service images: keep the top of a screenshot visible */
+.pv-img img, .car-slide img { object-position: top center; }
+
+/* form */
+.fld :is(input, textarea):focus, .sel:focus-visible, .sel[aria-expanded="true"] { border-color: var(--focus); box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 28%, transparent); }
+.fld.bad :is(input, textarea), .sel.bad { border-color: #D98C80; }
+:root[data-theme="light"] .fld.bad :is(input, textarea), :root[data-theme="light"] .sel.bad { border-color: #A8392B; }
+.note:not(:empty) { padding: 11px 16px; border-radius: var(--rad); background: color-mix(in srgb, var(--sage) 18%, transparent); }
+.note.err:not(:empty) { background: color-mix(in srgb, #D98C80 16%, transparent); }
+.cm small { font-variant-numeric: tabular-nums; }
+
+/* bottom bar: more readable labels */
+@media (max-width: 640px) { .bnav a { font-size: .7rem; } }
+
+/* mobile */
+@media (max-width: 640px) {
+  :root { --bar-h: 60px; }
+  .hero { padding-block-start: 88px; }
+  .phead { padding-block-start: 96px; }
+  .hero::after { display: none; }
+  .svis { aspect-ratio: 16 / 9; }
+  .srow-txt .btn, .dvisit { width: 100%; }
+  .nav { transition: transform .35s var(--ease), background-color .4s var(--ease), box-shadow .4s; }
+  .nav.hide { transform: translateY(-100%); }
+  .nav:focus-within { transform: none; }
+}
+
+/* touch screens: no sticky hover lift after a tap */
+@media (hover: none) {
+  .btn:hover, .scard:hover, .pcard:hover, .vcard:hover, .cm:hover, .ex:hover, .ib:hover, .logo:hover, .soc:hover, .tag:hover { transform: none; }
+  .scard:hover, .pcard:hover { box-shadow: none; }
+  .btn:hover .arr, .link:hover .arr, .pcard:hover .pcard-more .arr { transform: none; }
+  [dir="rtl"] .btn:hover .arr, [dir="rtl"] .link:hover .arr, [dir="rtl"] .pcard:hover .pcard-more .arr { transform: scaleX(-1); }
+  .pcard:hover .pv-body, .dpv:hover .pv-body { transform: none; }
+}
