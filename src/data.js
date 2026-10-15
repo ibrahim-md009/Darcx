@@ -68,8 +68,8 @@ const DARCX_DATA = {
       },
       tech: ["React", "Css", "React Router"],
       link: "https://elbalad-water.vercel.app/",
-      shots: ["assets/img/keo-dash.webp", "assets/img/ibrahim.webp"],
-      dashShots: ["assets/img/keo-dash.webp", "assets/img/ibrahim.webp"],
+      shots: ["img/water/water-main.jpg"],
+      dashShots: ["img/water/water-dash (1).png", "img/water/water-dash (2).png", "img/water/water-dash (3).png"],
     },
     {
       slug: "keo-studio",
@@ -109,8 +109,13 @@ const DARCX_DATA = {
       },
       tech: [],
       link: "https://keo-studio.vercel.app/",
-      shots: [],
-      dashShots: [],
+      shots: ["img/keo/keo-main.png"],
+      dashShots: [
+        "img/keo/keo-dash01 (1).jpg",
+        "img/keo/keo-dash01 (2).jpg",
+        "img/keo/keo-dash01 (3).jpg",
+        "img/keo/keo-dash01 (4).jpg",
+      ],
     },
     {
       slug: "pos-system",
