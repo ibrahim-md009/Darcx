@@ -8,27 +8,19 @@ const DARCX_DATA = {
      facebook / linkedin: page name as in the URL; email: full address ---- */
   contact: {
     whatsapp: "972567574848" /* digits only, with country code */,
-    phone: "+972567574848",
     email: "",
-    instagram: "",
+    instagram: "darcx" /* TODO: replace with the real Instagram username (no @) */,
     telegram: "",
     facebook: "",
     linkedin: "",
     x: "",
     tiktok: "",
-    /* fill any empty channel (username / handle only) and its icon appears automatically in the footer and contact page */
   },
 
   /* ---- Technologies shown on the About page ---- */
-  stack: ["HTML", "CSS", "JavaScript", "React", "Firebase", "Vite", "Tailwind CSS"],
+  stack: ["HTML", "CSS", "JavaScript", "React", "Firebase", "Vite", "Tailwind CSS", "Dart", "Flutter"],
 
-  /* ---- Projects ----
-     link:      the live website URL, e.g. "https://elbalad.com" (the "Visit website" button appears only when it is filled)
-     shots:     images of the website / app itself, e.g. ["assets/img/elbalad-1.jpg", "assets/img/elbalad-2.jpg"]
-                (files go in public/assets/img/ — they become the big slider on the project page; the first one is also the card cover)
-     dashShots: images of the project's dashboard (a second slider appears only when this list is not empty)
-     tech:      list of technologies used on that project (section hides if empty)
-     kind:      "web" or "system" — picks the style of the generated preview shown while there are no screenshots */
+  /* ---- Projects ----*/
   projects: [
     {
       slug: "elbalad-water",
@@ -68,7 +60,7 @@ const DARCX_DATA = {
       },
       tech: ["React", "Css", "React Router"],
       link: "https://elbalad-water.vercel.app/",
-      shots: ["img/water/water-main.jpg"],
+      shots: ["img/water/water-main.webp"],
       dashShots: [
         "img/water/water-dash (1).webp",
         "img/water/water-dash (2).webp",
@@ -117,10 +109,10 @@ const DARCX_DATA = {
       link: "https://keo-studio.vercel.app/",
       shots: ["img/keo/keo-main.webp"],
       dashShots: [
-        "img/keo/keo-dash01 (1).jpg",
-        "img/keo/keo-dash01 (2).jpg",
-        "img/keo/keo-dash01 (3).jpg",
-        "img/keo/keo-dash01 (4).jpg",
+        "img/keo/keo-dash01 (1).webp",
+        "img/keo/keo-dash01 (2).webp",
+        "img/keo/keo-dash01 (3).webp",
+        "img/keo/keo-dash01 (4).webp",
       ],
     },
     {

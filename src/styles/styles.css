@@ -478,11 +478,11 @@ h3 {
     transform 0.5s var(--ease),
     opacity 0.3s;
 }
-:root[data-theme="dark"] .sun {
+:root[data-theme="light"] .sun {
   opacity: 0;
   transform: rotate(-70deg) scale(0.4);
 }
-:root[data-theme="light"] .moon {
+:root[data-theme="dark"] .moon {
   opacity: 0;
   transform: rotate(70deg) scale(0.4);
 }
@@ -1764,6 +1764,11 @@ main,
 .foot {
   transition: opacity 0.2s;
 }
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease;
+}
 html.tx *,
 html.tx *::before,
 html.tx *::after {
@@ -2262,4 +2267,60 @@ p {
 .pcard-more {
   min-height: 0;
   padding-block: 6px 5px;
+}
+
+/* ── tighter vertical spacing (less empty space between blocks) ───────── */
+.sec,
+.band {
+  padding-block: clamp(36px, 5.5vw, 72px);
+}
+.sec-h {
+  margin-block-end: clamp(20px, 3.5vw, 36px);
+}
+.hero {
+  padding-block: clamp(96px, 11vw, 140px) clamp(28px, 5vw, 56px);
+}
+.hero .lead {
+  margin-block-end: 22px;
+}
+.flow {
+  margin-block-start: 22px;
+}
+.phead {
+  padding-block: clamp(100px, 11vw, 132px) clamp(16px, 3vw, 32px);
+}
+.cform {
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .sec,
+  .band {
+    padding-block: 32px;
+  }
+  .hero {
+    padding-block: 84px 24px;
+  }
+  .hero h1 {
+    margin-block: 12px;
+  }
+  .flow {
+    margin-block-start: 18px;
+  }
+  .phead {
+    padding-block: 92px 12px;
+  }
+  .sec-h {
+    margin-block-end: 18px;
+  }
+  .cm {
+    padding: 12px 14px;
+    margin-block-end: 8px;
+  }
+  .cform {
+    padding: 18px;
+  }
+  .foot-in {
+    gap: 10px;
+    padding-block-end: 4px;
+  }
 }

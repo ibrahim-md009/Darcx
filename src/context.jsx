@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 import D from "./data.js";
 
 const AppCtx = createContext(null);
@@ -31,11 +32,24 @@ export function AppProvider({ children }) {
   const setLang = useCallback(l => {
     if (l === lang) return;
     store.set("dx-lang", l);
-    document.body.classList.add("swap");
-    setTimeout(() => {
-      setLangState(l);
-      requestAnimationFrame(() => document.body.classList.remove("swap"));
-    }, 160);
+    /* update React + <html lang/dir> in the same step so the page never shows a half-switched frame */
+    const apply = () => {
+      flushSync(() => setLangState(l));
+      doc.lang = l;
+      doc.dir = l === "ar" ? "rtl" : "ltr";
+    };
+    const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (document.startViewTransition && !calm) {
+      /* browser snapshots old + new page and cross-fades between them */
+      document.startViewTransition(apply);
+    } else {
+      /* fallback: quick fade out, switch, fade back in after the new layout is painted */
+      document.body.classList.add("swap");
+      setTimeout(() => {
+        apply();
+        requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.remove("swap")));
+      }, 140);
+    }
   }, [lang]);
 
   const toggleTheme = useCallback(() => {
