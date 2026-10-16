@@ -13,6 +13,21 @@ export const SOCIAL = [
       </>
     ),
   },
+
+  {
+    k: "email",
+    label: (t) => t("c_mail"),
+    href: (v) => "mailto:" + v,
+    show: (v) => v,
+    dot: "var(--sand)",
+    ic: (
+      <>
+        <rect x="3.500" y="5.500" width="17" height="13" rx="2.500" />
+        <path d="M4 8l8 5.500L20 8" />
+      </>
+    ),
+  },
+
   {
     k: "phone",
     label: (t) => t("c_call"),
@@ -25,6 +40,7 @@ export const SOCIAL = [
       </>
     ),
   },
+
   {
     k: "instagram",
     label: (t) => t("c_ig"),
@@ -39,19 +55,7 @@ export const SOCIAL = [
       </>
     ),
   },
-  {
-    k: "email",
-    label: (t) => t("c_mail"),
-    href: (v) => "mailto:" + v,
-    show: (v) => v,
-    dot: "var(--sand)",
-    ic: (
-      <>
-        <rect x="3.500" y="5.500" width="17" height="13" rx="2.500" />
-        <path d="M4 8l8 5.500L20 8" />
-      </>
-    ),
-  },
+
   {
     k: "telegram",
     label: (t) => t("c_tg"),

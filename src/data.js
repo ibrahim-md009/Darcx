@@ -9,9 +9,9 @@ const DARCX_DATA = {
   contact: {
     whatsapp: "972567574848" /* digits only, with country code */,
     email: "darcx.dev@gmail.com",
-    instagram: "",
+    instagram: "@darcx",
     telegram: "",
-    facebook: "",
+    facebook: "darcx",
     linkedin: "",
     x: "",
     tiktok: "",
