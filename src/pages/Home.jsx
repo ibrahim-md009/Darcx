@@ -2,10 +2,6 @@ import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow, CtaBand, ProjectCard, ServiceCard } from "../components/ui.jsx";
 
-const FlowArrow = () => (
-  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M12 6l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-);
-
 export default function Home() {
   const { t, D } = useApp();
   return (
@@ -19,14 +15,6 @@ export default function Home() {
               <Link className="btn btn-fill" to="/contact">{t("cta")}<Arrow /></Link>
               <Link className="btn btn-line" to="/projects">{t("h_cta2")}</Link>
             </div>
-            <p className="flow fade">
-              {t("h_flow").map((x, i) => (
-                <span key={i} style={{ display: "contents" }}>
-                  {i > 0 && <FlowArrow />}
-                  <span>{x}</span>
-                </span>
-              ))}
-            </p>
           </div>
         </div>
       </section>

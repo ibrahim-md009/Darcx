@@ -8,8 +8,8 @@ const DARCX_DATA = {
      facebook / linkedin: page name as in the URL; email: full address ---- */
   contact: {
     whatsapp: "972567574848" /* digits only, with country code */,
-    email: "",
-    instagram: "darcx" /* TODO: replace with the real Instagram username (no @) */,
+    email: "darcx.dev@gmail.com",
+    instagram: "",
     telegram: "",
     facebook: "",
     linkedin: "",
