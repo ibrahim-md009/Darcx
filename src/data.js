@@ -11,7 +11,7 @@ const DARCX_DATA = {
     email: "darcx.dev@gmail.com",
     instagram: "@darcx",
     telegram: "",
-    facebook: "darcx",
+    facebook: "darcx0101",
     linkedin: "",
     x: "",
     tiktok: "",
