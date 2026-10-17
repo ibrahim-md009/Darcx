@@ -3,7 +3,7 @@ import { useApp } from "../context.jsx";
 import { Arrow, CtaBand, ProjectCard, ServiceCard } from "../components/ui.jsx";
 
 export default function Home() {
-  const { t, D } = useApp();
+  const { t, data } = useApp();
   return (
     <>
       <section className="hero">
@@ -25,7 +25,7 @@ export default function Home() {
             <div><h2>{t("home_services_t")}</h2><p>{t("home_services_p")}</p></div>
             <Link className="link" to="/services">{t("all_services")}<Arrow /></Link>
           </div>
-          <div className="grid4">{D.services.map((s, i) => <ServiceCard key={s.id} s={s} i={i} />)}</div>
+          <div className="grid4">{data.services.map((service, index) => <ServiceCard key={service.id} service={service} index={index} />)}</div>
         </div>
       </section>
 
@@ -35,7 +35,7 @@ export default function Home() {
             <div><h2>{t("home_projects_t")}</h2><p>{t("home_projects_p")}</p></div>
             <Link className="link" to="/projects">{t("all_projects")}<Arrow /></Link>
           </div>
-          <div className="grid2">{D.projects.map((p, i) => <ProjectCard key={p.slug} p={p} i={i} />)}</div>
+          <div className="grid2">{data.projects.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} />)}</div>
         </div>
       </section>
 

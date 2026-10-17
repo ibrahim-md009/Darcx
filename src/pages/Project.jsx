@@ -5,68 +5,68 @@ import Carousel from "../components/Carousel.jsx";
 
 export default function Project() {
   const { slug } = useParams();
-  const { t, L, D } = useApp();
-  const idx = D.projects.findIndex(p => p.slug === slug);
-  if (idx < 0) return <PageHead title={t("nf_t")} sub={t("nf_p")} />;
-  const p = D.projects[idx], nx = D.projects[(idx + 1) % D.projects.length];
+  const { t, localize, data } = useApp();
+  const projectIndex = data.projects.findIndex(item => item.slug === slug);
+  if (projectIndex < 0) return <PageHead title={t("nf_t")} sub={t("nf_p")} />;
+  const project = data.projects[projectIndex], nextProject = data.projects[(projectIndex + 1) % data.projects.length];
   return (
     <>
-      <header className="phead dhead" style={{ "--ac": p.accent }}>
+      <header className="phead dhead" style={{ "--ac": project.accent }}>
         <div className="wrap">
           <Link className="back" to="/projects"><Arrow />{t("d_back")}</Link>
-          <span className="badge badge-ac rv">{L(p.cat)}</span>
-          <h1 className="rv" style={{ "--d": ".05s" }}>{L(p.name)}</h1>
-          <p className="rv" style={{ "--d": ".1s" }}>{L(p.short)}</p>
-          {p.link && (
-            <a className="btn btn-fill dvisit rv" style={{ "--d": ".14s" }} href={p.link} target="_blank" rel="noopener noreferrer">{t("visit")}<Arrow /></a>
+          <span className="badge badge-ac rv">{localize(project.cat)}</span>
+          <h1 className="rv" style={{ "--d": ".05s" }}>{localize(project.name)}</h1>
+          <p className="rv" style={{ "--d": ".1s" }}>{localize(project.short)}</p>
+          {project.link && (
+            <a className="btn btn-fill dvisit rv" style={{ "--d": ".14s" }} href={project.link} target="_blank" rel="noopener noreferrer">{t("visit")}<Arrow /></a>
           )}
         </div>
       </header>
 
       <section className="sec dpre">
         <div className="wrap">
-          {p.shots.length
-            ? <div className="rv"><Carousel images={p.shots} alt={L(p.name)} /></div>
-            : <div className="dpv rv reveal-img" style={{ "--ac": p.accent }}><Preview p={p} big /></div>}
+          {project.shots.length
+            ? <div className="rv"><Carousel images={project.shots} alt={localize(project.name)} /></div>
+            : <div className="dpv rv reveal-img" style={{ "--ac": project.accent }}><Preview project={project} big /></div>}
         </div>
       </section>
 
-      <section className="sec dtxt" style={{ "--ac": p.accent }}>
+      <section className="sec dtxt" style={{ "--ac": project.accent }}>
         <div className="wrap dgrid">
-          <div className="rv"><h2>{t("d_overview")}</h2><p className="lead">{L(p.desc)}</p></div>
+          <div className="rv"><h2>{t("d_overview")}</h2><p className="lead">{localize(project.desc)}</p></div>
           <div className="rv" style={{ "--d": ".08s" }}>
             <h2>{t("d_features")}</h2>
-            <ul className="ticks">{L(p.features).map(x => <li key={x}>{x}</li>)}</ul>
-            {p.tech.length > 0 && (
+            <ul className="ticks">{localize(project.features).map(feature => <li key={feature}>{feature}</li>)}</ul>
+            {project.tech.length > 0 && (
               <>
                 <h3 className="mini">{t("d_tech")}</h3>
-                <div className="tags">{p.tech.map(x => <span key={x} className="tag" dir="ltr">{x}</span>)}</div>
+                <div className="tags">{project.tech.map(tech => <span key={tech} className="tag" dir="ltr">{tech}</span>)}</div>
               </>
             )}
           </div>
         </div>
       </section>
 
-      {p.dashShots.length > 0 && (
+      {project.dashShots.length > 0 && (
         <section className="sec dash">
           <div className="wrap">
             <h2 className="rv">{t("d_dash")}</h2>
-            <div className="rv" style={{ "--d": ".06s" }}><Carousel images={p.dashShots} alt={L(p.name) + " — " + t("d_dash")} /></div>
+            <div className="rv" style={{ "--d": ".06s" }}><Carousel images={project.dashShots} alt={localize(project.name) + " — " + t("d_dash")} /></div>
           </div>
         </section>
       )}
 
-      <section className="band band-a" style={{ "--ac": p.accent }}>
+      <section className="band band-a" style={{ "--ac": project.accent }}>
         <div className="wrap ps">
-          <div className="pbox rv"><span className="badge badge-ac">{t("d_problem")}</span><p>{L(p.problem)}</p></div>
-          <div className="pbox pbox-s rv" style={{ "--d": ".08s" }}><span className="badge badge-ac">{t("d_solution")}</span><p>{L(p.solution)}</p></div>
+          <div className="pbox rv"><span className="badge badge-ac">{t("d_problem")}</span><p>{localize(project.problem)}</p></div>
+          <div className="pbox pbox-s rv" style={{ "--d": ".08s" }}><span className="badge badge-ac">{t("d_solution")}</span><p>{localize(project.solution)}</p></div>
         </div>
       </section>
 
       <section className="sec">
         <div className="wrap next rv">
           <span>{t("d_next")}</span>
-          <Link className="link big" to={"/projects/" + nx.slug}>{L(nx.name)}<Arrow /></Link>
+          <Link className="link big" to={"/projects/" + nextProject.slug}>{localize(nextProject.name)}<Arrow /></Link>
         </div>
       </section>
 

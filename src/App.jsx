@@ -21,55 +21,55 @@ function NotFound() {
 function pageId(path) {
   if (path === "/") return "home";
   if (/^\/projects\/[^/]+$/.test(path)) return "project";
-  return ["services", "projects", "about", "contact"].find(x => path === "/" + x) || "404";
+  return ["services", "projects", "about", "contact"].find(name => path === "/" + name) || "404";
 }
 
 export default function App() {
-  const loc = useLocation();
-  const path = loc.pathname.replace(/\/+$/, "") || "/";
-  const { t, L, D, lang } = useApp();
-  const id = pageId(path);
-  const slug = id === "project" ? path.split("/")[2] : "";
+  const currentLocation = useLocation();
+  const path = currentLocation.pathname.replace(/\/+$/, "") || "/";
+  const { t, localize, data, lang } = useApp();
+  const page = pageId(path);
+  const slug = page === "project" ? path.split("/")[2] : "";
   const prevPath = useRef(null);
 
   /* page title + description (SEO) */
   useEffect(() => {
-    let ti, de;
-    if (id === "project") {
-      const p = D.projects.find(x => x.slug === slug);
-      ti = p ? L(p.name) + " | " + t("brand") : t("nf_t");
-      de = p ? L(p.short) : t("nf_p");
-    } else if (id === "404") {
-      ti = t("nf_t") + " | " + t("brand"); de = t("nf_p");
+    let title, description;
+    if (page === "project") {
+      const project = data.projects.find(item => item.slug === slug);
+      title = project ? localize(project.name) + " | " + t("brand") : t("nf_t");
+      description = project ? localize(project.short) : t("nf_p");
+    } else if (page === "404") {
+      title = t("nf_t") + " | " + t("brand"); description = t("nf_p");
     } else {
-      [ti, de] = D.seo[id][lang];
+      [title, description] = data.seo[page][lang];
     }
-    document.title = ti;
-    const set = (sel, v) => { const e = document.querySelector(sel); if (e) e.setAttribute("content", v); };
-    set('meta[name="description"]', de); set('meta[property="og:title"]', ti); set('meta[property="og:description"]', de);
-    set('meta[property="og:locale"]', lang === "ar" ? "ar_AR" : "en_US");
-  }, [id, slug, lang]);
+    document.title = title;
+    const setMeta = (selector, content) => { const tag = document.querySelector(selector); if (tag) tag.setAttribute("content", content); };
+    setMeta('meta[name="description"]', description); setMeta('meta[property="og:title"]', title); setMeta('meta[property="og:description"]', description);
+    setMeta('meta[property="og:locale"]', lang === "ar" ? "ar_AR" : "en_US");
+  }, [page, slug, lang]);
 
   /* scroll: to the #anchor if there is one, otherwise to the top */
   useEffect(() => {
-    const first = prevPath.current === null;
-    const same = prevPath.current === path;
+    const isFirstVisit = prevPath.current === null;
+    const isSamePath = prevPath.current === path;
     prevPath.current = path;
-    if (loc.hash) {
-      const el = document.getElementById(loc.hash.slice(1));
-      if (el) { setTimeout(() => el.scrollIntoView(), 80); return; }
+    if (currentLocation.hash) {
+      const target = document.getElementById(currentLocation.hash.slice(1));
+      if (target) { setTimeout(() => target.scrollIntoView(), 80); return; }
     }
-    if (first) return;
-    scrollTo({ top: 0, behavior: same ? "smooth" : "instant" });
-  }, [loc.key]);
+    if (isFirstVisit) return;
+    scrollTo({ top: 0, behavior: isSamePath ? "smooth" : "instant" });
+  }, [currentLocation.key]);
 
   /* reveal-on-scroll (threshold 0: tall blocks such as screenshots appear as soon as they enter the screen) */
   useEffect(() => {
-    const io = new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add("in"); observer.unobserve(entry.target); }
     }), { threshold: 0, rootMargin: "0px 0px -6% 0px" });
-    document.querySelectorAll(".rv:not(.in)").forEach(e => io.observe(e));
-    return () => io.disconnect();
+    document.querySelectorAll(".rv:not(.in)").forEach(el => observer.observe(el));
+    return () => observer.disconnect();
   }, [path, lang]);
 
   return (

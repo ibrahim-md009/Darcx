@@ -1153,15 +1153,19 @@ h3 {
 .car-track::-webkit-scrollbar {
   display: none;
 }
+/* The frame has ONE fixed ratio so the page never jumps between slides.
+   Most screenshots are about 2:1 (1600x820, 1600x700). Change 2 / 1 here to resize the frame. */
 .car-slide {
   flex: 0 0 100%;
   scroll-snap-align: center;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 2 / 1;
 }
+/* contain = the whole image is always visible, never stretched or cropped.
+   Images with a different ratio get empty bars (the slider background) on the sides or top/bottom. */
 .car-slide img {
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -2040,9 +2044,9 @@ p {
   border-color: var(--line);
 }
 
-/* project / service images: keep the top of a screenshot visible */
-.pv-img img,
-.car-slide img {
+/* project card previews: keep the top of a screenshot visible
+   (the slider is excluded on purpose: it uses object-fit: contain, centered) */
+.pv-img img {
   object-position: top center;
 }
 

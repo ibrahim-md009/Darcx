@@ -10,24 +10,24 @@ export default function Header() {
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    let tick = false, last = scrollY;
-    const on = () => {
-      if (tick) return;
-      tick = true;
+    let frameQueued = false, lastY = scrollY;
+    const onScroll = () => {
+      if (frameQueued) return;
+      frameQueued = true;
       requestAnimationFrame(() => {
-        const y = scrollY;
-        setScrolled(y > 16);
+        const currentY = scrollY;
+        setScrolled(currentY > 16);
         /* phones: slide the top bar away while reading, bring it back on scroll up */
         if (innerWidth <= 640) {
-          if (y > 240 && y > last + 6) setHidden(true);
-          else if (y < last - 6 || y <= 240) setHidden(false);
+          if (currentY > 240 && currentY > lastY + 6) setHidden(true);
+          else if (currentY < lastY - 6 || currentY <= 240) setHidden(false);
         } else setHidden(false);
-        last = y; tick = false;
+        lastY = currentY; frameQueued = false;
       });
     };
-    on();
-    addEventListener("scroll", on, { passive: true });
-    return () => removeEventListener("scroll", on);
+    onScroll();
+    addEventListener("scroll", onScroll, { passive: true });
+    return () => removeEventListener("scroll", onScroll);
   }, []);
 
   return (

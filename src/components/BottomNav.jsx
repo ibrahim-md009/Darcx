@@ -16,73 +16,77 @@ export default function BottomNav() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const trackRef = useRef(null);
-  const drag = useRef({ id: null, sx: 0, on: false, last: -1, skip: false });
+  /* state of the current finger/mouse drag across the bar */
+  const drag = useRef({ pointerId: null, startX: 0, active: false, lastIndex: -1, ignoreClick: false });
 
-  const current = pathname.startsWith("/projects") ? "projects" : (NAV.find(n => n.to === pathname)?.id ?? null);
-  const idx = NAV.findIndex(n => n.id === current);
+  const currentId = pathname.startsWith("/projects") ? "projects" : (NAV.find(item => item.to === pathname)?.id ?? null);
+  const currentIndex = NAV.findIndex(item => item.id === currentId);
 
-  const items = () => [...trackRef.current.querySelectorAll("a")];
-  const frac = x => {
-    const tr = trackRef.current, r = tr.getBoundingClientRect(), w = r.width / NAV.length;
-    const rtl = document.documentElement.dir === "rtl";
-    return (rtl ? r.right - x : x - r.left) / w - 0.5;
+  const linkEls = () => [...trackRef.current.querySelectorAll("a")];
+
+  /* pointer x position -> which item it is over (a fraction: 1.5 = halfway between item 1 and 2) */
+  const pointerToIndex = pointerX => {
+    const rect = trackRef.current.getBoundingClientRect(), itemWidth = rect.width / NAV.length;
+    const isRtl = document.documentElement.dir === "rtl";
+    return (isRtl ? rect.right - pointerX : pointerX - rect.left) / itemWidth - 0.5;
   };
 
-  const down = e => {
-    if (e.pointerType === "mouse" && e.button) return;
-    Object.assign(drag.current, { sx: e.clientX, id: e.pointerId, on: false });
+  const handleDown = event => {
+    if (event.pointerType === "mouse" && event.button) return;
+    Object.assign(drag.current, { startX: event.clientX, pointerId: event.pointerId, active: false });
   };
-  const move = e => {
-    const d = drag.current, tr = trackRef.current;
-    if (d.id !== e.pointerId) return;
-    if (!d.on) {
-      if (Math.abs(e.clientX - d.sx) < 10) return;
-      d.on = true; tr.classList.add("drag");
-      try { tr.setPointerCapture(d.id); } catch (_) {}
+  const handleMove = event => {
+    const state = drag.current, track = trackRef.current;
+    if (state.pointerId !== event.pointerId) return;
+    if (!state.active) {
+      if (Math.abs(event.clientX - state.startX) < 10) return; /* small movement = still a tap */
+      state.active = true; track.classList.add("drag");
+      try { track.setPointerCapture(state.pointerId); } catch (error) {}
     }
-    const f = Math.min(NAV.length - 1, Math.max(0, frac(e.clientX)));
-    tr.style.setProperty("--idx", f);
-    const k = Math.round(f);
-    if (k !== d.last) {
-      d.last = k;
-      items().forEach((x, i) => x.classList.toggle("hot", i === k));
+    const position = Math.min(NAV.length - 1, Math.max(0, pointerToIndex(event.clientX)));
+    track.style.setProperty("--idx", position);
+    const nearest = Math.round(position);
+    if (nearest !== state.lastIndex) {
+      state.lastIndex = nearest;
+      linkEls().forEach((link, index) => link.classList.toggle("hot", index === nearest));
       if (navigator.vibrate) navigator.vibrate(6);
     }
   };
-  const up = e => {
-    const d = drag.current, tr = trackRef.current;
-    if (d.id !== e.pointerId) return;
-    d.id = null;
-    if (!d.on) return;
-    d.on = false;
-    const k = Math.max(0, Math.min(NAV.length - 1, Math.round(parseFloat(tr.style.getPropertyValue("--idx")) || 0)));
-    tr.classList.remove("drag");
-    items().forEach(x => x.classList.remove("hot"));
-    d.last = -1;
-    d.skip = true; setTimeout(() => { d.skip = false; }, 350);
-    tr.style.setProperty("--idx", k);
-    if (NAV[k].id !== current) navigate(NAV[k].to);
+  const handleUp = event => {
+    const state = drag.current, track = trackRef.current;
+    if (state.pointerId !== event.pointerId) return;
+    state.pointerId = null;
+    if (!state.active) return;
+    state.active = false;
+    const target = Math.max(0, Math.min(NAV.length - 1, Math.round(parseFloat(track.style.getPropertyValue("--idx")) || 0)));
+    track.classList.remove("drag");
+    linkEls().forEach(link => link.classList.remove("hot"));
+    state.lastIndex = -1;
+    /* the browser also fires a click after a drag: ignore it for a moment */
+    state.ignoreClick = true; setTimeout(() => { state.ignoreClick = false; }, 350);
+    track.style.setProperty("--idx", target);
+    if (NAV[target].id !== currentId) navigate(NAV[target].to);
   };
-  const swallowClick = e => { if (drag.current.skip) { e.preventDefault(); e.stopPropagation(); } };
+  const blockClickAfterDrag = event => { if (drag.current.ignoreClick) { event.preventDefault(); event.stopPropagation(); } };
 
   return (
     <nav className="bnav" id="bnav" aria-label="Main">
       <div className="wrap bnav-in">
         <div
           className="bnav-track" ref={trackRef}
-          style={{ "--n": NAV.length, "--idx": idx < 0 ? 0 : idx }}
-          onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
-          onClickCapture={swallowClick}
+          style={{ "--n": NAV.length, "--idx": currentIndex < 0 ? 0 : currentIndex }}
+          onPointerDown={handleDown} onPointerMove={handleMove} onPointerUp={handleUp} onPointerCancel={handleUp}
+          onClickCapture={blockClickAfterDrag}
         >
-          <i className="bnav-ind" aria-hidden="true" style={idx < 0 ? { opacity: 0 } : undefined} />
-          {NAV.map(n => (
+          <i className="bnav-ind" aria-hidden="true" style={currentIndex < 0 ? { opacity: 0 } : undefined} />
+          {NAV.map(item => (
             <Link
-              key={n.id} to={n.to} draggable="false"
-              aria-current={n.id === current ? "page" : undefined}
-              onClick={() => { if (n.id === current && pathname === n.to) scrollTo({ top: 0, behavior: "smooth" }); }}
+              key={item.id} to={item.to} draggable="false"
+              aria-current={item.id === currentId ? "page" : undefined}
+              onClick={() => { if (item.id === currentId && pathname === item.to) scrollTo({ top: 0, behavior: "smooth" }); }}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">{n.icon}</svg>
-              <span>{t("nav_" + n.id)}</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">{item.icon}</svg>
+              <span>{t("nav_" + item.id)}</span>
             </Link>
           ))}
         </div>

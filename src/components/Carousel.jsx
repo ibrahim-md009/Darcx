@@ -10,52 +10,59 @@ const Chevron = ({ left }) => (
 /* Image slider: swipe / arrows / dots. `images` = list of paths relative to public/, e.g. "assets/img/a.jpg" */
 export default function Carousel({ images, alt }) {
   const { t } = useApp();
-  const track = useRef(null);
-  const [i, setI] = useState(0);
-  const many = images.length > 1;
+  const trackRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const hasMany = images.length > 1;
 
-  const rtl = () => document.documentElement.dir === "rtl";
-  const goTo = n => {
-    const el = track.current; if (!el) return;
-    const k = Math.max(0, Math.min(images.length - 1, n));
-    el.scrollTo({ left: (rtl() ? -1 : 1) * k * el.clientWidth, behavior: "smooth" });
+  const isRtl = () => document.documentElement.dir === "rtl";
+
+  const goToSlide = index => {
+    const trackEl = trackRef.current; if (!trackEl) return;
+    const target = Math.max(0, Math.min(images.length - 1, index));
+    /* in RTL the browser counts scrollLeft as negative */
+    trackEl.scrollTo({ left: (isRtl() ? -1 : 1) * target * trackEl.clientWidth, behavior: "smooth" });
   };
-  /* arrows are physical: the right arrow moves right on screen in both languages */
-  const step = physicalRight => goTo(i + (physicalRight ? (rtl() ? -1 : 1) : (rtl() ? 1 : -1)));
 
+  /* arrows are physical: the right arrow moves right on screen in both languages */
+  const stepTowardScreenSide = toScreenRight => {
+    const forward = isRtl() ? -1 : 1;
+    goToSlide(activeIndex + (toScreenRight ? forward : -forward));
+  };
+
+  /* keep activeIndex in sync while the visitor swipes / scrolls */
   useEffect(() => {
-    const el = track.current; if (!el) return;
-    let raf = 0;
-    const on = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => setI(Math.round(Math.abs(el.scrollLeft) / el.clientWidth)));
+    const trackEl = trackRef.current; if (!trackEl) return;
+    let frameId = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(() => setActiveIndex(Math.round(Math.abs(trackEl.scrollLeft) / trackEl.clientWidth)));
     };
-    el.addEventListener("scroll", on, { passive: true });
-    return () => { el.removeEventListener("scroll", on); cancelAnimationFrame(raf); };
+    trackEl.addEventListener("scroll", onScroll, { passive: true });
+    return () => { trackEl.removeEventListener("scroll", onScroll); cancelAnimationFrame(frameId); };
   }, [images.length]);
 
   return (
     <div className="car">
       <div className="car-view">
-        <div className="car-track" ref={track}>
-          {images.map((src, n) => (
-            <div className="car-slide" key={src} aria-hidden={n !== i}>
-              <img src={"/" + src} alt={alt + " " + (n + 1)} loading={n === 0 ? "eager" : "lazy"} draggable="false" />
+        <div className="car-track" ref={trackRef}>
+          {images.map((src, index) => (
+            <div className="car-slide" key={src} aria-hidden={index !== activeIndex}>
+              <img src={"/" + src} alt={alt + " " + (index + 1)} loading={index === 0 ? "eager" : "lazy"} draggable="false" />
             </div>
           ))}
         </div>
-        {many && (
+        {hasMany && (
           <>
-            <button type="button" className="car-btn car-l" onClick={() => step(false)} aria-label={t(rtl() ? "c_next" : "c_prev")}><Chevron left /></button>
-            <button type="button" className="car-btn car-r" onClick={() => step(true)} aria-label={t(rtl() ? "c_prev" : "c_next")}><Chevron /></button>
+            <button type="button" className="car-btn car-l" onClick={() => stepTowardScreenSide(false)} aria-label={t(isRtl() ? "c_next" : "c_prev")}><Chevron left /></button>
+            <button type="button" className="car-btn car-r" onClick={() => stepTowardScreenSide(true)} aria-label={t(isRtl() ? "c_prev" : "c_next")}><Chevron /></button>
           </>
         )}
       </div>
-      {many && (
+      {hasMany && (
         <div className="car-dots" role="tablist">
-          {images.map((_, n) => (
-            <button key={n} type="button" role="tab" aria-selected={n === i} aria-label={t("c_goto") + " " + (n + 1)}
-              className={"car-dot" + (n === i ? " on" : "")} onClick={() => goTo(n)} />
+          {images.map((_, index) => (
+            <button key={index} type="button" role="tab" aria-selected={index === activeIndex} aria-label={t("c_goto") + " " + (index + 1)}
+              className={"car-dot" + (index === activeIndex ? " on" : "")} onClick={() => goToSlide(index)} />
           ))}
         </div>
       )}

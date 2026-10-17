@@ -9,9 +9,9 @@ const DARCX_DATA = {
   contact: {
     whatsapp: "972567574848" /* digits only, with country code */,
     email: "darcx.dev@gmail.com",
-    instagram: "@darcx",
+    instagram: "darcx.dev",
     telegram: "",
-    facebook: "darcx",
+    facebook: "profile.php?id=61595113157838",
     linkedin: "",
     x: "",
     tiktok: "",
@@ -22,6 +22,7 @@ const DARCX_DATA = {
 
   /* ---- Projects ----*/
   projects: [
+    //water-elbalad
     {
       slug: "elbalad-water",
       kind: "web",
@@ -69,6 +70,7 @@ const DARCX_DATA = {
         "img/water/water-dash (5).webp",
       ],
     },
+    //keo
     {
       slug: "keo-studio",
       kind: "web",
@@ -115,6 +117,7 @@ const DARCX_DATA = {
         "img/keo/keo-dash01 (4).webp",
       ],
     },
+    //pos system
     {
       slug: "pos-system",
       kind: "system",
@@ -153,9 +156,24 @@ const DARCX_DATA = {
       },
       tech: [],
       link: "",
-      shots: [],
+      shots: [
+        "img/cashier/01.webp",
+        "img/cashier/02.webp",
+        "img/cashier/03.webp",
+        "img/cashier/04.webp",
+        "img/cashier/05.webp",
+        "img/cashier/06.webp",
+        "img/cashier/07.webp",
+        "img/cashier/08.webp",
+        "img/cashier/09.webp",
+        "img/cashier/10.webp",
+        "img/cashier/11.webp",
+        "img/cashier/12.webp",
+        "img/cashier/13.webp",
+      ],
       dashShots: [],
     },
+    //studio management
     {
       slug: "studio-management",
       kind: "system",
@@ -189,7 +207,31 @@ const DARCX_DATA = {
       },
       tech: [],
       link: "",
-      shots: [],
+      shots: [
+        "img/keo/keoApp/01.webp",
+        "img/keo/keoApp/02.webp",
+        "img/keo/keoApp/03.webp",
+        "img/keo/keoApp/04.webp",
+        "img/keo/keoApp/05.webp",
+        "img/keo/keoApp/06.webp",
+        "img/keo/keoApp/07.webp",
+        "img/keo/keoApp/08.webp",
+        "img/keo/keoApp/09.webp",
+        "img/keo/keoApp/10.webp",
+        "img/keo/keoApp/11.webp",
+        "img/keo/keoApp/12.webp",
+        "img/keo/keoApp/13.webp",
+        "img/keo/keoApp/14.webp",
+        "img/keo/keoApp/15.webp",
+        "img/keo/keoApp/16.webp",
+        "img/keo/keoApp/17.webp",
+        "img/keo/keoApp/18.webp",
+        "img/keo/keoApp/19.webp",
+        "img/keo/keoApp/20.webp",
+        "img/keo/keoApp/21.webp",
+        "img/keo/keoApp/22.webp",
+        "img/keo/keoApp/23.webp",
+      ],
       dashShots: [],
     },
   ],

@@ -1,69 +1,71 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
-import D from "./data.js";
+import data from "./data.js";
 
 const AppCtx = createContext(null);
-const doc = document.documentElement;
+const html = document.documentElement;
 
 export const store = {
-  get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
-  set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }
+  get: key => { try { return localStorage.getItem(key); } catch (error) { return null; } },
+  set: (key, value) => { try { localStorage.setItem(key, value); } catch (error) {} }
 };
 
 export function AppProvider({ children }) {
-  const [lang, setLangState] = useState(doc.lang === "en" ? "en" : "ar");
-  const [theme, setTheme] = useState(doc.dataset.theme === "light" ? "light" : "dark");
+  const [lang, setLangState] = useState(html.lang === "en" ? "en" : "ar");
+  const [theme, setTheme] = useState(html.dataset.theme === "light" ? "light" : "dark");
 
   /* keep <html> in sync */
   useEffect(() => {
-    doc.lang = lang;
-    doc.dir = lang === "ar" ? "rtl" : "ltr";
+    html.lang = lang;
+    html.dir = lang === "ar" ? "rtl" : "ltr";
   }, [lang]);
-  useEffect(() => { doc.dataset.theme = theme; }, [theme]);
+  useEffect(() => { html.dataset.theme = theme; }, [theme]);
 
   /* follow the system theme until the visitor picks one */
   useEffect(() => {
-    const mq = matchMedia("(prefers-color-scheme: light)");
-    const on = e => { if (!store.get("dx-theme")) setTheme(e.matches ? "light" : "dark"); };
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
+    const systemTheme = matchMedia("(prefers-color-scheme: light)");
+    const onChange = event => { if (!store.get("dx-theme")) setTheme(event.matches ? "light" : "dark"); };
+    systemTheme.addEventListener("change", onChange);
+    return () => systemTheme.removeEventListener("change", onChange);
   }, []);
 
-  const setLang = useCallback(l => {
-    if (l === lang) return;
-    store.set("dx-lang", l);
+  const setLang = useCallback(newLang => {
+    if (newLang === lang) return;
+    store.set("dx-lang", newLang);
     /* update React + <html lang/dir> in the same step so the page never shows a half-switched frame */
-    const apply = () => {
-      flushSync(() => setLangState(l));
-      doc.lang = l;
-      doc.dir = l === "ar" ? "rtl" : "ltr";
+    const applyLang = () => {
+      flushSync(() => setLangState(newLang));
+      html.lang = newLang;
+      html.dir = newLang === "ar" ? "rtl" : "ltr";
     };
-    const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (document.startViewTransition && !calm) {
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (document.startViewTransition && !reducedMotion) {
       /* browser snapshots old + new page and cross-fades between them */
-      document.startViewTransition(apply);
+      document.startViewTransition(applyLang);
     } else {
       /* fallback: quick fade out, switch, fade back in after the new layout is painted */
       document.body.classList.add("swap");
       setTimeout(() => {
-        apply();
+        applyLang();
         requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.remove("swap")));
       }, 140);
     }
   }, [lang]);
 
   const toggleTheme = useCallback(() => {
-    const n = theme === "dark" ? "light" : "dark";
-    doc.classList.add("tx");
-    setTheme(n);
-    store.set("dx-theme", n);
-    setTimeout(() => doc.classList.remove("tx"), 500);
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    html.classList.add("tx");
+    setTheme(nextTheme);
+    store.set("dx-theme", nextTheme);
+    setTimeout(() => html.classList.remove("tx"), 500);
   }, [theme]);
 
+  /* t("key")      -> interface text in the current language (from data.i18n)
+     localize({ar, en}) -> picks the current language out of an { ar, en } object */
   const value = useMemo(() => ({
-    D, lang, theme, setLang, toggleTheme,
-    t: k => D.i18n[lang][k],
-    L: o => o[lang]
+    data, lang, theme, setLang, toggleTheme,
+    t: key => data.i18n[lang][key],
+    localize: texts => texts[lang]
   }), [lang, theme, setLang, toggleTheme]);
 
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
