@@ -24,18 +24,19 @@ const DARCX_DATA = {
   projects: [
     //water-elbalad
     {
-      slug: "elbalad-water",
+      slug: "Booking system",
       kind: "web",
       accent: "#8998A8",
-      name: { ar: "البلد للمياه", en: "El Balad Water" },
+      name: { ar: "نظام حجوزات", en: "Booking system" },
       cat: { ar: "موقع إلكتروني", en: "Website" },
       short: {
-        ar: "موقع تعريفي يقدّم البلد للمياه بهوية واضحة وتجربة تصفح سهلة.",
-        en: "A company website that presents El Balad Water with a clear identity and easy browsing.",
+        ar: "موقع حجوزات بواجهة بسيطة وسلسة",
+        en: "A booking website with a simple and seamless interface.",
       },
       desc: {
-        ar: "موقع إلكتروني صُمّم ليعرض نشاط البلد للمياه وخدماتها بأسلوب منظّم واحترافي، ويتيح للعملاء التعرّف على ما تقدّمه الشركة والتواصل معها بسهولة.",
-        en: "A website designed to present El Balad Water and its services in an organised, professional way, helping customers understand what the company offers and reach it easily.",
+        // ar: "موقع إلكتروني صُمّم ليعرض نشاط البلد للمياه وخدماتها بأسلوب منظّم واحترافي، ويتيح للعملاء التعرّف على ما تقدّمه الشركة والتواصل معها بسهولة.",
+        ar: "موقع الكتروني لعرض الحجوزات وطرق الدفع المتاحة",
+        en: "A website for displaying bookings and available payment methods.",
       },
       features: {
         ar: [
@@ -238,7 +239,10 @@ const DARCX_DATA = {
      `slug` points at a project below; `shots` are two real screenshots of THAT project (paths inside /public) ---- */
   showcase: [
     { slug: "keo-studio", shots: ["img/keo/keo-main.webp", "img/keo/keo-dash01 (3).webp"] } /* KEO Studio website */,
-    { slug: "studio-management", shots: ["img/keo/keoApp/02.webp", "img/keo/keoApp/06.webp"] } /* KEO Studio program (the studio management system) */,
+    {
+      slug: "studio-management",
+      shots: ["img/keo/keoApp/02.webp", "img/keo/keoApp/06.webp"],
+    } /* KEO Studio program (the studio management system) */,
   ],
 
   /* ---- Homepage banner: id of the package it promotes (price / offer are read from `packages`) ---- */
@@ -374,31 +378,46 @@ const DARCX_DATA = {
       id: "hosting",
       price: null,
       name: { ar: "إعداد النطاق والاستضافة", en: "Domain and hosting setup" },
-      desc: { ar: "تسجيل النطاق وربطه بالاستضافة وضبطه.", en: "Registering, connecting and configuring your domain and hosting." },
+      desc: {
+        ar: "تسجيل النطاق وربطه بالاستضافة وضبطه.",
+        en: "Registering, connecting and configuring your domain and hosting.",
+      },
     },
     {
       id: "maintenance",
       price: null,
       name: { ar: "صيانة الموقع والدعم الفني", en: "Website maintenance and technical support" },
-      desc: { ar: "متابعة الموقع وحل المشكلات التقنية وإبقاؤه محدّثًا.", en: "Keeping your site running, updated and free of technical issues." },
+      desc: {
+        ar: "متابعة الموقع وحل المشكلات التقنية وإبقاؤه محدّثًا.",
+        en: "Keeping your site running, updated and free of technical issues.",
+      },
     },
     {
       id: "changes",
       price: null,
       name: { ar: "تعديلات إضافية على الموقع", en: "Additional website modifications" },
-      desc: { ar: "تعديلات وإضافات جديدة بعد تسليم الموقع.", en: "New changes and additions after your site is delivered." },
+      desc: {
+        ar: "تعديلات وإضافات جديدة بعد تسليم الموقع.",
+        en: "New changes and additions after your site is delivered.",
+      },
     },
     {
       id: "seo",
       price: null,
       name: { ar: "خدمات تحسين محركات البحث", en: "Ongoing SEO services" },
-      desc: { ar: "عمل مستمر لتحسين ظهور موقعك في نتائج البحث.", en: "Continuous work to improve how your site appears in search results." },
+      desc: {
+        ar: "عمل مستمر لتحسين ظهور موقعك في نتائج البحث.",
+        en: "Continuous work to improve how your site appears in search results.",
+      },
     },
     {
       id: "content",
       price: null,
       name: { ar: "كتابة محتوى الموقع", en: "Website content writing" },
-      desc: { ar: "نصوص واضحة لصفحات موقعك بالعربية أو الإنجليزية.", en: "Clear copy for your website pages in Arabic or English." },
+      desc: {
+        ar: "نصوص واضحة لصفحات موقعك بالعربية أو الإنجليزية.",
+        en: "Clear copy for your website pages in Arabic or English.",
+      },
     },
   ],
 
@@ -408,25 +427,37 @@ const DARCX_DATA = {
       id: "websites",
       accent: "#a7b4a8",
       name: { ar: "المواقع الإلكترونية", en: "Websites" },
-      desc: { ar: "مواقع احترافية للشركات والأعمال وعرض الأعمال وحضورك على الإنترنت.", en: "Professional websites for businesses, portfolios, and online presence." },
+      desc: {
+        ar: "مواقع احترافية للشركات والأعمال وعرض الأعمال وحضورك على الإنترنت.",
+        en: "Professional websites for businesses, portfolios, and online presence.",
+      },
     },
     {
       id: "systems",
       accent: "#8e9a88",
       name: { ar: "التطبيقات والأنظمة", en: "Applications & Systems" },
-      desc: { ar: "تطبيقات وأنظمة أعمال مخصصة تناسب احتياج كل عميل.", en: "Custom applications and business systems tailored to client needs." },
+      desc: {
+        ar: "تطبيقات وأنظمة أعمال مخصصة تناسب احتياج كل عميل.",
+        en: "Custom applications and business systems tailored to client needs.",
+      },
     },
     {
       id: "dashboards",
       accent: "#8998a8",
       name: { ar: "لوحات التحكم", en: "Control Panels" },
-      desc: { ar: "لوحات لإدارة المحتوى والبيانات والحجوزات وعمليات العمل.", en: "Dashboards for managing content, data, bookings, and business operations." },
+      desc: {
+        ar: "لوحات لإدارة المحتوى والبيانات والحجوزات وعمليات العمل.",
+        en: "Dashboards for managing content, data, bookings, and business operations.",
+      },
     },
     {
       id: "stores",
       accent: "#b49d94",
       name: { ar: "المتاجر الإلكترونية", en: "Online Stores" },
-      desc: { ar: "مواقع تجارة إلكترونية وحلول للبيع عبر الإنترنت.", en: "E-commerce websites and online selling solutions." },
+      desc: {
+        ar: "مواقع تجارة إلكترونية وحلول للبيع عبر الإنترنت.",
+        en: "E-commerce websites and online selling solutions.",
+      },
     },
   ],
 
@@ -583,7 +614,8 @@ const DARCX_DATA = {
       pkb_p: "كل ما يحتاجه نشاطك لإنشاء حضور احترافي على الإنترنت.",
       pkb_cta: "اكتشف الباقة",
       c_ask_pre: "الباقة / الخدمة المطلوبة: ",
-      pk_disc: "ملاحظة: الأسعار والنطاق الموضحان في الباقات قابلان للتعديل حسب متطلبات المشروع والميزات المطلوبة. ويمكن تنفيذ خدمات أو حلول خارج نطاق هذه الباقات بعد مناقشة التفاصيل وتحديد السعر المناسب.",
+      pk_disc:
+        "ملاحظة: الأسعار والنطاق الموضحان في الباقات قابلان للتعديل حسب متطلبات المشروع والميزات المطلوبة. ويمكن تنفيذ خدمات أو حلول خارج نطاق هذه الباقات بعد مناقشة التفاصيل وتحديد السعر المناسب.",
       s_examples: "أمثلة من أعمالنا",
       s_includes: "ما تشمله الخدمة",
       s_ask: "اطلب هذه الخدمة",
@@ -701,7 +733,8 @@ const DARCX_DATA = {
       pkb_p: "Everything your business needs to establish a professional online presence.",
       pkb_cta: "Explore the Package",
       c_ask_pre: "Package / service: ",
-      pk_disc: "Note: Package pricing and scope may vary depending on project requirements and requested features. Custom features and services outside these packages can also be discussed and quoted separately.",
+      pk_disc:
+        "Note: Package pricing and scope may vary depending on project requirements and requested features. Custom features and services outside these packages can also be discussed and quoted separately.",
       s_examples: "Examples from our work",
       s_includes: "What it includes",
       s_ask: "Request this service",
