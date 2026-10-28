@@ -5,7 +5,9 @@ import ProjectShowcase from "../components/ProjectShowcase.jsx";
 
 export default function Home() {
   const { t, data } = useApp();
-  const showcase = data.showcase.map(slug => data.projects.find(project => project.slug === slug)).filter(project => project && project.shots[0]);
+  const showcase = data.showcase
+    .map(entry => ({ project: data.projects.find(project => project.slug === entry.slug), shots: entry.shots }))
+    .filter(entry => entry.project);
   return (
     <>
       <section className="hero">
@@ -37,7 +39,7 @@ export default function Home() {
             <div><h2>{t("home_projects_t")}</h2><p>{t("home_projects_p")}</p></div>
             <Link className="link" to="/projects">{t("all_projects")}<Arrow /></Link>
           </div>
-          <ProjectShowcase projects={showcase} />
+          <ProjectShowcase items={showcase} />
         </div>
       </section>
 

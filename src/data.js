@@ -236,8 +236,14 @@ const DARCX_DATA = {
     },
   ],
 
-  /* ---- Homepage showcase: the two projects shown as overlapping screenshots (slugs from `projects`) ---- */
-  showcase: ["elbalad-water", "keo-studio"],
+  /* ---- Homepage showcase: one separate two-screenshot composition per project, shown vertically.
+     `slug` points at a project below; `shots` are two real screenshots of THAT project (paths inside /public) ---- */
+  showcase: [
+    { slug: "keo-studio", shots: ["img/keo/keo-main.webp", "img/keo/keo-dash01 (3).webp"] },
+    { slug: "elbalad-water", shots: ["img/water/water-main.webp", "img/water/water-dash (2).webp"] },
+    { slug: "pos-system", shots: ["img/cashier/01.webp", "img/cashier/03.webp"] },
+    { slug: "studio-management", shots: ["img/keo/keoApp/02.webp", "img/keo/keoApp/06.webp"] },
+  ],
 
   /* ---- Packages. Prices live ONLY here (original = struck through, price = promotional).
      `offer: true` shows the launch-offer label; Custom Solutions has no offer label until one is confirmed. ---- */
@@ -275,7 +281,11 @@ const DARCX_DATA = {
           "Delivery within 5–7 business days",
         ],
       },
-      note: null,
+      /* WhatsApp message the order button opens ({price} / {original} come from this package) */
+      wa: {
+        ar: "مرحباً فريق DARCX، أرغب بطلب باقة الانطلاق بسعر العرض {price} دولار. أريد معرفة الخطوات التالية.",
+        en: "Hello DARCX team, I'd like to order the Starter package at the promotional price of ${price}. Please let me know the next steps.",
+      },
       cta: { ar: "اطلب هذه الباقة", en: "Order This Package" },
     },
     {
@@ -313,7 +323,11 @@ const DARCX_DATA = {
           "Delivery within 10–14 days",
         ],
       },
-      note: null,
+      /* WhatsApp message the order button opens ({price} / {original} come from this package) */
+      wa: {
+        ar: "مرحباً فريق DARCX، أرغب بطلب باقة الأعمال بسعر العرض {price} دولار. أريد معرفة الخطوات التالية.",
+        en: "Hello DARCX team, I'd like to order the Business package at the promotional price of ${price}. Please let me know the next steps.",
+      },
       cta: { ar: "اطلب هذه الباقة", en: "Order This Package" },
     },
     {
@@ -345,9 +359,10 @@ const DARCX_DATA = {
           "Three months of technical support within the agreed scope",
         ],
       },
-      note: {
-        ar: "يعتمد النطاق النهائي وأي تكاليف إضافية على متطلبات المشروع وتعقيده والمزايا المطلوبة.",
-        en: "The final scope and any additional costs depend on the project's requirements, complexity, and requested features.",
+      /* WhatsApp message the order button opens ({price} / {original} come from this package) */
+      wa: {
+        ar: "مرحباً فريق DARCX، أنا مهتم بباقة الحلول المخصصة بسعر العرض {price} دولار بدلاً من {original} دولار. أريد مناقشة تفاصيل مشروعي.",
+        en: "Hello DARCX team, I'm interested in the Custom Solutions package at the promotional price of ${price} instead of ${original}. I'd like to discuss my project's details.",
       },
       cta: { ar: "اطلب عرض سعر مخصص", en: "Request a Custom Quote" },
     },
@@ -385,6 +400,34 @@ const DARCX_DATA = {
       price: null,
       name: { ar: "كتابة محتوى الموقع", en: "Website content writing" },
       desc: { ar: "نصوص واضحة لصفحات موقعك بالعربية أو الإنجليزية.", en: "Clear copy for your website pages in Arabic or English." },
+    },
+  ],
+
+  /* ---- Services page: four compact category cards (icon key is drawn in Services.jsx) ---- */
+  serviceCards: [
+    {
+      id: "websites",
+      accent: "#a7b4a8",
+      name: { ar: "المواقع الإلكترونية", en: "Websites" },
+      desc: { ar: "مواقع احترافية للشركات والأعمال وعرض الأعمال وحضورك على الإنترنت.", en: "Professional websites for businesses, portfolios, and online presence." },
+    },
+    {
+      id: "systems",
+      accent: "#8e9a88",
+      name: { ar: "التطبيقات والأنظمة", en: "Applications & Systems" },
+      desc: { ar: "تطبيقات وأنظمة أعمال مخصصة تناسب احتياج كل عميل.", en: "Custom applications and business systems tailored to client needs." },
+    },
+    {
+      id: "dashboards",
+      accent: "#8998a8",
+      name: { ar: "لوحات التحكم", en: "Control Panels" },
+      desc: { ar: "لوحات لإدارة المحتوى والبيانات والحجوزات وعمليات العمل.", en: "Dashboards for managing content, data, bookings, and business operations." },
+    },
+    {
+      id: "stores",
+      accent: "#b49d94",
+      name: { ar: "المتاجر الإلكترونية", en: "Online Stores" },
+      desc: { ar: "مواقع تجارة إلكترونية وحلول للبيع عبر الإنترنت.", en: "E-commerce websites and online selling solutions." },
     },
   ],
 
@@ -490,7 +533,7 @@ const DARCX_DATA = {
       skip: "تخطي إلى المحتوى",
       nav_home: "الرئيسية",
       nav_projects: "أعمالنا",
-      nav_services: "خدماتنا",
+      nav_services: "الباقات",
       nav_about: "من نحن",
       nav_contact: "تواصل معنا",
       cta: "ابدأ مشروعك",
@@ -517,10 +560,10 @@ const DARCX_DATA = {
       home_projects_t: "أعمال مختارة",
       home_projects_p: "مشاريع نفّذناها من الفكرة حتى الإطلاق.",
       all_projects: "كل الأعمال",
-      all_services: "كل الخدمات",
+      all_services: "شاهد الباقات",
       home_cta_t: "هل لديك فكرة؟",
       home_cta_p: "أخبرنا عن نشاطك وما تحتاجه، وسنقترح عليك الخطوة الأنسب.",
-      s_page_t: "خدماتنا",
+      s_page_t: "الباقات",
       s_page_p: "من الموقع التعريفي إلى نظام إدارة العمل اليومي، نبني ما يناسب نشاطك.",
       sv_view_pk: "شاهد الباقات",
       pk_t: "باقاتنا",
@@ -536,6 +579,7 @@ const DARCX_DATA = {
       pk_cta_p: "أخبرنا بما تحتاجه وسنقترح عليك الباقة الأنسب لنشاطك.",
       pk_cta_wa: "راسلنا على واتساب",
       c_ask_pre: "الباقة / الخدمة المطلوبة: ",
+      pk_disc: "ملاحظة: الأسعار والنطاق الموضحان في الباقات قابلان للتعديل حسب متطلبات المشروع والميزات المطلوبة. ويمكن تنفيذ خدمات أو حلول خارج نطاق هذه الباقات بعد مناقشة التفاصيل وتحديد السعر المناسب.",
       s_examples: "أمثلة من أعمالنا",
       s_includes: "ما تشمله الخدمة",
       s_ask: "اطلب هذه الخدمة",
@@ -602,7 +646,7 @@ const DARCX_DATA = {
       skip: "Skip to content",
       nav_home: "Home",
       nav_projects: "Projects",
-      nav_services: "Services",
+      nav_services: "Packages",
       nav_about: "About",
       nav_contact: "Contact",
       cta: "Start your project",
@@ -629,10 +673,10 @@ const DARCX_DATA = {
       home_projects_t: "Selected projects",
       home_projects_p: "Projects delivered from idea through to launch.",
       all_projects: "All projects",
-      all_services: "All services",
+      all_services: "View packages",
       home_cta_t: "Have an idea?",
       home_cta_p: "Tell us about your business and what you need, and we'll suggest the right next step.",
-      s_page_t: "Services",
+      s_page_t: "Packages",
       s_page_p: "From a company website to a system that runs your daily work, we build what fits your business.",
       sv_view_pk: "View packages",
       pk_t: "Our packages",
@@ -648,6 +692,7 @@ const DARCX_DATA = {
       pk_cta_p: "Tell us what you need and we'll recommend the right package for your business.",
       pk_cta_wa: "Message us on WhatsApp",
       c_ask_pre: "Package / service: ",
+      pk_disc: "Note: Package pricing and scope may vary depending on project requirements and requested features. Custom features and services outside these packages can also be discussed and quoted separately.",
       s_examples: "Examples from our work",
       s_includes: "What it includes",
       s_ask: "Request this service",
@@ -727,8 +772,8 @@ const DARCX_DATA = {
       ],
     },
     services: {
-      ar: ["خدماتنا | DARCX", "مواقع إلكترونية، لوحات تحكم، تطبيقات جوال وأنظمة إدارة أعمال."],
-      en: ["Services | DARCX", "Websites, dashboards, mobile applications and business management systems."],
+      ar: ["الباقات | DARCX", "باقات DARCX لبناء المواقع والأنظمة ولوحات التحكم والمتاجر الإلكترونية."],
+      en: ["Packages | DARCX", "DARCX packages for websites, systems, control panels and online stores."],
     },
     projects: {
       ar: ["أعمالنا | DARCX", "مشاريع DARCX: البلد للمياه، كيو ستوديو، نظام نقاط البيع ونظام إدارة الاستوديو."],

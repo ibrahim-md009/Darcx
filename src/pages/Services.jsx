@@ -2,6 +2,15 @@ import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow, PageHead, serviceIcons } from "../components/ui.jsx";
 
+/* small icons for the four category cards (same line style as the rest of the site) */
+const outline = { fill: "none", stroke: "currentColor", strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round" };
+const cardIcons = {
+  websites: serviceIcons.websites,
+  dashboards: serviceIcons.dashboards,
+  systems: serviceIcons.systems,
+  stores: <svg viewBox="0 0 48 48"><path d="M9 18h30l-2.500 20a3 3 0 0 1-3 2.500H14.500a3 3 0 0 1-3-2.500L9 18z" {...outline} /><path d="M17 18v-3a7 7 0 0 1 14 0v3" {...outline} /></svg>,
+};
+
 /* Order of the page: 1 short introduction · 2 Our packages · 3 Additional services · 4 contact call to action.
    Prices, package features and extra services all come from data.js (packages / extras). */
 
@@ -20,8 +29,15 @@ function Price({ pack }) {
 }
 
 function PackageCard({ pack, index }) {
-  const { t, localize } = useApp();
+  const { t, localize, data } = useApp();
   const nameId = "pk-" + pack.id;
+  const whatsapp = data.contact.whatsapp;
+  /* the order button opens WhatsApp directly with a ready message (number comes from data.contact.whatsapp);
+     without a WhatsApp number it falls back to the contact form */
+  const message = localize(pack.wa).replace("{price}", pack.price).replace("{original}", pack.original);
+  const orderProps = whatsapp
+    ? { href: "https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(message), target: "_blank", rel: "noopener noreferrer" }
+    : { href: "/contact?service=" + pack.service + "&ask=" + pack.id };
   return (
     <article className={"pk-card rv" + (pack.featured ? " is-feat" : "")} style={{ "--d": index * 0.08 + "s" }} aria-labelledby={nameId}>
       <header className="pk-head">
@@ -30,13 +46,13 @@ function PackageCard({ pack, index }) {
       </header>
       <Price pack={pack} />
       {pack.offer && <span className="pk-offer">{t("pk_offer")}</span>}
-      <ul className="ticks pk-list">
+      <ul className="pk-list">
         {localize(pack.features).map(feature => <li key={feature}>{feature}</li>)}
       </ul>
-      {pack.note && <p className="pk-note">{localize(pack.note)}</p>}
-      <Link className={"btn btn-block " + (pack.featured ? "btn-sage" : "btn-line")} to={"/contact?service=" + pack.service + "&ask=" + pack.id}>
+      <p className="pk-disc">{t("pk_disc")}</p>
+      <a className={"btn btn-block " + (pack.featured ? "btn-sage" : "btn-line")} {...orderProps}>
         {localize(pack.cta)}<Arrow />
-      </Link>
+      </a>
     </article>
   );
 }
@@ -46,33 +62,26 @@ export default function Services() {
   const whatsapp = data.contact.whatsapp;
   return (
     <>
-      {/* 1 — short introduction */}
+      {/* 1 — short introduction: four compact category cards */}
       <PageHead title={t("s_page_t")} sub={t("s_page_p")} />
       <section className="sv-intro">
         <div className="wrap">
-          <ul className="sv-list">
-            {data.services.map((service, index) => {
-              const exampleProjects = service.examples.map(slug => data.projects.find(project => project.slug === slug)).filter(Boolean);
-              return (
-                <li key={service.id} id={service.id} className="sv-item rv" style={{ "--ac": service.accent, "--d": index * 0.06 + "s" }}>
-                  <span className="sv-ico">{serviceIcons[service.id]}</span>
-                  <h2>{localize(service.name)}</h2>
-                  <p>{localize(service.desc)}</p>
-                  {exampleProjects.length > 0 && (
-                    <div className="sv-ex">
-                      {exampleProjects.map(project => (
-                        <Link key={project.slug} to={"/projects/" + project.slug} style={{ "--ac": project.accent }}>
-                          <span className="dot" />{localize(project.name)}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
+          <ul className="sv-grid">
+            {data.serviceCards.map((card, index) => (
+              <li key={card.id} id={card.id} className="sv-card rv" style={{ "--ac": card.accent, "--d": index * 0.06 + "s" }}>
+                {card.id === "systems" && <span id="mobile" aria-hidden="true" />}
+                <span className="sv-ico">{cardIcons[card.id]}</span>
+                <h2>{localize(card.name)}</h2>
+                <p>{localize(card.desc)}</p>
+              </li>
+            ))}
           </ul>
-          <a className="link sv-jump" href="#packages">{t("sv_view_pk")}<svg className="arr sv-down" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v11M5 11l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
         </div>
+        {/* light → dark transition into the packages: a diagonal edge with a brand line, drawn in when scrolled into view */}
+        <svg className="sv-cut rv" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polygon points="0,100 100,0 100,100" />
+          <line x1="0" y1="100" x2="100" y2="0" vectorEffect="non-scaling-stroke" />
+        </svg>
       </section>
 
       {/* 2 — Our packages */}
