@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow, PageHead, serviceIcons } from "../components/ui.jsx";
@@ -13,6 +14,31 @@ const cardIcons = {
 
 /* Order of the page: 1 short introduction · 2 Our packages · 3 Additional services · 4 contact call to action.
    Prices, package features and extra services all come from data.js (packages / extras). */
+
+/* Light → dark transition. Sets --p (0 → 1, eased) on the wrapper from the packages band's position in the viewport:
+   the dark band rises as a curved horizon that flattens while a sage hairline fades and the light section above takes on
+   a soft dark tint. It is a pure function of scroll position, so it plays identically scrolling down and up.
+   Reduced motion: no listener, a fixed, calm curve. */
+function useEnvironmentShift(wrapRef, bandRef) {
+  useEffect(() => {
+    const wrap = wrapRef.current, band = bandRef.current;
+    if (!wrap || !band) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { wrap.style.setProperty("--p", "0.55"); return; }
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const viewport = window.innerHeight;
+      const top = band.getBoundingClientRect().top;
+      const raw = Math.min(1, Math.max(0, (viewport * 0.98 - top) / (viewport * 0.72)));
+      wrap.style.setProperty("--p", (raw * raw * (3 - 2 * raw)).toFixed(4));
+    };
+    const request = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    addEventListener("scroll", request, { passive: true });
+    addEventListener("resize", request);
+    return () => { removeEventListener("scroll", request); removeEventListener("resize", request); if (frame) cancelAnimationFrame(frame); };
+  }, []);
+}
 
 function Price({ pack }) {
   const { t } = useApp();
@@ -60,10 +86,13 @@ function PackageCard({ pack, index }) {
 export default function Services() {
   const { t, localize, data } = useApp();
   const whatsapp = data.contact.whatsapp;
+  const flowRef = useRef(null), bandRef = useRef(null);
+  useEnvironmentShift(flowRef, bandRef);
   return (
     <>
       {/* 1 — short introduction: four compact category cards */}
       <PageHead title={t("s_page_t")} sub={t("s_page_p")} />
+      <div className="sv-flow" ref={flowRef}>
       <section className="sv-intro">
         <div className="wrap">
           <ul className="sv-grid">
@@ -77,15 +106,10 @@ export default function Services() {
             ))}
           </ul>
         </div>
-        {/* light → dark transition into the packages: a diagonal edge with a brand line, drawn in when scrolled into view */}
-        <svg className="sv-cut rv" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <polygon points="0,100 100,0 100,100" />
-          <line x1="0" y1="100" x2="100" y2="0" vectorEffect="non-scaling-stroke" />
-        </svg>
       </section>
 
       {/* 2 — Our packages */}
-      <section className="band band-dark pk" id="packages">
+      <section className="band band-dark pk" id="packages" ref={bandRef}>
         <div className="pk-shapes" aria-hidden="true"><i /><i /><i /></div>
         <div className="wrap pk-in">
           <div className="sec-h rv"><div><h2>{t("pk_t")}</h2><p>{t("pk_p")}</p></div></div>
@@ -94,6 +118,8 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      </div>
 
       {/* 3 — Additional services */}
       <section className="sec add" id="additional">

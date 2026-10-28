@@ -239,11 +239,12 @@ const DARCX_DATA = {
   /* ---- Homepage showcase: one separate two-screenshot composition per project, shown vertically.
      `slug` points at a project below; `shots` are two real screenshots of THAT project (paths inside /public) ---- */
   showcase: [
-    { slug: "keo-studio", shots: ["img/keo/keo-main.webp", "img/keo/keo-dash01 (3).webp"] },
-    { slug: "elbalad-water", shots: ["img/water/water-main.webp", "img/water/water-dash (2).webp"] },
-    { slug: "pos-system", shots: ["img/cashier/01.webp", "img/cashier/03.webp"] },
-    { slug: "studio-management", shots: ["img/keo/keoApp/02.webp", "img/keo/keoApp/06.webp"] },
+    { slug: "keo-studio", shots: ["img/keo/keo-main.webp", "img/keo/keo-dash01 (3).webp"] } /* KEO Studio website */,
+    { slug: "studio-management", shots: ["img/keo/keoApp/02.webp", "img/keo/keoApp/06.webp"] } /* KEO Studio program (the studio management system) */,
   ],
+
+  /* ---- Homepage banner: id of the package it promotes (price / offer are read from `packages`) ---- */
+  featuredPackage: "business",
 
   /* ---- Packages. Prices live ONLY here (original = struck through, price = promotional).
      `offer: true` shows the launch-offer label; Custom Solutions has no offer label until one is confirmed. ---- */
@@ -578,6 +579,10 @@ const DARCX_DATA = {
       pk_cta_t: "لست متأكدًا من الباقة المناسبة؟",
       pk_cta_p: "أخبرنا بما تحتاجه وسنقترح عليك الباقة الأنسب لنشاطك.",
       pk_cta_wa: "راسلنا على واتساب",
+      pkb_label: "الأكثر شيوعاً",
+      pkb_t: "الباقة المناسبة للبدء",
+      pkb_p: "كل ما يحتاجه نشاطك لإنشاء حضور احترافي على الإنترنت.",
+      pkb_cta: "اكتشف الباقة",
       c_ask_pre: "الباقة / الخدمة المطلوبة: ",
       pk_disc: "ملاحظة: الأسعار والنطاق الموضحان في الباقات قابلان للتعديل حسب متطلبات المشروع والميزات المطلوبة. ويمكن تنفيذ خدمات أو حلول خارج نطاق هذه الباقات بعد مناقشة التفاصيل وتحديد السعر المناسب.",
       s_examples: "أمثلة من أعمالنا",
@@ -691,6 +696,10 @@ const DARCX_DATA = {
       pk_cta_t: "Not sure which package fits?",
       pk_cta_p: "Tell us what you need and we'll recommend the right package for your business.",
       pk_cta_wa: "Message us on WhatsApp",
+      pkb_label: "MOST POPULAR",
+      pkb_t: "The Right Package to Get Started",
+      pkb_p: "Everything your business needs to establish a professional online presence.",
+      pkb_cta: "Explore the Package",
       c_ask_pre: "Package / service: ",
       pk_disc: "Note: Package pricing and scope may vary depending on project requirements and requested features. Custom features and services outside these packages can also be discussed and quoted separately.",
       s_examples: "Examples from our work",

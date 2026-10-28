@@ -4,10 +4,11 @@ import { Arrow, CtaBand, ServiceCard } from "../components/ui.jsx";
 import ProjectShowcase from "../components/ProjectShowcase.jsx";
 
 export default function Home() {
-  const { t, data } = useApp();
+  const { t, localize, data } = useApp();
   const showcase = data.showcase
     .map(entry => ({ project: data.projects.find(project => project.slug === entry.slug), shots: entry.shots }))
     .filter(entry => entry.project);
+  const featured = data.packages.find(pack => pack.id === data.featuredPackage);
   return (
     <>
       <section className="hero">
@@ -42,6 +43,30 @@ export default function Home() {
           <ProjectShowcase items={showcase} />
         </div>
       </section>
+
+      {featured && (
+        <section className="sec pkb-sec">
+          <div className="wrap">
+            <div className="pkb rv">
+              <div className="pkb-shapes" aria-hidden="true"><i /><i /></div>
+              <div className="pkb-txt">
+                <span className="pkb-label">{t("pkb_label")}</span>
+                <h2>{t("pkb_t")}</h2>
+                <p>{t("pkb_p")}</p>
+              </div>
+              <div className="pkb-offer">
+                <span className="pkb-name">{localize(featured.name)}</span>
+                <div className="pkb-price">
+                  <s dir="ltr"><span className="sr">{t("pk_was")}: </span>{featured.currency}{featured.original}</s>
+                  <b dir="ltr"><span className="sr">{t("pk_now")}: </span>{featured.currency}{featured.price}</b>
+                </div>
+                {featured.offer && <span className="pkb-note">{t("pk_offer")}</span>}
+              </div>
+              <Link className="btn pkb-cta" to="/services#packages">{t("pkb_cta")}<Arrow /></Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       <CtaBand title={t("home_cta_t")} text={t("home_cta_p")} />
     </>
