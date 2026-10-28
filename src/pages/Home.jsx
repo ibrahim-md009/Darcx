@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
-import { Arrow, CtaBand, ProjectCard, ServiceCard } from "../components/ui.jsx";
+import { Arrow, CtaBand, ServiceCard } from "../components/ui.jsx";
+import ProjectShowcase from "../components/ProjectShowcase.jsx";
 
 export default function Home() {
   const { t, data } = useApp();
+  const showcase = data.showcase.map(slug => data.projects.find(project => project.slug === slug)).filter(project => project && project.shots[0]);
   return (
     <>
       <section className="hero">
@@ -35,7 +37,7 @@ export default function Home() {
             <div><h2>{t("home_projects_t")}</h2><p>{t("home_projects_p")}</p></div>
             <Link className="link" to="/projects">{t("all_projects")}<Arrow /></Link>
           </div>
-          <div className="grid2">{data.projects.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} />)}</div>
+          <ProjectShowcase projects={showcase} />
         </div>
       </section>
 

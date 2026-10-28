@@ -20,6 +20,10 @@ export default function Contact() {
   useEffect(() => {
     const serviceFromUrl = new URLSearchParams(currentLocation.search).get("service");
     if (serviceFromUrl && (serviceFromUrl === "other" || data.services.some((item) => item.id === serviceFromUrl))) setService(serviceFromUrl);
+    /* /contact?ask=starter pre-fills the message with the package / extra service the visitor chose */
+    const askedId = new URLSearchParams(currentLocation.search).get("ask");
+    const asked = [...data.packages, ...data.extras].find((item) => item.id === askedId);
+    if (asked) setMessage((current) => current || t("c_ask_pre") + localize(asked.name) + "\n");
   }, [currentLocation.search, data]);
 
   const options = [

@@ -2409,3 +2409,491 @@ html {
   user-select: none;
   -webkit-user-drag: none;
 }
+
+/* ==========================================================================
+   14 ── HOME PROJECT SHOWCASE · SERVICES INTRO · PACKAGES · ADDITIONAL SERVICES
+   (added; uses the existing tokens only)
+   ========================================================================== */
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── homepage: two overlapping, angled screenshots ─────────────────── */
+.pj {
+  --pj-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.55), 0 12px 24px -14px rgba(0, 0, 0, 0.4);
+  --pj-shadow-up: 0 44px 80px -30px rgba(0, 0, 0, 0.7), 0 18px 34px -16px rgba(0, 0, 0, 0.5);
+}
+:root[data-theme="light"] .pj {
+  --pj-shadow: 0 30px 56px -30px rgba(14, 17, 22, 0.42), 0 10px 22px -14px rgba(14, 17, 22, 0.28);
+  --pj-shadow-up: 0 42px 74px -32px rgba(14, 17, 22, 0.55), 0 16px 30px -16px rgba(14, 17, 22, 0.35);
+}
+.pj-stage {
+  position: relative;
+  width: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  aspect-ratio: 16 / 8;
+}
+.pj-shot {
+  --rot: -3.6deg;
+  --dir: 1;
+  position: absolute;
+  inline-size: 66%;
+  z-index: 1;
+  display: block;
+  border-radius: var(--rad-lg);
+  overflow: hidden;
+  background: var(--surf);
+  box-shadow: var(--pj-shadow);
+  transform-origin: 50% 55%;
+  transform: rotate(calc(var(--rot) * var(--dir))) scale(0.97);
+  filter: brightness(0.74) saturate(0.82);
+  transition:
+    transform 0.8s var(--ease),
+    filter 0.8s var(--ease),
+    box-shadow 0.8s var(--ease),
+    z-index 0.8s steps(1, end);
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
+[dir="rtl"] .pj-shot {
+  --dir: -1;
+}
+.pj-shot img {
+  inline-size: 100%;
+  block-size: auto;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.pj-shot[data-i="0"] {
+  --rot: -3.6deg;
+  inset-inline-start: 0;
+  inset-block-start: 2%;
+}
+.pj-shot[data-i="1"] {
+  --rot: 3.2deg;
+  inset-inline-end: 0;
+  inset-block-end: 1%;
+}
+.pj-shot.is-front {
+  z-index: 3;
+  transform: rotate(calc(var(--rot) * var(--dir) * 0.22)) scale(1.045) translateY(-1.2%);
+  filter: none;
+  box-shadow: var(--pj-shadow-up);
+  transition:
+    transform 0.8s var(--ease),
+    filter 0.8s var(--ease),
+    box-shadow 0.8s var(--ease),
+    z-index 0s;
+}
+.pj-shot:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
+/* caption: both captions share one grid cell, so swapping never moves the page */
+.pj-caps {
+  display: grid;
+  max-width: 1040px;
+  margin: clamp(22px, 3.4vw, 38px) auto 0;
+}
+.pj-cap {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 52ch;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease),
+    visibility 0s 0.5s;
+}
+.pj-cap.on {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0.12s, 0.12s, 0s;
+}
+.pj-cap p {
+  color: var(--mut);
+  font-size: 0.97rem;
+}
+.pj-act {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-block-start: 6px;
+}
+.pj .pcard-more::after {
+  display: none;
+}
+.pj .pcard-more:hover .arr {
+  transform: translateX(5px);
+}
+[dir="rtl"] .pj .pcard-more:hover .arr {
+  transform: scaleX(-1) translateX(5px);
+}
+
+@media (max-width: 640px) {
+  .pj-stage {
+    aspect-ratio: 1 / 0.8;
+    max-width: 440px;
+  }
+  .pj-shot {
+    inline-size: 82%;
+  }
+  .pj-shot[data-i="0"] {
+    --rot: -2.6deg;
+    inset-block-start: 0;
+  }
+  .pj-shot[data-i="1"] {
+    --rot: 2.4deg;
+    inset-block-end: 0;
+  }
+  .pj-shot.is-front {
+    transform: rotate(calc(var(--rot) * var(--dir) * 0.2)) scale(1.03);
+  }
+  .pj-caps {
+    margin-block-start: 22px;
+  }
+}
+@media (hover: none) {
+  .pj-shot:hover {
+    box-shadow: var(--pj-shadow);
+  }
+  .pj-shot.is-front:hover {
+    box-shadow: var(--pj-shadow-up);
+  }
+}
+
+/* ── services: short introduction ──────────────────────────────────── */
+.sv-intro {
+  padding-block: 0 clamp(36px, 5vw, 64px);
+}
+.sv-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(18px, 2.6vw, 36px);
+}
+.sv-item {
+  padding-block-start: 18px;
+  border-block-start: 2px solid var(--ac);
+  scroll-margin-top: 90px;
+}
+.sv-ico {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin-block-end: 12px;
+  color: var(--ac);
+}
+.sv-ico svg {
+  width: 100%;
+  height: 100%;
+}
+.sv-item h2 {
+  font-size: 1.12rem;
+  margin-block-end: 6px;
+}
+.sv-item p {
+  color: var(--mut);
+  font-size: 0.93rem;
+  line-height: 1.7;
+}
+.sv-ex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-block-start: 12px;
+}
+.sv-ex a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding-block: 6px;
+  border-block-end: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+.sv-ex a:hover {
+  border-color: var(--ac);
+}
+.sv-ex .dot {
+  width: 8px;
+  height: 8px;
+}
+.sv-jump {
+  margin-block-start: clamp(24px, 3.4vw, 36px);
+}
+.sv-down {
+  transition: transform 0.3s var(--ease);
+}
+.sv-jump:hover .sv-down {
+  transform: translateY(3px);
+}
+[dir="rtl"] .sv-jump:hover .arr.sv-down {
+  transform: translateY(3px);
+}
+
+/* ── packages ──────────────────────────────────────────────────────── */
+.pk {
+  position: relative;
+  overflow: hidden;
+  scroll-margin-top: 64px;
+}
+.pk-in {
+  position: relative;
+}
+.pk-shapes i {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+.pk-shapes i:nth-child(1) {
+  width: 190px;
+  height: 190px;
+  background: var(--sage);
+  opacity: 0.2;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  border-end-start-radius: 100%;
+}
+.pk-shapes i:nth-child(2) {
+  width: 1px;
+  height: 340px;
+  background: #f5f5f3;
+  opacity: 0.14;
+  inset-block-start: -80px;
+  inset-inline-end: 22%;
+  transform: rotate(32deg);
+}
+.pk-shapes i:nth-child(3) {
+  width: 1px;
+  height: 240px;
+  background: #f5f5f3;
+  opacity: 0.09;
+  inset-block-start: -50px;
+  inset-inline-end: 15%;
+  transform: rotate(32deg);
+}
+.pk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(14px, 2vw, 24px);
+}
+.pk-card {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(22px, 2.6vw, 32px);
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  color: var(--fg);
+}
+.pk-card.is-feat {
+  border-color: var(--sage);
+  background: color-mix(in srgb, var(--sage) 8%, var(--surf));
+  box-shadow: 0 0 0 1px var(--sage);
+}
+.pk-head h3 {
+  font-size: 1.3rem;
+}
+.pk-head p {
+  color: var(--mut);
+  font-size: 0.95rem;
+  margin-block-start: 8px;
+  min-height: 3.4em;
+}
+.pk-price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-block-start: 22px;
+}
+.pk-was {
+  color: var(--mut);
+  font-size: 1.1rem;
+  text-decoration-thickness: 2px;
+  text-decoration-color: color-mix(in srgb, var(--fg) 55%, transparent);
+}
+.pk-now {
+  font-size: clamp(2.6rem, 4vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.pk-offer {
+  align-self: flex-start;
+  margin-block-start: 14px;
+  padding: 4px 13px;
+  border-radius: var(--rad);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--sage);
+}
+.pk-list {
+  margin-block: 22px 0;
+  padding-block-start: 22px;
+  border-block-start: 1px solid var(--line);
+  flex: 1;
+  font-size: 0.95rem;
+}
+.pk-list li {
+  margin-block-end: 11px;
+  line-height: 1.6;
+}
+.pk-note {
+  margin-block: 4px 0;
+  color: var(--mut);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+.pk-card .btn {
+  margin-block-start: 24px;
+}
+
+/* ── additional services: compact rows, no big cards ───────────────── */
+.add-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: clamp(24px, 5vw, 72px);
+  border-block-start: 1px solid var(--line);
+}
+.add-list li {
+  border-block-end: 1px solid var(--line);
+}
+.add-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-block: 18px;
+  transition: padding-inline 0.35s var(--ease);
+}
+.add-row:hover {
+  padding-inline: 6px;
+}
+.add-txt {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.add-txt b {
+  font-weight: 600;
+}
+.add-txt small {
+  color: var(--mut);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.add-end {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+  color: var(--mut);
+  font-size: 0.85rem;
+  text-align: end;
+}
+.add-price.set {
+  color: var(--fg);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.add-row:hover .arr {
+  transform: translateX(4px);
+}
+[dir="rtl"] .add-row:hover .arr {
+  transform: scaleX(-1) translateX(4px);
+}
+
+/* ── closing call to action of the pricing section ─────────────────── */
+.pk-cta .cta-shapes {
+  display: contents;
+}
+.pk-cta-btns {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 1100px) {
+  .sv-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 980px) {
+  .pk-grid {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+  .pk-head p {
+    min-height: 0;
+  }
+  .add-list {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .sv-list {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .sv-item {
+    padding-block-start: 14px;
+  }
+  .add-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .add-end {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .pk-cta-btns,
+  .pk-cta-btns .btn {
+    width: 100%;
+  }
+  .pk-shapes i:nth-child(1) {
+    width: 110px;
+    height: 110px;
+  }
+}
+
+/* equal-height rows across the three cards where the browser supports subgrid */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 981px) {
+    .pk-grid {
+      grid-template-rows: repeat(6, auto);
+    }
+    .pk-card {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 6;
+      row-gap: 0;
+    }
+    .pk-head { grid-row: 1; }
+    .pk-price { grid-row: 2; }
+    .pk-offer { grid-row: 3; }
+    .pk-list { grid-row: 4; }
+    .pk-note { grid-row: 5; }
+    .pk-card .btn { grid-row: 6; }
+  }
+}
