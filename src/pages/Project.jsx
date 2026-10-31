@@ -18,7 +18,7 @@ export default function Project() {
           <h1 className="rv" style={{ "--d": ".05s" }}>{localize(project.name)}</h1>
           <p className="rv" style={{ "--d": ".1s" }}>{localize(project.short)}</p>
           {project.link && (
-            <a className="btn btn-fill dvisit rv" style={{ "--d": ".14s" }} href={project.link} target="_blank" rel="noopener noreferrer">{t("visit")}<Arrow /></a>
+            <a className="btn btn-fill dvisit rv" style={{ "--d": ".14s" }} href={project.link} target="_blank" rel="noopener noreferrer">{t(project.linkLabel || "visit")}<Arrow /></a>
           )}
         </div>
       </header>

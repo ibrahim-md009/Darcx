@@ -73,7 +73,7 @@ export function ProjectCard({ project, index }) {
         <Link className="pcard-more" to={"/projects/" + project.slug}>{t("more")}<Arrow /></Link>
         {project.link && (
           <a className="pcard-visit" href={project.link} target="_blank" rel="noopener noreferrer">
-            <span>{t("visit")}</span><ExtIcon />
+            <span>{t(project.linkLabel || "visit")}</span><ExtIcon />
           </a>
         )}
       </div>

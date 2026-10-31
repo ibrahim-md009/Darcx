@@ -53,7 +53,7 @@ function ProjectShow({ project, shots, index }) {
           <Link className="pcard-more" to={"/projects/" + project.slug}>{t("more")}<Arrow /></Link>
           {project.link && (
             <a className="pcard-visit" href={project.link} target="_blank" rel="noopener noreferrer">
-              <span>{t("visit")}</span>
+              <span>{t(project.linkLabel || "visit")}</span>
               <svg className="ext" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 14L14 6M7.5 6H14v6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </a>
           )}
