@@ -41,3 +41,10 @@ If WhatsApp is empty it falls back to email, then to copying the message.
 
 ## Logo
 `public/assets/logo/darcx-monogram.webp` is used in the header and footer. The original source logo is kept in `design/`.
+
+## Packages entrance animation (Services page)
+When the visitor scrolls down to "Our packages", a dark shadow rises over the whole screen, a light line sweeps across it,
+the heading appears out of the dark, and the package cards rise one after another from below the screen.
+- Timing / when it starts: `src/lib/packagesCinema.js` (constants at the top: trigger point, delays, stagger)
+- Visuals: end of `src/styles/styles.css`, section "packages cinematic entrance" (durations, easing, shadow colour)
+- It replays each time the section is reached again from above, and is skipped for `prefers-reduced-motion`.
