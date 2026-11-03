@@ -7,7 +7,7 @@ import { Arrow } from "./ui.jsx";
    - mouse: hovering a screenshot brings it forward; leaving returns the original arrangement
    - touch / keyboard: the first tap (or keyboard focus) brings a back screenshot forward; tapping the front one opens the project
    Title, description and links sit next to the screenshots, so nothing depends on hover. */
-function ProjectShow({ project, shots, index }) {
+function ProjectShow({ project, shots, index, hidden }) {
   const { localize, t } = useApp();
   const [front, setFront] = useState(0);
   const press = useRef(null);
@@ -25,7 +25,7 @@ function ProjectShow({ project, shots, index }) {
   };
 
   return (
-    <article className="pj-item" style={{ "--ac": project.accent }}>
+    <article className="pj-item" style={{ "--ac": project.accent }} hidden={hidden}>
       <div className="pj-stage rv">
         {shots.map((src, i) => (
           <Link
@@ -63,11 +63,27 @@ function ProjectShow({ project, shots, index }) {
   );
 }
 
-export default function ProjectShowcase({ items }) {
+/* Every project as a showcase entry (used by the Projects page).
+   Projects listed in data.showcase keep their hand-picked pair of screenshots; any other project uses its first screenshot
+   plus the first dashboard screenshot (or its second screenshot when it has no dashboard images). */
+export function buildShowcase(data) {
+  return data.projects
+    .map(project => {
+      const chosen = data.showcase.find(entry => entry.slug === project.slug);
+      const shots = chosen ? chosen.shots : [project.shots?.[0], project.dashShots?.[0] ?? project.shots?.[1]].filter(Boolean);
+      return { project, shots };
+    })
+    .filter(entry => entry.shots.length > 0);
+}
+
+/* `isVisible` (optional) hides projects without unmounting them, so their scroll reveal still works when the filter changes */
+export default function ProjectShowcase({ items, isVisible }) {
   if (items.length === 0) return null;
   return (
     <div className="pj">
-      {items.map(({ project, shots }, index) => <ProjectShow key={project.slug} project={project} shots={shots} index={index} />)}
+      {items.map(({ project, shots }, index) => (
+        <ProjectShow key={project.slug} project={project} shots={shots} index={index} hidden={isVisible ? !isVisible(project) : false} />
+      ))}
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow, CtaBand, ServiceCard } from "../components/ui.jsx";
 import ProjectShowcase from "../components/ProjectShowcase.jsx";
+import Critter from "../components/Critter.jsx";
 
 export default function Home() {
   const { t, localize, data } = useApp();
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <>
       <section className="hero">
+        <Critter />
         <div className="wrap hero-in">
           <div className="hero-txt">
             <h1><span className="ln"><span>{t("h_title")}</span></span></h1>

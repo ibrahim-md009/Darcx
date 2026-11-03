@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Critter from "./Critter.jsx";
 import { useApp } from "../context.jsx";
 
 export const Arrow = () => (
@@ -95,6 +96,7 @@ export function ServiceCard({ service, index }) {
 export function PageHead({ title, sub }) {
   return (
     <header className="phead">
+      <Critter />
       <div className="wrap">
         <div className="phead-shapes" aria-hidden="true"><i /><i /><i /></div>
         <h1 className="rv">{title}</h1>
