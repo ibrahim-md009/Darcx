@@ -54,7 +54,12 @@ the heading appears out of the dark, and the package cards rise one after anothe
 The Projects page uses the same showcase as the homepage (`ProjectShowcase`). Projects listed in `showcase` in `data.js` use their hand-picked screenshot pair;
 any other project uses its first screenshot + first dashboard screenshot (or its second screenshot). To choose the pair for a project, add it to `showcase`.
 
-## The corner creature
-The quarter disc in the corner of the homepage hero and of every page header is a small creature (`src/components/Critter.jsx`, styles under "the corner creature" at the end of `styles.css`):
-its eyes follow the mouse (on touch screens they glance around by themselves), it blinks every 5 seconds and it breathes slowly. It is skipped for `prefers-reduced-motion` (drawn, but still).
-Tune it with the constants at the top of `Critter.jsx` (`LOOK` = how far the pupils move, `REACH`, `GLANCE_AFTER`) and the blink interval in `@keyframes crBlink` (the `5s` in `.cr-blink`).
+## The Darcx creature (bottom button)
+
+A round button is fixed above the bottom bar on every page (`src/components/Buddy.jsx`, drawing in `src/components/Alien.jsx`).
+- A few seconds after each page opens, a "Did you know what this page does? + emoji" notice pops out of it (texts: `data.js` → `buddy.tips`, one per page).
+- Tapping the button (or the notice) lets the creature climb out of the circle wherever you are on the site, wave, and answer with a sentence (`buddy.replies`). Tap it again for another sentence; tap the button, outside, or press Esc to send it back.
+- It is a sage-green alien with three eyes, glowing antennae, eyes that follow the pointer (phones: they glance around by themselves) and a blink every 5 seconds. Reduced motion is respected.
+- The same drawing is the site icon: `public/assets/darcx-alien.svg`, `favicon.png`, `apple-touch-icon.png` (the previous icons are kept as `*.original.png`).
+- The top corner circles are plain again (the cat was removed).
+

@@ -20,6 +20,57 @@ const DARCX_DATA = {
   /* ---- Technologies shown on the About page ---- */
   stack: ["HTML", "CSS", "JavaScript", "React", "Firebase", "Vite", "Tailwind CSS", "Dart", "Flutter"],
 
+  /* ---- The Darcx creature: the round button fixed at the bottom of every page (components/Buddy.jsx).
+     `tips` = the "Did you know…" notice that pops out of it on each page (key = page), `replies` = what it says when tapped.
+     Edit freely: keep one emoji per sentence, short sentences read best on phones. ---- */
+  buddy: {
+    label: {
+      ar: "كائن داركس: اضغط ليخرج ويتحدث معك",
+      en: "The Darcx creature: tap to let it out and chat",
+    },
+    dismiss: { ar: "إخفاء الإشعار", en: "Dismiss" },
+    tips: {
+      home: {
+        ar: "هل تعلم؟ هذه الصفحة الرئيسية: تتعرف فيها على داركس وتشاهد أبرز أعمالنا وأهم باقاتنا 🚀",
+        en: "Did you know? This is the home page: meet DARCX, see our latest work and our featured package 🚀",
+      },
+      services: {
+        ar: "هل تعلم؟ في هذه الصفحة تجد باقاتنا وأسعار الإطلاق، وتطلب باقتك بضغطة زر 💬",
+        en: "Did you know? Here you'll find our packages and launch prices, and you can order yours in one tap 💬",
+      },
+      projects: {
+        ar: "هل تعلم؟ هنا كل أعمالنا، ويمكنك تصفيتها بين المواقع والأنظمة 🎨",
+        en: "Did you know? Every project we've built is here, and you can filter between websites and systems 🎨",
+      },
+      project: {
+        ar: "هل تعلم؟ هذه الصفحة تعرض تفاصيل العمل ولقطات من شاشاته وما يقدمه 🔍",
+        en: "Did you know? This page shows the details of this project, screenshots of its screens and what it offers 🔍",
+      },
+      about: {
+        ar: "هل تعلم؟ في هذه الصفحة تتعرف على داركس وطريقة عملنا والتقنيات التي نستخدمها 🛠️",
+        en: "Did you know? Here you can learn about DARCX, how we work and the technologies we use 🛠️",
+      },
+      contact: {
+        ar: "هل تعلم؟ عندما ترسل رسالتك من هنا تصلنا جاهزة عبر واتساب أو البريد 📩",
+        en: "Did you know? When you send your message from here, it reaches us ready-made through WhatsApp or email 📩",
+      },
+      notfound: {
+        ar: "هل تعلم؟ هذه الصفحة غير موجودة، لكن الصفحة الرئيسية موجودة دائمًا 🧭",
+        en: "Did you know? This page doesn't exist, but the home page is always there 🧭",
+      },
+    },
+    replies: [
+      { ar: "أهلًا بك! أنا كائن داركس، نزلت من كوكب الأكواد 👽", en: "Hello! I'm the DARCX creature, I landed from planet Code 👽" },
+      { ar: "عيوني الثلاث تتابع مؤشرك أينما ذهب 👀", en: "My three eyes follow your pointer wherever it goes 👀" },
+      { ar: "تستطيع تغيير اللغة أو الوضع الداكن من الأزرار في الأعلى 🌙", en: "You can switch language or dark mode from the buttons at the top 🌙" },
+      { ar: "كل موقع نبنيه يعمل بسلاسة على الجوال 📱", en: "Every site we build runs smoothly on mobile 📱" },
+      { ar: "ألقِ نظرة على باقاتنا، فيها أسعار إطلاق مميزة 🎁", en: "Take a look at our packages, they have special launch prices 🎁" },
+      { ar: "أخبرنا بما تحتاجه وسنقترح عليك الأنسب لنشاطك ✨", en: "Tell us what you need and we'll suggest what fits your business best ✨" },
+      { ar: "شكرًا على الضغط! الكائنات الفضائية تحب الانتباه 💫", en: "Thanks for the tap! Aliens love attention 💫" },
+      { ar: "جاهز لنبني فكرتك معًا؟ صفحة التواصل بانتظارك 🚀", en: "Ready to build your idea together? The contact page is waiting 🚀" },
+    ],
+  },
+
   /* ---- Projects ----*/
   projects: [
     //water-elbalad

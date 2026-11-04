@@ -1,7 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow, CtaBand, PageHead, Preview } from "../components/ui.jsx";
-import Critter from "../components/Critter.jsx";
 import Carousel from "../components/Carousel.jsx";
 
 export default function Project() {
@@ -13,7 +12,6 @@ export default function Project() {
   return (
     <>
       <header className="phead dhead" style={{ "--ac": project.accent }}>
-        <Critter />
         <div className="wrap">
           <div className="phead-shapes" aria-hidden="true"><i /><i /><i /></div>
           <Link className="back" to="/projects"><Arrow />{t("d_back")}</Link>
