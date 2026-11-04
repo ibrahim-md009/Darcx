@@ -42,14 +42,6 @@ If WhatsApp is empty it falls back to email, then to copying the message.
 ## Logo
 `public/assets/logo/darcx-monogram.webp` is used in the header and footer. The original source logo is kept in `design/`.
 
-## Packages entrance animation (Services page)
-When the visitor scrolls down to "Our packages", a dark shadow rises over the whole screen, a light line sweeps across it,
-the heading appears out of the dark, and the package cards rise one after another from below the screen.
-- Timing / when it starts: `src/lib/packagesCinema.js` (constants at the top: trigger point, delays, stagger)
-- Visuals: end of `src/styles/styles.css`, section "packages cinematic entrance" (durations, easing, shadow colour)
-- While the shadow covers the screen the page moves by itself to the packages (centred when the whole section fits between the bars, otherwise just under the top bar), and scrolling is locked until the cards start rising.
-- It replays each time the section is reached again from above, and is skipped for `prefers-reduced-motion`.
-
 ## Projects page
 The Projects page uses the same showcase as the homepage (`ProjectShowcase`). Projects listed in `showcase` in `data.js` use their hand-picked screenshot pair;
 any other project uses its first screenshot + first dashboard screenshot (or its second screenshot). To choose the pair for a project, add it to `showcase`.
@@ -58,8 +50,8 @@ any other project uses its first screenshot + first dashboard screenshot (or its
 
 A round robot-face button is fixed above the bottom bar on every page (`src/components/Buddy.jsx`, drawing in `src/components/Dalil.jsx`, sounds in `src/lib/sfx.js`).
 - A few seconds after each page opens, a "Did you know what this page does? + emoji" notice pops out of it (`data.js` → `buddy.tips`, one per page).
-- Tapping the button opens a small chat: the visitor types (or taps a ready question such as "How do I order?" / "Where can I see your work?") and Dalil answers. Answers can carry a button that opens a page or WhatsApp (`data.js` → `buddy.faq`: `keys` = words to look for, `a` = answer, `go`/`wa` = buttons). Add questions by adding entries.
-- Sound effects are synthesised with the Web Audio API (no files): open/close, send, "typing", reply, notice. Sound starts after the first tap (browser rule) and can be muted from the panel (remembered in localStorage).
+- Tapping the button opens a small chat (when an answer's button takes the visitor to another page, the chat stays open, goes with them and says where they are): the visitor types (or taps a ready question such as "How do I order?" / "Where can I see your work?") and Dalil answers. Answers can carry a button that opens a page or WhatsApp Answers about packages, prices, delivery, support, extra services and **every project** (overview, features, technologies, where to view it) are built from `data.packages`, `data.extras` and `data.projects` by `src/lib/guide.js`, so they stay correct when you edit that data; add a project and Dalil knows it. Fixed answers (ordering, contact, language…) are in `data.js` → `buddy.faq` (`keys` = words to look for, `a` = answer, `go`/`wa` = buttons). Under some answers Dalil suggests follow-up questions.
+- Sound effects are synthesised with the Web Audio API (no files): open/close whoosh, hello, tap, key ticks, send, "typing", reply chime, talking chirps, "hmm" when it has no answer, page-open swoosh, suggestion pop, notice. Sound starts after the first tap (browser rule) and can be muted from the panel (remembered in localStorage).
 - The eyes follow the pointer (phones: they glance around by themselves) and blink every 5 seconds. Reduced motion is respected.
 - The same face is the site icon: `public/assets/dalil.svg`, `favicon.png`, `apple-touch-icon.png` (the previous icons are kept as `*.original.png`).
 

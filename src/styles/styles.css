@@ -3229,118 +3229,6 @@ html {
   }
 }
 
-/* ── packages cinematic entrance ────────────────────────────────────────
-   Driven by the data-fx attribute on .sv-flow and on the .pk-veil element (idle → play → done), set by lib/packagesCinema.js.
-   With no data-fx (reduced motion, no script) none of these rules apply and everything is simply visible.
-   Timeline (play):  0 s shadow dome rises · .6 s light line · 1.2 s shadow dissolves, heading appears · 1.45 s cards rise */
-.pk-veil {
-  position: fixed;
-  inset: 0;
-  z-index: 90; /* above the top and bottom bars so the shadow really covers the whole page; clicks pass through */
-  display: none;
-  pointer-events: none;
-  background: radial-gradient(120% 90% at 50% 38%, #18202a 0%, #0a0d11 52%, #040608 100%);
-}
-.pk-veil i {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-start: 44%;
-  block-size: 2px;
-  background: linear-gradient(90deg, transparent, rgb(167 180 168 / 0.95) 50%, transparent);
-  box-shadow: 0 0 28px 6px rgb(167 180 168 / 0.4);
-  transform: scaleX(0);
-  opacity: 0;
-}
-.pk-veil[data-fx="play"] {
-  display: block;
-  animation: pkVeil 2.25s linear both;
-}
-.pk-veil[data-fx="play"] i {
-  animation: pkFlare 1.3s var(--ease) 0.6s both;
-}
-@keyframes pkVeil {
-  0% {
-    clip-path: ellipse(170% 0% at 50% 100%);
-    opacity: 1;
-    animation-timing-function: cubic-bezier(0.65, 0, 0.2, 1);
-  }
-  38% {
-    clip-path: ellipse(170% 170% at 50% 100%);
-    opacity: 1;
-  }
-  56% {
-    clip-path: ellipse(170% 170% at 50% 100%);
-    opacity: 1;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  100% {
-    clip-path: ellipse(170% 170% at 50% 100%);
-    opacity: 0;
-  }
-}
-@keyframes pkFlare {
-  0% { transform: scaleX(0); opacity: 0; }
-  35% { opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
-}
-
-/* heading, intro line and decoration come out of the dark */
-.sv-flow[data-fx="idle"] .pk .sec-h :is(h2, p),
-.sv-flow[data-fx="idle"] .pk-shapes {
-  opacity: 0;
-}
-.sv-flow[data-fx="play"] .pk .sec-h h2 {
-  animation: pkTitle 1.2s var(--ease) 1.2s both;
-}
-.sv-flow[data-fx="play"] .pk .sec-h p {
-  animation: pkTitle 1.2s var(--ease) 1.45s both;
-}
-.sv-flow[data-fx="play"] .pk-shapes {
-  animation: pkFade 1.4s ease 1.3s both;
-}
-@keyframes pkTitle {
-  0% { opacity: 0; transform: translateY(34px); filter: blur(12px); }
-  100% { opacity: 1; transform: none; filter: blur(0); }
-}
-@keyframes pkFade {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* the cards: hidden below the screen until they are released (.is-up), then rise one after another */
-.sv-flow[data-fx="idle"] .pk-card,
-.sv-flow[data-fx="play"] .pk-card:not(.is-up) {
-  opacity: 0;
-  transform: translate3d(0, 112vh, 0) rotateX(14deg) scale(0.9);
-}
-.sv-flow[data-fx] .pk-grid {
-  perspective: 1600px;
-}
-.sv-flow[data-fx] .pk-card {
-  transform-origin: 50% 80%;
-}
-.sv-flow[data-fx] .pk-card.is-up {
-  animation: pkRise 1.25s cubic-bezier(0.16, 1, 0.3, 1) var(--dl, 0s) both;
-  will-change: transform, opacity;
-}
-.sv-flow[data-fx] .pk-card.is-feat.is-up {
-  animation:
-    pkRise 1.25s cubic-bezier(0.16, 1, 0.3, 1) var(--dl, 0s) both,
-    pkGlow 1.8s ease-out calc(var(--dl, 0s) + 1.1s) both;
-}
-.sv-flow[data-fx="done"] .pk-card {
-  will-change: auto;
-}
-@keyframes pkRise {
-  0% { opacity: 0; transform: translate3d(0, 112vh, 0) rotateX(14deg) scale(0.9); }
-  14% { opacity: 1; }
-  100% { opacity: 1; transform: none; }
-}
-@keyframes pkGlow {
-  0%, 100% { box-shadow: 0 0 0 1px var(--sage), 0 0 0 0 rgb(167 180 168 / 0); }
-  45% { box-shadow: 0 0 0 1px var(--sage), 0 0 46px 6px rgb(167 180 168 / 0.35); }
-}
-
 /* ── inner-page header: brand shapes attached to the screen corner, same as the homepage hero ──────────
    The quarter disc used to be positioned inside the centred content column (.wrap, max 1160px), so on wide screens it floated
    away from the edge. .wrap is no longer the positioning box here: the header itself (full width) is, like .hero. */
@@ -3627,6 +3515,7 @@ html {
   font-size: 0.9rem;
   line-height: 1.6;
   overflow-wrap: anywhere;
+  white-space: pre-line; /* answers use line breaks and • lists */
   border-radius: 16px;
 }
 .bd-msg.is-bot p { background: color-mix(in srgb, var(--sage) 22%, var(--surf)); border-end-start-radius: 4px; }
@@ -3637,6 +3526,8 @@ html {
 .bd-typing i:nth-child(3) { animation-delay: 0.3s; }
 .bd-acts { display: flex; flex-wrap: wrap; gap: 6px; }
 .bd-act {
+  font: inherit;
+  line-height: 1.3;
   display: inline-block;
   padding: 7px 13px;
   font-size: 0.82rem;
@@ -3651,13 +3542,16 @@ html {
 .bd-act:hover { background: color-mix(in srgb, var(--sage) 25%, transparent); }
 .bd-chips {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
+  max-height: 96px; /* about two rows; the rest scrolls */
   padding: 6px 12px 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
-.bd-chips::-webkit-scrollbar { display: none; }
-.bd-chips button {
+.bd-chips button,
+.bd-follow button {
   flex: none;
   padding: 6px 12px;
   font-size: 0.8rem;
@@ -3668,7 +3562,10 @@ html {
   cursor: pointer;
   white-space: nowrap;
 }
-.bd-chips button:hover { border-color: var(--sage); background: color-mix(in srgb, var(--sage) 18%, transparent); }
+.bd-follow { margin-top: 2px; }
+.bd-follow button { padding: 4px 10px; font-size: 0.76rem; animation: bdSay 0.3s var(--ease) both; }
+.bd-chips button:hover,
+.bd-follow button:hover { border-color: var(--sage); background: color-mix(in srgb, var(--sage) 18%, transparent); }
 .bd-form { display: flex; gap: 8px; padding: 8px 12px 12px; border-top: 1px solid var(--line); }
 .bd-form input {
   flex: 1;

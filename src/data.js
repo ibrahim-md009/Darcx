@@ -23,13 +23,14 @@ const DARCX_DATA = {
   /* ---- "Dalil" (دليل), the site's little guide: the round button fixed at the bottom of every page (components/Buddy.jsx).
      tips   = the "Did you know…" notice that pops out of it on each page (key = page)
      faq    = the answers to the questions visitors type (or tap). keys = words to look for in the question (Arabic and English, any spelling
-              of alef/taa marbuta is fine); a key of up to 2 letters must be a whole word. go = a button that opens a page, wa = adds a WhatsApp button.
+              of alef/taa marbuta is fine); a key of up to 3 letters must be a whole word; longer keys weigh more. go = a button that opens a page, wa = adds a WhatsApp button.
      Only write things that are true on this site. Keep one emoji per sentence. ---- */
   buddy: {
     name: { ar: "دليل", en: "Dalil" },
     status: { ar: "دليلك في موقع داركس", en: "Your guide to DARCX" },
     label: { ar: "دليل: اضغط واسأل عن الموقع", en: "Dalil: tap and ask about the site" },
     close: { ar: "إغلاق", en: "Close" },
+    arrived: { ar: "وصلنا! 🎉", en: "Here we are! 🎉" },
     dismiss: { ar: "إخفاء الإشعار", en: "Dismiss" },
     soundOn: { ar: "كتم الصوت", en: "Mute sound" },
     soundOff: { ar: "تشغيل الصوت", en: "Turn sound on" },
@@ -75,9 +76,12 @@ const DARCX_DATA = {
       },
     },
     faq: [
+      /* Answers about packages, prices, delivery, support, extras and every project are built from the data below
+         (data.packages / data.extras / data.projects) by lib/guide.js, so they stay correct when you edit those. */
       {
+        id: "order",
         q: { ar: "من وين أحجز؟", en: "How do I order?" },
-        keys: ["احجز", "حجز", "حجوزات", "اطلب", "طلب", "اشتري", "اشتر", "اشترك", "باقه", "باقات", "ابدا", "order", "book", "buy", "package", "subscribe", "get started"],
+        keys: ["احجز", "حجز", "حجوزات", "اطلب", "طلب", "اشتري", "اشتر", "اشترك", "ابدا", "order", "book", "buy", "package", "subscribe", "get started"],
         a: {
           ar: "من صفحة الخدمات: اختر الباقة المناسبة واضغط زر الطلب، فيفتح واتساب برسالة جاهزة ترسلها لنا 💬",
           en: "From the Services page: pick the package you like and tap the order button. WhatsApp opens with a ready message to send us 💬",
@@ -85,6 +89,8 @@ const DARCX_DATA = {
         go: { to: "/services", label: { ar: "افتح الباقات", en: "Open packages" } },
       },
       {
+        id: "works",
+        follow: "projects", /* adds one button per project under the answer */
         q: { ar: "كيف أشاهد الأعمال؟", en: "Where can I see your work?" },
         keys: ["اعمال", "عمل", "مشاريع", "مشروع", "نماذج", "معرض", "portfolio", "work", "projects", "project", "examples", "see"],
         a: {
@@ -94,15 +100,7 @@ const DARCX_DATA = {
         go: { to: "/projects", label: { ar: "افتح الأعمال", en: "Open projects" } },
       },
       {
-        q: { ar: "كم الأسعار؟", en: "How much does it cost?" },
-        keys: ["سعر", "اسعار", "تكلف", "تكاليف", "كم", "بكم", "price", "prices", "pricing", "cost", "much", "offer", "عرض", "عروض"],
-        a: {
-          ar: "سعر كل باقة مكتوب عليها في صفحة الخدمات، وعليها أسعار الإطلاق الحالية 🎁",
-          en: "Each package shows its price on the Services page, together with the current launch prices 🎁",
-        },
-        go: { to: "/services", label: { ar: "شاهد الأسعار", en: "See prices" } },
-      },
-      {
+        id: "contact",
         q: { ar: "كيف أتواصل معكم؟", en: "How can I reach you?" },
         keys: ["تواصل", "اتصل", "اتصال", "رقم", "واتساب", "واتس", "ايميل", "بريد", "راسل", "مراسله", "contact", "whatsapp", "email", "mail", "reach", "call", "message"],
         a: {
@@ -113,6 +111,7 @@ const DARCX_DATA = {
         wa: true,
       },
       {
+        id: "about",
         q: { ar: "من هو داركس؟", en: "Who is DARCX?" },
         keys: ["من انتم", "من انت", "من نحن", "داركس", "عنكم", "تعريف", "فريق", "تقنيات", "تقنيه", "react", "flutter", "firebase", "technology", "technologies", "tech", "about", "who", "team"],
         a: {
@@ -122,6 +121,7 @@ const DARCX_DATA = {
         go: { to: "/about", label: { ar: "من نحن", en: "About us" } },
       },
       {
+        id: "language",
         q: { ar: "كيف أغيّر اللغة؟", en: "How do I change the language?" },
         keys: ["لغه", "لغة", "انجليزي", "انجليزيه", "عربي", "عربيه", "داكن", "ليلي", "مظلم", "language", "english", "arabic", "dark", "theme", "mode"],
         a: {

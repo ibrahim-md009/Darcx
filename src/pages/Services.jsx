@@ -1,8 +1,6 @@
-import { useLayoutEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow, PageHead, serviceIcons } from "../components/ui.jsx";
-import { startPackagesCinema } from "../lib/packagesCinema.js";
 
 /* small icons for the four category cards (same line style as the rest of the site) */
 const outline = { fill: "none", stroke: "currentColor", strokeWidth: 2.4, strokeLinecap: "round", strokeLinejoin: "round" };
@@ -15,13 +13,6 @@ const cardIcons = {
 
 /* Order of the page: 1 short introduction · 2 Our packages · 3 Additional services · 4 contact call to action.
    Prices, package features and extra services all come from data.js (packages / extras). */
-
-/* Cinematic entrance into the packages: a shadow covers the page, then the heading and the cards rise out of it
-   one after another. The timing logic is in lib/packagesCinema.js, the visuals are in styles.css
-   ("packages cinematic entrance"). The wrapper's data-fx attribute (idle / play / done) connects the two. */
-function usePackagesCinema(flowRef, bandRef) {
-  useLayoutEffect(() => startPackagesCinema(flowRef.current, bandRef.current), []);
-}
 
 function Price({ pack }) {
   const { t } = useApp();
@@ -37,7 +28,7 @@ function Price({ pack }) {
   );
 }
 
-function PackageCard({ pack }) {
+function PackageCard({ pack, index = 0 }) {
   const { t, localize, data } = useApp();
   const nameId = "pk-" + pack.id;
   const whatsapp = data.contact.whatsapp;
@@ -48,7 +39,7 @@ function PackageCard({ pack }) {
     ? { href: "https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(message), target: "_blank", rel: "noopener noreferrer" }
     : { href: "/contact?service=" + pack.service + "&ask=" + pack.id };
   return (
-    <article className={"pk-card" + (pack.featured ? " is-feat" : "")} aria-labelledby={nameId}>
+    <article className={"pk-card rv" + (pack.featured ? " is-feat" : "")} style={{ "--d": index * 0.1 + "s" }} aria-labelledby={nameId}>
       <header className="pk-head">
         <h3 id={nameId}>{localize(pack.name)}</h3>
         <p>{localize(pack.desc)}</p>
@@ -69,13 +60,11 @@ function PackageCard({ pack }) {
 export default function Services() {
   const { t, localize, data } = useApp();
   const whatsapp = data.contact.whatsapp;
-  const flowRef = useRef(null), bandRef = useRef(null);
-  usePackagesCinema(flowRef, bandRef);
   return (
     <>
       {/* 1 — short introduction: four compact category cards */}
       <PageHead title={t("s_page_t")} sub={t("s_page_p")} />
-      <div className="sv-flow" ref={flowRef}>
+      <div className="sv-flow">
       <section className="sv-intro">
         <div className="wrap">
           <ul className="sv-grid">
@@ -92,12 +81,12 @@ export default function Services() {
       </section>
 
       {/* 2 — Our packages */}
-      <section className="band band-dark pk" id="packages" ref={bandRef}>
+      <section className="band band-dark pk" id="packages">
         <div className="pk-shapes" aria-hidden="true"><i /><i /><i /></div>
         <div className="wrap pk-in">
-          <div className="sec-h"><div><h2>{t("pk_t")}</h2><p>{t("pk_p")}</p></div></div>
+          <div className="sec-h rv"><div><h2>{t("pk_t")}</h2><p>{t("pk_p")}</p></div></div>
           <div className="pk-grid">
-            {data.packages.map(pack => <PackageCard key={pack.id} pack={pack} />)}
+            {data.packages.map((pack, index) => <PackageCard key={pack.id} pack={pack} index={index} />)}
           </div>
         </div>
       </section>

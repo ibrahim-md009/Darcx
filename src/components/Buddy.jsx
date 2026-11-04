@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import Dalil from "./Dalil.jsx";
 import { isMuted, setMuted, sfx, unlock } from "../lib/sfx.js";
+import { makeGuide } from "../lib/guide.js";
 
 /* Dalil (دليل), the site's little guide: a round button fixed at the bottom of every page.
    - on each page a notice pops out of it: "Did you know what this page does?" + an emoji (data.js → buddy.tips)
    - tapping the button opens a small chat: the visitor types (or taps) a short question about the site and Dalil answers
-     (data.js → buddy.faq; answers can open a page or WhatsApp)
+     (lib/guide.js builds the answers from data.js: packages, extras, every project and buddy.faq; answers can open a page, a link or WhatsApp)
    - sound effects: lib/sfx.js (can be muted from the panel) */
 
 const TIP_DELAY = 2200;  // ms after arriving on a page until the notice pops out
@@ -15,37 +16,6 @@ const TIP_TIME = 9000;   // ms the notice stays
 const THINK_TIME = 750;  // ms Dalil "types" before answering
 const TALK_TIME = 1400;  // ms its mouth moves after an answer
 const MAX_MESSAGES = 40;
-
-/* makes Arabic and English comparable: no diacritics, one spelling of alef / yaa / taa marbuta, lower case, no punctuation */
-function normalize(text) {
-  return text
-    .toLowerCase()
-    .replace(/[ً-ٰٟـ]/g, "")
-    .replace(/[أإآٱ]/g, "ا")
-    .replace(/ى/g, "ي")
-    .replace(/ة/g, "ه")
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-/* the best matching faq entry for a question, or null */
-function findAnswer(question, faq) {
-  const text = normalize(question);
-  if (!text) return null;
-  const words = text.split(" ");
-  let best = null, bestScore = 0;
-  for (const entry of faq) {
-    let score = 0;
-    for (const raw of entry.keys) {
-      const key = normalize(raw);
-      const wholeWord = key.length <= 2 || (/^[a-z ]+$/.test(key) && key.length <= 3);
-      if (wholeWord ? words.includes(key) : text.includes(key)) score += key.length > 3 ? 2 : 1;
-    }
-    if (score > bestScore) { best = entry; bestScore = score; }
-  }
-  return best;
-}
 
 /* which entry of buddy.tips belongs to the current URL */
 function tipKey(pathname) {
@@ -64,15 +34,16 @@ const ICON_SOUND_ON = "M4 9v6h4l5 4V5L8 9H4zM17 8.5a5 5 0 010 7M19.5 6a8.5 8.5 0
 const ICON_SOUND_OFF = "M4 9v6h4l5 4V5L8 9H4zM17 9.5l5 5M22 9.5l-5 5";
 
 export default function Buddy() {
-  const { data, localize } = useApp();
+  const { data, localize, lang } = useApp();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const buddy = data.buddy;
+  const guide = useMemo(() => makeGuide(data, lang), [data, lang]);
   const key = tipKey(pathname);
 
   const [tipShown, setTipShown] = useState(false);
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([]);   // { id, from: "me" | "bot", text?, entry?, typing? }
+  const [messages, setMessages] = useState([]);   // { id, from: "me" | "bot", text? (mine), reply? (Dalil: { text, acts, follow }), typing? }
   const [talking, setTalking] = useState(false);
   const [draft, setDraft] = useState("");
   const [muted, setMutedState] = useState(isMuted());
@@ -95,14 +66,19 @@ export default function Buddy() {
     return () => document.removeEventListener("pointerdown", unlock);
   }, []);
 
-  /* a new page: close the panel, then let this page's notice pop out after a moment */
+  /* a new page: if Dalil took the visitor here (a button in the chat) the chat stays open and says where they are;
+     otherwise close the panel. Then let this page's notice pop out after a moment. */
+  const carried = useRef(false);
   useEffect(() => {
-    setOpen(false);
+    if (carried.current) {
+      carried.current = false;
+      push({ from: "bot", reply: { text: localize(buddy.arrived) + "\n" + localize(buddy.tips[key]), acts: [], follow: [] } });
+    } else setOpen(false);
     setTipShown(false);
     const show = setTimeout(() => { setTipShown(true); sfx.notice(); }, TIP_DELAY);
     const hide = setTimeout(() => setTipShown(false), TIP_DELAY + TIP_TIME);
     return () => { clearTimeout(show); clearTimeout(hide); };
-  }, [pathname]);
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* the id is taken here, not inside the state updater (which React runs later), so the caller can find the message again */
   const push = useCallback(message => {
@@ -114,8 +90,8 @@ export default function Buddy() {
   /* greeting the first time the panel opens */
   const greeted = useRef(false);
   useEffect(() => {
-    if (open && !greeted.current) { greeted.current = true; push({ from: "bot", text: "hello" }); }
-  }, [open, push]);
+    if (open && !greeted.current) { greeted.current = true; push({ from: "bot", reply: { text: localize(buddy.hello), acts: [], follow: [] } }); sfx.hello(); }
+  }, [open, push]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggle = () => {
     unlock();
@@ -151,25 +127,32 @@ export default function Buddy() {
     const typingId = push({ from: "bot", typing: true });
     later(sfx.think, 120);
     later(() => {
-      const entry = findAnswer(text, buddy.faq);
-      setMessages(list => list.map(m => m.id === typingId ? { id: typingId, from: "bot", ...(entry ? { entry } : { text: "fallback" }) } : m));
-      sfx.reply();
+      const answer = guide.reply(text);
+      const failed = answer.text === localize(buddy.fallback);
+      setMessages(list => list.map(m => m.id === typingId ? { id: typingId, from: "bot", reply: answer } : m));
+      if (failed) sfx.oops(); else { sfx.reply(); sfx.talk(answer.text.length); }
+      if (answer.follow.length) later(sfx.pop, 450);
       setTalking(true);
-      later(() => setTalking(false), TALK_TIME);
+      later(() => setTalking(false), Math.min(TALK_TIME + answer.text.length * 12, 2600));
     }, THINK_TIME);
   };
+  const tapAsk = question => { sfx.tap(); ask(question); };
 
-  const go = to => { setOpen(false); navigate(to); };
+  const go = to => {
+    sfx.go();
+    if (to !== pathname) { carried.current = true; navigate(to); window.scrollTo({ top: 0, behavior: "instant" }); } // the chat stays open and moves with the visitor
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const toggleSound = () => {
     const next = !muted;
     setMuted(next);
     setMutedState(next);
-    if (!next) { unlock(); sfx.reply(); }
+    if (!next) { unlock(); sfx.on(); }
   };
 
   const whatsapp = data.contact?.whatsapp;
   const tip = localize(buddy.tips[key]);
-  const chips = buddy.faq.filter(entry => entry.q);
+  const chips = guide.chips();
 
   return (
     <div className="bd" ref={rootRef}>
@@ -202,13 +185,17 @@ export default function Buddy() {
                 <p className="bd-typing" aria-label="…"><i /><i /><i /></p>
               ) : (
                 <>
-                  <p>{m.entry ? localize(m.entry.a) : m.from === "me" ? m.text : localize(buddy[m.text])}</p>
-                  {(m.entry?.go || (m.entry?.wa && whatsapp)) && (
+                  <p>{m.reply ? m.reply.text : m.text}</p>
+                  {m.reply?.acts?.length > 0 && (
                     <span className="bd-acts">
-                      {m.entry.go && <button type="button" className="bd-act" onClick={() => go(m.entry.go.to)}>{localize(m.entry.go.label)}</button>}
-                      {m.entry.wa && whatsapp && (
-                        <a className="bd-act" href={"https://wa.me/" + whatsapp} target="_blank" rel="noopener noreferrer">{localize(buddy.waLabel)}</a>
-                      )}
+                      {m.reply.acts.map(act => act.to
+                        ? <button key={act.label} type="button" className="bd-act" onClick={() => go(act.to)}>{act.label}</button>
+                        : <a key={act.label} className="bd-act" href={act.href} target="_blank" rel="noopener noreferrer" onClick={sfx.go}>{act.label}</a>)}
+                    </span>
+                  )}
+                  {m.reply?.follow?.length > 0 && (
+                    <span className="bd-acts bd-follow">
+                      {m.reply.follow.map(item => <button key={item.label} type="button" onClick={() => tapAsk(item.ask)}>{item.label}</button>)}
                     </span>
                   )}
                 </>
@@ -218,11 +205,11 @@ export default function Buddy() {
         </div>
 
         <div className="bd-chips">
-          {chips.map(entry => <button key={localize(entry.q)} type="button" onClick={() => ask(localize(entry.q))}>{localize(entry.q)}</button>)}
+          {chips.map(question => <button key={question} type="button" onClick={() => tapAsk(question)}>{question}</button>)}
         </div>
 
         <form className="bd-form" onSubmit={event => { event.preventDefault(); ask(draft); }}>
-          <input ref={inputRef} value={draft} onChange={event => setDraft(event.target.value)} maxLength={140} enterKeyHint="send"
+          <input ref={inputRef} value={draft} onChange={event => { setDraft(event.target.value); sfx.key(); }} maxLength={140} enterKeyHint="send"
             placeholder={localize(buddy.placeholder)} aria-label={localize(buddy.placeholder)} autoComplete="off" />
           <button type="submit" className="bd-send" aria-label={localize(buddy.send)} disabled={!draft.trim()}><Icon d={ICON_SEND} /></button>
         </form>
