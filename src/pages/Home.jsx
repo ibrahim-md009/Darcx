@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow, CtaBand, ServiceCard } from "../components/ui.jsx";
 import ProjectShowcase from "../components/ProjectShowcase.jsx";
+import HeroGrid from "../components/HeroGrid.jsx";
 
 export default function Home() {
   const { t, localize, data } = useApp();
@@ -21,6 +22,7 @@ export default function Home() {
               <Link className="btn btn-line" to="/projects">{t("h_cta2")}</Link>
             </div>
           </div>
+          <HeroGrid />
         </div>
       </section>
 

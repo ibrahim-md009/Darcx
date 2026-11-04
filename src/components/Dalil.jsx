@@ -97,9 +97,11 @@ export default function Dalil({ enabled = true, talking = false, className = "" 
       </defs>
 
       {/* antenna with a glowing tip */}
-      <path d="M50 17V8" fill="none" stroke={INK} strokeWidth="2.4" strokeLinecap="round" />
-      <circle className="dl-halo" cx="50" cy="5" r="9" fill="#e6f0e6" opacity="0.5" />
-      <circle cx="50" cy="5" r="4.6" fill="#f4f9f4" stroke={INK} strokeWidth="1.3" />
+      <g className="dl-ant">
+        <path d="M50 17V8" fill="none" stroke={INK} strokeWidth="2.4" strokeLinecap="round" />
+        <circle className="dl-halo" cx="50" cy="5" r="9" fill="#e6f0e6" opacity="0.5" />
+        <circle className="dl-tip" cx="50" cy="5" r="4.6" fill="#f4f9f4" stroke={INK} strokeWidth="1.3" />
+      </g>
 
       {/* ears */}
       <rect x="3" y="44" width="9" height="22" rx="4.5" fill={SAGE_DARK} stroke={INK} strokeWidth="1.4" />
