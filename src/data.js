@@ -20,15 +20,30 @@ const DARCX_DATA = {
   /* ---- Technologies shown on the About page ---- */
   stack: ["HTML", "CSS", "JavaScript", "React", "Firebase", "Vite", "Tailwind CSS", "Dart", "Flutter"],
 
-  /* ---- The Darcx creature: the round button fixed at the bottom of every page (components/Buddy.jsx).
-     `tips` = the "Did you know…" notice that pops out of it on each page (key = page), `replies` = what it says when tapped.
-     Edit freely: keep one emoji per sentence, short sentences read best on phones. ---- */
+  /* ---- "Dalil" (دليل), the site's little guide: the round button fixed at the bottom of every page (components/Buddy.jsx).
+     tips   = the "Did you know…" notice that pops out of it on each page (key = page)
+     faq    = the answers to the questions visitors type (or tap). keys = words to look for in the question (Arabic and English, any spelling
+              of alef/taa marbuta is fine); a key of up to 2 letters must be a whole word. go = a button that opens a page, wa = adds a WhatsApp button.
+     Only write things that are true on this site. Keep one emoji per sentence. ---- */
   buddy: {
-    label: {
-      ar: "كائن داركس: اضغط ليخرج ويتحدث معك",
-      en: "The Darcx creature: tap to let it out and chat",
-    },
+    name: { ar: "دليل", en: "Dalil" },
+    status: { ar: "دليلك في موقع داركس", en: "Your guide to DARCX" },
+    label: { ar: "دليل: اضغط واسأل عن الموقع", en: "Dalil: tap and ask about the site" },
+    close: { ar: "إغلاق", en: "Close" },
     dismiss: { ar: "إخفاء الإشعار", en: "Dismiss" },
+    soundOn: { ar: "كتم الصوت", en: "Mute sound" },
+    soundOff: { ar: "تشغيل الصوت", en: "Turn sound on" },
+    placeholder: { ar: "اكتب سؤالك عن الموقع…", en: "Ask about the site…" },
+    send: { ar: "إرسال", en: "Send" },
+    hello: {
+      ar: "أهلًا بك! أنا دليل 👋 اسألني عن الموقع: كيف تحجز، أين ترى الأعمال، الأسعار أو التواصل.",
+      en: "Hi, I'm Dalil 👋 Ask me about the site: how to order, where to see our work, prices or how to reach us.",
+    },
+    fallback: {
+      ar: "ما فهمت سؤالك تمامًا 🤔 جرّب أحد الأسئلة بالأسفل، أو راسلنا مباشرة وسنساعدك.",
+      en: "I didn't quite get that 🤔 Try one of the questions below, or message us directly and we'll help.",
+    },
+    waLabel: { ar: "واتساب", en: "WhatsApp" },
     tips: {
       home: {
         ar: "هل تعلم؟ هذه الصفحة الرئيسية: تتعرف فيها على داركس وتشاهد أبرز أعمالنا وأهم باقاتنا 🚀",
@@ -59,15 +74,74 @@ const DARCX_DATA = {
         en: "Did you know? This page doesn't exist, but the home page is always there 🧭",
       },
     },
-    replies: [
-      { ar: "أهلًا بك! أنا كائن داركس، نزلت من كوكب الأكواد 👽", en: "Hello! I'm the DARCX creature, I landed from planet Code 👽" },
-      { ar: "عيوني الثلاث تتابع مؤشرك أينما ذهب 👀", en: "My three eyes follow your pointer wherever it goes 👀" },
-      { ar: "تستطيع تغيير اللغة أو الوضع الداكن من الأزرار في الأعلى 🌙", en: "You can switch language or dark mode from the buttons at the top 🌙" },
-      { ar: "كل موقع نبنيه يعمل بسلاسة على الجوال 📱", en: "Every site we build runs smoothly on mobile 📱" },
-      { ar: "ألقِ نظرة على باقاتنا، فيها أسعار إطلاق مميزة 🎁", en: "Take a look at our packages, they have special launch prices 🎁" },
-      { ar: "أخبرنا بما تحتاجه وسنقترح عليك الأنسب لنشاطك ✨", en: "Tell us what you need and we'll suggest what fits your business best ✨" },
-      { ar: "شكرًا على الضغط! الكائنات الفضائية تحب الانتباه 💫", en: "Thanks for the tap! Aliens love attention 💫" },
-      { ar: "جاهز لنبني فكرتك معًا؟ صفحة التواصل بانتظارك 🚀", en: "Ready to build your idea together? The contact page is waiting 🚀" },
+    faq: [
+      {
+        q: { ar: "من وين أحجز؟", en: "How do I order?" },
+        keys: ["احجز", "حجز", "حجوزات", "اطلب", "طلب", "اشتري", "اشتر", "اشترك", "باقه", "باقات", "ابدا", "order", "book", "buy", "package", "subscribe", "get started"],
+        a: {
+          ar: "من صفحة الخدمات: اختر الباقة المناسبة واضغط زر الطلب، فيفتح واتساب برسالة جاهزة ترسلها لنا 💬",
+          en: "From the Services page: pick the package you like and tap the order button. WhatsApp opens with a ready message to send us 💬",
+        },
+        go: { to: "/services", label: { ar: "افتح الباقات", en: "Open packages" } },
+      },
+      {
+        q: { ar: "كيف أشاهد الأعمال؟", en: "Where can I see your work?" },
+        keys: ["اعمال", "عمل", "مشاريع", "مشروع", "نماذج", "معرض", "portfolio", "work", "projects", "project", "examples", "see"],
+        a: {
+          ar: "كل أعمالنا في صفحة الأعمال، يمكنك تصفيتها بين المواقع والأنظمة وفتح أي عمل لترى تفاصيله ولقطات شاشاته 🎨",
+          en: "All our projects are on the Projects page. Filter between websites and systems, and open any project for its details and screenshots 🎨",
+        },
+        go: { to: "/projects", label: { ar: "افتح الأعمال", en: "Open projects" } },
+      },
+      {
+        q: { ar: "كم الأسعار؟", en: "How much does it cost?" },
+        keys: ["سعر", "اسعار", "تكلف", "تكاليف", "كم", "بكم", "price", "prices", "pricing", "cost", "much", "offer", "عرض", "عروض"],
+        a: {
+          ar: "سعر كل باقة مكتوب عليها في صفحة الخدمات، وعليها أسعار الإطلاق الحالية 🎁",
+          en: "Each package shows its price on the Services page, together with the current launch prices 🎁",
+        },
+        go: { to: "/services", label: { ar: "شاهد الأسعار", en: "See prices" } },
+      },
+      {
+        q: { ar: "كيف أتواصل معكم؟", en: "How can I reach you?" },
+        keys: ["تواصل", "اتصل", "اتصال", "رقم", "واتساب", "واتس", "ايميل", "بريد", "راسل", "مراسله", "contact", "whatsapp", "email", "mail", "reach", "call", "message"],
+        a: {
+          ar: "أرسل رسالتك من صفحة التواصل فتصلنا جاهزة عبر واتساب أو البريد 📩",
+          en: "Send your message from the Contact page and it reaches us ready-made through WhatsApp or email 📩",
+        },
+        go: { to: "/contact", label: { ar: "صفحة التواصل", en: "Contact page" } },
+        wa: true,
+      },
+      {
+        q: { ar: "من هو داركس؟", en: "Who is DARCX?" },
+        keys: ["من انتم", "من انت", "من نحن", "داركس", "عنكم", "تعريف", "فريق", "تقنيات", "تقنيه", "react", "flutter", "firebase", "technology", "technologies", "tech", "about", "who", "team"],
+        a: {
+          ar: "في صفحة من نحن تتعرف على داركس وطريقة عملنا والتقنيات التي نستخدمها 🛠️",
+          en: "On the About page you can learn about DARCX, how we work and the technologies we use 🛠️",
+        },
+        go: { to: "/about", label: { ar: "من نحن", en: "About us" } },
+      },
+      {
+        q: { ar: "كيف أغيّر اللغة؟", en: "How do I change the language?" },
+        keys: ["لغه", "لغة", "انجليزي", "انجليزيه", "عربي", "عربيه", "داكن", "ليلي", "مظلم", "language", "english", "arabic", "dark", "theme", "mode"],
+        a: {
+          ar: "من الأزرار في أعلى الصفحة تغيّر اللغة بين العربية والإنجليزية وتبدّل الوضع الداكن 🌙",
+          en: "Use the buttons at the top of the page to switch between Arabic and English and to toggle dark mode 🌙",
+        },
+      },
+      {
+        q: null,
+        keys: ["مرحبا", "اهلا", "السلام", "هلا", "صباح", "مساء", "hi", "hello", "hey", "hola"],
+        a: {
+          ar: "أهلًا بك! اسألني عن الموقع: الحجز، الأعمال، الأسعار أو التواصل 👋",
+          en: "Hello! Ask me about the site: ordering, our work, prices or contact 👋",
+        },
+      },
+      {
+        q: null,
+        keys: ["شكرا", "يسلمو", "يعطيك", "thanks", "thank", "thx"],
+        a: { ar: "العفو! أنا هنا متى احتجت 😊", en: "You're welcome! I'm here whenever you need me 😊" },
+      },
     ],
   },
 

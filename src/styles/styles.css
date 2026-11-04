@@ -3388,18 +3388,21 @@ html {
   }
 }
 
-/* ── the Darcx creature's button (components/Buddy.jsx + Alien.jsx) ───────
-   A round button fixed above the bottom bar on every page. A "Did you know…" notice pops out of it; tapping it lets the creature climb out. */
+/* ── Dalil, the site guide (components/Buddy.jsx + Dalil.jsx) ──────────────
+   A round button fixed above the bottom bar on every page. A "Did you know…" notice pops out of it; tapping it opens a small chat. */
 .bd {
   --bd: 58px;
-  --al-w: 92px;
   position: fixed;
   z-index: 85; /* above the bottom bar (80); the packages entrance shadow (90) and dialogs still cover it */
   inset-inline-end: 20px;
   bottom: calc(var(--bar-h) + 14px + env(safe-area-inset-bottom, 0px));
   width: var(--bd);
   height: var(--bd);
-  pointer-events: none; /* only the button, the notice and the creature itself take taps */
+  pointer-events: none; /* only the button, the notice and the panel take taps */
+}
+.bd button {
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 .bd-btn {
   position: absolute;
@@ -3416,31 +3419,30 @@ html {
   background: radial-gradient(circle at 32% 22%, #2d3744 0%, #0e1116 72%);
   box-shadow: 0 0 0 2px var(--sage), 0 14px 28px -12px rgba(0, 0, 0, 0.65);
   transition: transform 0.25s var(--ease);
-  -webkit-tap-highlight-color: transparent;
 }
-.bd-btn:hover {
-  transform: translateY(-2px);
-}
-.bd-btn:active {
-  transform: scale(0.94);
-}
-.bd-btn:focus-visible {
+.bd-btn:hover { transform: translateY(-2px); }
+.bd-btn:active { transform: scale(0.94); }
+.bd-btn:focus-visible,
+.bd-ic:focus-visible,
+.bd-send:focus-visible,
+.bd-chips button:focus-visible,
+.bd-act:focus-visible,
+.bd-tip-text:focus-visible {
   outline: 2px solid var(--focus, #fff);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 .bd-face,
 .bd-hole {
   position: absolute;
   inset: 0;
   display: block;
-  transition:
-    opacity 0.25s,
-    transform 0.4s var(--ease);
+  transition: opacity 0.25s, transform 0.4s var(--ease);
 }
-.bd-face .al {
+.bd-face .dl {
   display: block;
   width: 100%;
   height: 100%;
+  padding: 7px;
   animation: bdBob 3.6s ease-in-out infinite;
 }
 .bd-hole {
@@ -3448,20 +3450,10 @@ html {
   place-items: center;
   opacity: 0;
   transform: scale(0.6);
-  background: radial-gradient(circle at 50% 62%, #05070a 0%, #0e1116 78%);
 }
-.bd-hole svg {
-  width: 18px;
-  height: 18px;
-}
-.bd-btn.is-open .bd-face {
-  opacity: 0;
-  transform: translateY(35%) scale(0.7);
-}
-.bd-btn.is-open .bd-hole {
-  opacity: 1;
-  transform: none;
-}
+.bd-hole svg { width: 22px; height: 22px; }
+.bd-btn.is-open .bd-face { opacity: 0; transform: translateY(35%) scale(0.7); }
+.bd-btn.is-open .bd-hole { opacity: 1; transform: none; }
 
 /* the notice */
 .bd-tip {
@@ -3475,24 +3467,15 @@ html {
   transform: translateY(10px) scale(0.92);
   transform-origin: calc(100% - 29px) 100%;
   pointer-events: none;
-  transition:
-    opacity 0.3s,
-    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.3s, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-[dir="rtl"] .bd-tip {
-  transform-origin: 29px 100%;
-}
-.bd-tip.is-on {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
+[dir="rtl"] .bd-tip { transform-origin: 29px 100%; }
+.bd-tip.is-on { opacity: 1; transform: none; pointer-events: auto; }
 .bd-tip-text {
   display: block;
   width: 100%;
   padding: 12px 38px 12px 14px;
   text-align: start;
-  font: inherit;
   font-size: 0.88rem;
   line-height: 1.65;
   color: var(--fg);
@@ -3502,9 +3485,7 @@ html {
   box-shadow: var(--shadow);
   cursor: pointer;
 }
-[dir="rtl"] .bd-tip-text {
-  padding: 12px 14px 12px 38px;
-}
+[dir="rtl"] .bd-tip-text { padding: 12px 14px 12px 38px; }
 .bd-tip-x {
   position: absolute;
   inset-block-start: 6px;
@@ -3520,27 +3501,19 @@ html {
   color: var(--mut);
   cursor: pointer;
 }
-.bd-tip-x:hover {
-  color: var(--fg);
-}
-.bd-tip-x svg {
-  width: 11px;
-  height: 11px;
-}
-.bd-tip::after,
-.bd-say p::after {
+.bd-tip-x:hover { color: var(--fg); }
+.bd-tip-x svg { width: 13px; height: 13px; }
+.bd-tip::after {
   content: "";
   position: absolute;
   inset-block-end: -6px;
+  inset-inline-end: 23px;
   width: 12px;
   height: 12px;
   background: var(--surf);
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   transform: rotate(45deg);
-}
-.bd-tip::after {
-  inset-inline-end: 23px;
 }
 .bd-dot {
   position: absolute;
@@ -3563,141 +3536,180 @@ html {
   animation: bdPing 1.8s ease-out infinite;
 }
 
-/* the creature climbing out of the button (the button stays on top of it, so it really comes out of the circle) */
-.bd-pop {
+/* the chat panel, growing out of the button */
+.bd-panel {
   position: absolute;
   z-index: 2;
-  inset-block-end: 6px;
-  inset-inline-end: calc((var(--bd) - var(--al-w)) / 2);
-  width: var(--al-w);
-  opacity: 0;
-  transform: translateY(0) scale(0.25);
-  transform-origin: 50% 100%;
-  pointer-events: none;
-  transition:
-    transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.25s 0.05s;
-}
-.bd-pop.is-open {
-  opacity: 1;
-  transform: translateY(calc(var(--bd) * -0.7)) scale(1);
-}
-.bd-body {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  pointer-events: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.bd-pop.is-open .bd-body {
-  pointer-events: auto;
-}
-.bd-body:focus-visible {
-  outline: 2px solid var(--focus, #fff);
-  outline-offset: 2px;
-  border-radius: 24px;
-}
-.bd-body .al {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-.bd-hop {
-  display: block;
-  animation: bdHop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.bd-say {
-  position: absolute;
-  inset-block-end: calc(100% + 6px);
-  inset-inline-end: 10px;
-  width: max-content;
-  max-width: min(250px, calc(100vw - 40px));
-  opacity: 0;
-  transform: translateY(6px) scale(0.9);
-  transform-origin: 70% 100%;
-  pointer-events: none;
-  transition:
-    opacity 0.3s 0.3s,
-    transform 0.45s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.bd-pop.is-open .bd-say {
-  opacity: 1;
-  transform: none;
-}
-.bd-say p {
-  position: relative;
-  margin: 0;
-  padding: 11px 14px;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  inset-block-end: calc(100% + 12px);
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(340px, calc(100vw - 40px));
+  max-height: min(460px, calc(100dvh - var(--bar-h) - 120px));
+  overflow: hidden;
   color: var(--fg);
   background: var(--surf);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 22px;
   box-shadow: var(--shadow);
-  animation: bdSay 0.35s var(--ease);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px) scale(0.85);
+  transform-origin: calc(100% - 29px) 100%;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0s 0.45s;
 }
-.bd-say p::after {
-  inset-inline-end: 30px;
+[dir="rtl"] .bd-panel { transform-origin: 29px 100%; }
+.bd-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  transition-delay: 0s;
 }
+.bd-head,
+.bd-chips,
+.bd-form {
+  flex: none;
+}
+.bd-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 10px 14px;
+  background: #0e1116;
+  color: #eef2ee;
+}
+[dir="rtl"] .bd-head { padding: 10px 14px 10px 10px; }
+.bd-av {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 22%, #2d3744 0%, #0e1116 72%);
+  box-shadow: 0 0 0 2px var(--sage);
+}
+.bd-av .dl { display: block; width: 100%; height: 100%; padding: 5px; }
+.bd-who { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35; }
+.bd-who b { font-size: 1rem; }
+.bd-who small { font-size: 0.74rem; color: var(--sage); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bd-ic {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.bd-ic:hover { background: rgba(255, 255, 255, 0.12); }
+.bd-ic svg { width: 18px; height: 18px; }
+.bd-log {
+  flex: 1;
+  min-height: 120px;
+  padding: 14px 12px 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bd-msg { display: flex; flex-direction: column; gap: 6px; max-width: 88%; animation: bdSay 0.3s var(--ease); }
+.bd-msg.is-bot { align-self: flex-start; }
+.bd-msg.is-me { align-self: flex-end; }
+.bd-msg p {
+  margin: 0;
+  padding: 9px 13px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  border-radius: 16px;
+}
+.bd-msg.is-bot p { background: color-mix(in srgb, var(--sage) 22%, var(--surf)); border-end-start-radius: 4px; }
+.bd-msg.is-me p { background: var(--sage); color: #0e1116; border-end-end-radius: 4px; }
+.bd-typing { display: flex; gap: 4px; align-items: center; }
+.bd-typing i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.4; animation: bdDot 1s ease-in-out infinite; }
+.bd-typing i:nth-child(2) { animation-delay: 0.15s; }
+.bd-typing i:nth-child(3) { animation-delay: 0.3s; }
+.bd-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.bd-act {
+  display: inline-block;
+  padding: 7px 13px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--fg);
+  background: transparent;
+  border: 1.5px solid var(--sage);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.bd-act:hover { background: color-mix(in srgb, var(--sage) 25%, transparent); }
+.bd-chips {
+  display: flex;
+  gap: 6px;
+  padding: 6px 12px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.bd-chips::-webkit-scrollbar { display: none; }
+.bd-chips button {
+  flex: none;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.bd-chips button:hover { border-color: var(--sage); background: color-mix(in srgb, var(--sage) 18%, transparent); }
+.bd-form { display: flex; gap: 8px; padding: 8px 12px 12px; border-top: 1px solid var(--line); }
+.bd-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 16px; /* 16px stops iOS from zooming the page when the field is focused */
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.bd-form input:focus { outline: none; border-color: var(--sage); }
+.bd-send {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #0e1116;
+  background: var(--sage);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.bd-send:disabled { opacity: 0.4; cursor: default; }
+.bd-send:not(:disabled):active { transform: scale(0.92); }
+.bd-send svg { width: 19px; height: 19px; }
+[dir="rtl"] .bd-send svg { transform: scaleX(-1); }
 
 /* the drawing itself */
-.al-blink {
-  animation: alBlink 5s ease-in-out infinite; /* both eyes (and the forehead eye) blink every 5 seconds */
-}
-.al-halo {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: alGlow 2.4s ease-in-out infinite;
-}
-.al-halo-2 {
-  animation-delay: -1.2s;
-}
-.al-wave {
-  transform-origin: 67px 97px;
-  animation: alWave 1.7s ease-in-out infinite;
-}
-.al-mouth {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.al.is-talking .al-mouth {
-  animation: alTalk 0.3s ease-in-out infinite;
-}
-@keyframes alBlink {
-  0%, 92%, 100% { transform: scale(1, 1); }
-  96% { transform: scale(1, 0.07); }
-}
-@keyframes alGlow {
-  0%, 100% { opacity: 0.2; transform: scale(0.8); }
-  50% { opacity: 0.7; transform: scale(1.18); }
-}
-@keyframes alWave {
-  0%, 100% { transform: rotate(10deg); }
-  50% { transform: rotate(-16deg); }
-}
-@keyframes alTalk {
-  0%, 100% { transform: scale(1, 1); }
-  50% { transform: scale(1.12, 2.2); }
-}
-@keyframes bdBob {
-  0%, 100% { transform: translateY(1.5px) scale(1.02); }
-  50% { transform: translateY(-1.5px) scale(1.02); }
-}
-@keyframes bdHop {
-  0% { transform: translateY(0) scale(1); }
-  35% { transform: translateY(-10px) scale(1.04, 0.96); }
-  100% { transform: none; }
-}
-@keyframes bdSay {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes bdPing {
-  0% { transform: scale(1); opacity: 0.7; }
-  100% { transform: scale(2.6); opacity: 0; }
-}
+.dl-blink { animation: dlBlink 5s ease-in-out infinite; } /* both eyes blink every 5 seconds */
+.dl-halo { transform-box: fill-box; transform-origin: center; animation: dlGlow 2.4s ease-in-out infinite; }
+.dl-mouth { transform-box: fill-box; transform-origin: center; }
+.dl.is-talking .dl-mouth { animation: dlTalk 0.3s ease-in-out infinite; }
+@keyframes dlBlink { 0%, 92%, 100% { transform: scale(1, 1); } 96% { transform: scale(1, 0.07); } }
+@keyframes dlGlow { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 0.7; transform: scale(1.18); } }
+@keyframes dlTalk { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.1, 2); } }
+@keyframes bdBob { 0%, 100% { transform: translateY(1.5px); } 50% { transform: translateY(-1.5px); } }
+@keyframes bdSay { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@keyframes bdDot { 0%, 100% { transform: translateY(0); opacity: 0.35; } 40% { transform: translateY(-3px); opacity: 0.9; } }
+@keyframes bdPing { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(2.6); opacity: 0; } }

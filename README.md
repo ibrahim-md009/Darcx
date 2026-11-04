@@ -54,12 +54,12 @@ the heading appears out of the dark, and the package cards rise one after anothe
 The Projects page uses the same showcase as the homepage (`ProjectShowcase`). Projects listed in `showcase` in `data.js` use their hand-picked screenshot pair;
 any other project uses its first screenshot + first dashboard screenshot (or its second screenshot). To choose the pair for a project, add it to `showcase`.
 
-## The Darcx creature (bottom button)
+## Dalil (دليل), the site guide (bottom button)
 
-A round button is fixed above the bottom bar on every page (`src/components/Buddy.jsx`, drawing in `src/components/Alien.jsx`).
-- A few seconds after each page opens, a "Did you know what this page does? + emoji" notice pops out of it (texts: `data.js` → `buddy.tips`, one per page).
-- Tapping the button (or the notice) lets the creature climb out of the circle wherever you are on the site, wave, and answer with a sentence (`buddy.replies`). Tap it again for another sentence; tap the button, outside, or press Esc to send it back.
-- It is a sage-green alien with three eyes, glowing antennae, eyes that follow the pointer (phones: they glance around by themselves) and a blink every 5 seconds. Reduced motion is respected.
-- The same drawing is the site icon: `public/assets/darcx-alien.svg`, `favicon.png`, `apple-touch-icon.png` (the previous icons are kept as `*.original.png`).
-- The top corner circles are plain again (the cat was removed).
+A round robot-face button is fixed above the bottom bar on every page (`src/components/Buddy.jsx`, drawing in `src/components/Dalil.jsx`, sounds in `src/lib/sfx.js`).
+- A few seconds after each page opens, a "Did you know what this page does? + emoji" notice pops out of it (`data.js` → `buddy.tips`, one per page).
+- Tapping the button opens a small chat: the visitor types (or taps a ready question such as "How do I order?" / "Where can I see your work?") and Dalil answers. Answers can carry a button that opens a page or WhatsApp (`data.js` → `buddy.faq`: `keys` = words to look for, `a` = answer, `go`/`wa` = buttons). Add questions by adding entries.
+- Sound effects are synthesised with the Web Audio API (no files): open/close, send, "typing", reply, notice. Sound starts after the first tap (browser rule) and can be muted from the panel (remembered in localStorage).
+- The eyes follow the pointer (phones: they glance around by themselves) and blink every 5 seconds. Reduced motion is respected.
+- The same face is the site icon: `public/assets/dalil.svg`, `favicon.png`, `apple-touch-icon.png` (the previous icons are kept as `*.original.png`).
 
