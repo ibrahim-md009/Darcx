@@ -202,6 +202,23 @@ export function makeGuide(data, lang) {
     follow: projectsFollow(),
   });
 
+  /* contact channels written in data.contact (empty ones are skipped) */
+  const channelUrls = {
+    instagram: ["Instagram", v => "https://instagram.com/" + v],
+    facebook: ["Facebook", v => "https://facebook.com/" + v],
+    telegram: ["Telegram", v => "https://t.me/" + v],
+    linkedin: ["LinkedIn", v => "https://linkedin.com/company/" + v],
+    x: ["X", v => "https://x.com/" + v],
+    tiktok: ["TikTok", v => "https://tiktok.com/@" + v],
+  };
+  const socialAnswer = () => {
+    const acts = Object.entries(channelUrls).filter(([id]) => data.contact?.[id]).map(([id, [label, url]]) => ({ label, href: url(data.contact[id]) }));
+    if (wa) acts.unshift({ label: loc(buddy.waLabel), href: waLink("") });
+    return { text: L("هذه قنوات التواصل المتاحة، اختر ما يناسبك 📲", "Here are the ways to reach us, pick what suits you 📲") + (data.contact?.email ? L(`\nالبريد: ${data.contact.email}`, `\nEmail: ${data.contact.email}`) : ""), acts, follow: [] };
+  };
+  const clock = () => new Date().toLocaleTimeString(lang === "ar" ? "ar" : "en", { hour: "2-digit", minute: "2-digit" });
+  const today = () => new Date().toLocaleDateString(lang === "ar" ? "ar" : "en", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
   /* generated entries: keys + the answer to give */
   const generated = [
     { keys: ["الباقات", "ما الباقات", "انواع الباقات", "كم باقه", "الفرق بين", "packages", "plans", "what packages", "difference between"], make: packagesOverview, q: L("ما الباقات المتوفرة؟", "What packages do you offer?"), rank: 2 },
@@ -211,6 +228,9 @@ export function makeGuide(data, lang) {
     { keys: ["دعم", "بعد التسليم", "مشكله بعد", "support after", "after delivery", "after launch", "support"], make: supportAnswer, q: L("هل يوجد دعم بعد التسليم؟", "Is there support after delivery?"), rank: 6 },
     { keys: ["الاعمال التي", "ماذا انجزتم", "اعمالكم", "مشاريعكم", "ما هي اعمالكم", "اي مشاريع", "what have you built", "your projects", "your work", "portfolio"], make: projectsOverview, q: L("ما الأعمال التي أنجزتموها؟", "What have you built?"), rank: 8 },
     { keys: ["خدمات اضافيه", "خدمات اخري", "اضافات", "extra services", "extras", "add ons", "additional services"], make: extrasOverview, q: L("هل لديكم خدمات إضافية؟", "Do you offer extra services?"), rank: 9 },
+    { keys: ["انستغرام", "انستا", "فيسبوك", "تلغرام", "لينكدان", "سوشيال", "حساباتكم", "instagram", "facebook", "telegram", "linkedin", "social media", "social", "your accounts"], make: socialAnswer, q: null },
+    { keys: ["كم الساعه", "الساعه كم", "كم الوقت", "الوقت الان", "what time", "current time", "time is it"], make: () => ({ text: L(`الساعة الآن ${clock()} 🕒 (حسب جهازك)`, `It's ${clock()} now 🕒 (by your device)`), acts: [], follow: [] }), q: null },
+    { keys: ["تاريخ اليوم", "ما التاريخ", "اي يوم اليوم", "ما هو اليوم", "what date", "today's date", "what day is", "todays date"], make: () => ({ text: L(`اليوم ${today()} 📅`, `Today is ${today()} 📅`), acts: [], follow: [] }), q: null },
     ...extras.map(extra => ({ keys: EXTRA_KEYS[extra.id] || [], make: () => extrasAnswer(extra), q: null })),
   ];
 
@@ -222,7 +242,8 @@ export function makeGuide(data, lang) {
       if (entry.go) acts.push({ to: entry.go.to, label: loc(entry.go.label) });
       if (entry.wa && wa) acts.push({ label: loc(buddy.waLabel), href: waLink("") });
       const follow = entry.follow === "projects" ? projectsFollow() : entry.follow === "packages" ? packagesFollow() : [];
-      return { text: loc(entry.a), acts, follow };
+      const answer = Array.isArray(entry.a?.[lang]) ? entry.a[lang][Math.floor(Math.random() * entry.a[lang].length)] : loc(entry.a); // a list = several variants, one at random
+      return { text: answer, acts, follow };
     },
   }));
 
@@ -252,7 +273,7 @@ export function makeGuide(data, lang) {
   function chips() {
     const byId = id => fixed.find(entry => entry.id === id);
     const gen = rank => generated.find(entry => entry.rank === rank);
-    return [byId("order"), gen(2), gen(3), gen(4), gen(5), gen(6), byId("works"), gen(8), gen(9), byId("contact"), byId("about"), byId("language")]
+    return [byId("order"), gen(2), gen(3), gen(4), gen(5), gen(6), byId("works"), gen(8), gen(9), byId("contact"), byId("about"), byId("help"), byId("language")]
       .filter(entry => entry && entry.q)
       .map(entry => entry.q);
   }

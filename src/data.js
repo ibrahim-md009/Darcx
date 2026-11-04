@@ -30,7 +30,6 @@ const DARCX_DATA = {
     status: { ar: "دليلك في موقع داركس", en: "Your guide to DARCX" },
     label: { ar: "دليل: اضغط واسأل عن الموقع", en: "Dalil: tap and ask about the site" },
     close: { ar: "إغلاق", en: "Close" },
-    arrived: { ar: "وصلنا! 🎉", en: "Here we are! 🎉" },
     dismiss: { ar: "إخفاء الإشعار", en: "Dismiss" },
     soundOn: { ar: "كتم الصوت", en: "Mute sound" },
     soundOff: { ar: "تشغيل الصوت", en: "Turn sound on" },
@@ -113,7 +112,7 @@ const DARCX_DATA = {
       {
         id: "about",
         q: { ar: "من هو داركس؟", en: "Who is DARCX?" },
-        keys: ["من انتم", "من انت", "من نحن", "داركس", "عنكم", "تعريف", "فريق", "تقنيات", "تقنيه", "react", "flutter", "firebase", "technology", "technologies", "tech", "about", "who", "team"],
+        keys: ["من انتم", "من نحن", "داركس", "عنكم", "تعريف", "فريق", "تقنيات", "تقنيه", "react", "flutter", "firebase", "technology", "technologies", "tech", "about", "who", "team"],
         a: {
           ar: "في صفحة من نحن تتعرف على داركس وطريقة عملنا والتقنيات التي نستخدمها 🛠️",
           en: "On the About page you can learn about DARCX, how we work and the technologies we use 🛠️",
@@ -128,6 +127,139 @@ const DARCX_DATA = {
           ar: "من الأزرار في أعلى الصفحة تغيّر اللغة بين العربية والإنجليزية وتبدّل الوضع الداكن 🌙",
           en: "Use the buttons at the top of the page to switch between Arabic and English and to toggle dark mode 🌙",
         },
+      },
+      /* ---- about Dalil himself, small talk, and general questions about websites (not specific to DARCX) ---- */
+      {
+        id: "help",
+        q: { ar: "ماذا تستطيع أن تفعل؟", en: "What can you do?" },
+        keys: ["ماذا تستطيع", "ماذا تفعل", "ايش بتعمل", "شو بتعمل", "ساعدني", "مساعده", "كيف تعمل", "what can you do", "what do you do", "help me", "help"],
+        a: {
+          ar: "أجاوب عن الموقع: الباقات والأسعار والتعديل ومدة التسليم، وكل عمل من أعمالنا، وطرق التواصل. وأشرح لك أشياء عامة مثل الدومين والاستضافة وSEO، وأرافقك بين الصفحات 🤖",
+          en: "I answer questions about the site: packages, prices, changes and delivery time, each of our projects and how to reach us. I can also explain general things like domains, hosting and SEO, and I travel with you between pages 🤖",
+        },
+      },
+      {
+        id: "me",
+        q: null,
+        keys: ["من انت", "ما اسمك", "شو اسمك", "اسمك", "who are you", "your name", "what are you", "what's your name"],
+        a: {
+          ar: "أنا دليل 👋 مساعد صغير يعيش في موقع داركس، أجاوب من معلومات الموقع وأرافقك بين صفحاته.",
+          en: "I'm Dalil 👋 a little helper living on the DARCX site. I answer from the site's information and travel with you between its pages.",
+        },
+      },
+      {
+        q: null,
+        keys: ["انسان", "روبوت", "ذكاء اصطناعي", "بوت", "حقيقي", "شخص حقيقي", "are you human", "are you real", "are you a robot", "are you ai", "real person", "robot", "bot"],
+        a: {
+          ar: "أنا مساعد آلي بسيط ولست شخصًا حقيقيًا 🤖 أجاوب مما هو مكتوب في الموقع. وللأمور الأدق تواصل مع فريق داركس مباشرة.",
+          en: "I'm a simple automated helper, not a real person 🤖 I answer from what's written on the site. For anything more specific, talk to the DARCX team directly.",
+        },
+        wa: true,
+      },
+      {
+        q: null,
+        keys: ["كيفك", "كيف حالك", "شلونك", "اخبارك", "شو اخبارك", "how are you", "how r u", "whats up", "what's up"],
+        a: {
+          ar: ["تمام الحمد لله 😊 وأنت كيفك؟ كيف أساعدك اليوم؟", "بخير، شكرًا لسؤالك 🌿 بماذا أساعدك؟"],
+          en: ["I'm great, thanks for asking 😊 How can I help you today?", "Doing well 🌿 What can I help you with?"],
+        },
+      },
+      {
+        q: null,
+        keys: ["نكته", "نكتة", "اضحكني", "اضحك", "طرفه", "joke", "funny", "make me laugh"],
+        a: {
+          ar: [
+            "ليش المبرمج بيحب الوضع الداكن؟ لأن الضوء بيجذب الأخطاء 🐛",
+            "قال المبرمج لزوجته: روحي اشتري خبز، وإذا في بيض اشتري ١٢. رجعت بـ١٢ خبزة، لأنه كان في بيض 😄",
+            "ليش الموقع ما بيتعب؟ لأنه متجاوب مع كل الأجهزة 📱",
+          ],
+          en: [
+            "Why do programmers prefer dark mode? Because light attracts bugs 🐛",
+            "A programmer's partner says: buy a loaf of bread, and if they have eggs, get 12. He came back with 12 loaves, because they had eggs 😄",
+            "Why is a website never tired? It's responsive 📱",
+          ],
+        },
+      },
+      {
+        q: null,
+        keys: ["رائع", "جميل", "حلو", "ممتاز", "تسلم", "برافو", "great", "awesome", "nice", "cool", "love it", "amazing"],
+        a: { ar: ["يسعدني ذلك! 🌟", "شكرًا لك، كلامك حلو 😊"], en: ["Glad to hear it! 🌟", "Thank you, that's kind of you 😊"] },
+      },
+      {
+        q: null,
+        keys: ["مع السلامه", "وداعا", "باي", "الى اللقاء", "تصبح علي", "bye", "goodbye", "see you", "good night"],
+        a: { ar: ["مع السلامة! أنا هنا متى احتجتني 👋", "إلى اللقاء 🌙 سعدت بالحديث معك"], en: ["Bye! I'm here whenever you need me 👋", "See you soon 🌙 It was nice talking to you"] },
+      },
+      {
+        q: null,
+        keys: ["ما هو الموقع", "لماذا احتاج موقع", "ليش احتاج موقع", "فايده الموقع", "اهميه الموقع", "ليش موقع", "why do i need a website", "why a website", "benefits of a website", "do i need a website"],
+        a: {
+          ar: "الموقع هو واجهتك الدائمة على الإنترنت: يعرّف الناس بنشاطك في أي وقت، ويعرض أعمالك وخدماتك بشكل منظّم، ويجعل التواصل معك أسهل، ويعطي انطباعًا أكثر احترافية من الاعتماد على حسابات التواصل وحدها 🌐",
+          en: "A website is your permanent storefront online: it introduces your business at any hour, presents your work and services in an organised way, makes it easier to reach you, and looks more professional than relying on social accounts alone 🌐",
+        },
+        go: { to: "/services", label: { ar: "شاهد الباقات", en: "See packages" } },
+      },
+      {
+        q: null,
+        keys: ["ما هو الدومين", "ما هو النطاق", "ما الدومين", "ماذا يعني دومين", "شو الدومين", "what is a domain", "what's a domain", "domain name"],
+        a: {
+          ar: "النطاق (الدومين) هو عنوان موقعك على الإنترنت، مثل اسم بيتك: example.com. والاستضافة هي المكان الذي تُحفظ فيه ملفات موقعك ليظهر للناس. عندنا خدمة «إعداد النطاق والاستضافة» بشكل منفصل 🏷️",
+          en: "A domain is your website's address on the internet, like your home's name: example.com. Hosting is the place where your site's files are kept so people can see it. We offer \"Domain and hosting setup\" as a separate service 🏷️",
+        },
+      },
+      {
+        q: null,
+        keys: ["ما هو سيو", "ما هو seo", "ماذا يعني seo", "شو سيو", "ما هي محركات البحث", "what is seo", "what's seo", "search engine optimization"],
+        a: {
+          ar: "SEO هو تحسين الموقع ليظهر في نتائج البحث (مثل جوجل) عندما يبحث الناس عن خدمتك: بعناوين وأوصاف واضحة وسرعة تحميل جيدة ومحتوى مفيد 🔎 باقة الأعمال تتضمن إعدادًا أساسيًا له، وهناك خدمة مستمرة لتحسين الظهور.",
+          en: "SEO means improving a website so it shows up in search results (like Google) when people look for your service: clear titles and descriptions, good loading speed and useful content 🔎 The Business package includes a basic setup, and there is an ongoing service to improve visibility.",
+        },
+      },
+      {
+        q: null,
+        keys: ["ما هي لوحه التحكم", "ما هي لوحة التحكم", "ماذا تعني لوحه تحكم", "شو لوحه التحكم", "لوحه تحكم", "what is a dashboard", "what's a dashboard", "dashboard", "control panel", "admin panel"],
+        a: {
+          ar: "لوحة التحكم صفحة خاصة بك تدير منها موقعك أو نظامك بدون برمجة: تعدّل المحتوى وتتابع البيانات أو الحجوزات. باقة الأعمال فيها لوحة بسيطة لتعديل محتوى الموقع، والحلول المخصصة فيها لوحة كاملة حسب المتطلبات 🧭",
+          en: "A dashboard is a private page where you manage your site or system without coding: edit content, follow data or bookings. The Business package has a simple dashboard for editing site content, and Custom Solutions has a full dashboard built to your requirements 🧭",
+        },
+      },
+      {
+        q: null,
+        keys: ["متجر", "متجر الكتروني", "بيع اونلاين", "تجاره الكترونيه", "اسوي متجر", "online store", "e commerce", "ecommerce", "sell online", "shop"],
+        a: {
+          ar: "نعم، نبني متاجر إلكترونية وحلول للبيع عبر الإنترنت ضمن باقة «حلول مخصصة»، بحسب متطلبات مشروعك 🛒 احكِ لنا فكرتك وسنناقش التفاصيل.",
+          en: "Yes, we build online stores and selling solutions within the Custom Solutions package, based on your project's requirements 🛒 Tell us your idea and we'll go through the details.",
+        },
+        go: { to: "/services", label: { ar: "الحلول المخصصة", en: "Custom Solutions" } },
+        wa: true,
+      },
+      {
+        q: null,
+        keys: ["تطبيق جوال", "تطبيق موبايل", "تطبيق للجوال", "تطبيقات", "اندرويد", "ايفون", "android", "ios", "mobile app", "app for", "flutter"],
+        a: {
+          ar: "نبني تطبيقات وأنظمة أعمال مخصصة، ومن التقنيات التي نستخدمها Flutter وDart 📱 احكِ لنا عن فكرتك وسنخبرك ما يناسبها.",
+          en: "We build custom applications and business systems, and Flutter and Dart are among the technologies we use 📱 Tell us about your idea and we'll tell you what fits it.",
+        },
+        go: { to: "/services", label: { ar: "الخدمات", en: "Services" } },
+        wa: true,
+      },
+      {
+        q: null,
+        keys: ["كيف ابدا", "ماذا احتاج", "شو بدي جهز", "ماذا اجهز", "قبل الطلب", "how do i start", "what do i need", "what should i prepare", "before ordering"],
+        a: {
+          ar: "ابدأ باختيار الباقة المناسبة وأرسل طلبك عبر واتساب (أو من صفحة التواصل)، ونناقش تفاصيل مشروعك معك. ويفيد أن تجهّز: اسم نشاطك ونبذة عنه، الشعار والصور إن وجدت، والخدمات التي تريد عرضها، ومواقع تعجبك كمثال ✅",
+          en: "Start by choosing a package and send your order on WhatsApp (or through the Contact page), and we'll go through your project's details with you. It helps to prepare: your business name and a short intro, your logo and photos if you have them, the services you want to show, and a few sites you like as examples ✅",
+        },
+        go: { to: "/services", label: { ar: "افتح الباقات", en: "Open packages" } },
+      },
+      {
+        q: null,
+        keys: ["ساعات العمل", "دوام", "متى تردون", "عنوانكم", "وين مكانكم", "موقعكم الجغرافي", "طرق الدفع", "كيف ادفع", "استرجاع", "ضمان", "work hours", "opening hours", "your address", "where are you located", "payment method", "how do i pay", "refund", "guarantee"],
+        a: {
+          ar: "هذه التفاصيل غير مكتوبة على الموقع، والأفضل أن تسألنا مباشرة لتحصل على جواب دقيق 💬",
+          en: "That detail isn't written on the site, so it's best to ask us directly for an accurate answer 💬",
+        },
+        wa: true,
       },
       {
         q: null,

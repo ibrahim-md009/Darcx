@@ -3340,7 +3340,8 @@ html {
   transform: scale(0.6);
 }
 .bd-hole svg { width: 22px; height: 22px; }
-.bd-btn.is-open .bd-face { opacity: 0; transform: translateY(35%) scale(0.7); }
+.bd-btn.is-open .bd-face,
+.bd-btn.is-away .bd-face { opacity: 0; transform: translateY(35%) scale(0.7); }
 .bd-btn.is-open .bd-hole { opacity: 1; transform: none; }
 
 /* the notice */
@@ -3610,3 +3611,20 @@ html {
 @keyframes bdSay { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 @keyframes bdDot { 0%, 100% { transform: translateY(0); opacity: 0.35; } 40% { transform: translateY(-3px); opacity: 0.9; } }
 @keyframes bdPing { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(2.6); opacity: 0; } }
+
+/* the head travelling between pages (position and motion come from lib/flyer.js) */
+.bd-fly {
+  position: fixed;
+  z-index: 86;
+  left: 0;
+  top: 0;
+  width: var(--bd);
+  height: var(--bd);
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 22%, #2d3744 0%, #0e1116 72%);
+  box-shadow: 0 0 0 2px var(--sage), 0 0 26px 2px rgb(167 180 168 / 0.45), 0 18px 30px -10px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  will-change: transform;
+}
+.bd-fly[hidden] { display: none; }
+.bd-fly .dl { display: block; width: 100%; height: 100%; padding: 7px; }

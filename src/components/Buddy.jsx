@@ -4,6 +4,7 @@ import { useApp } from "../context.jsx";
 import Dalil from "./Dalil.jsx";
 import { isMuted, setMuted, sfx, unlock } from "../lib/sfx.js";
 import { makeGuide } from "../lib/guide.js";
+import { Flyer } from "../lib/flyer.js";
 
 /* Dalil (دليل), the site's little guide: a round button fixed at the bottom of every page.
    - on each page a notice pops out of it: "Did you know what this page does?" + an emoji (data.js → buddy.tips)
@@ -47,7 +48,10 @@ export default function Buddy() {
   const [talking, setTalking] = useState(false);
   const [draft, setDraft] = useState("");
   const [muted, setMutedState] = useState(isMuted());
+  const [away, setAway] = useState(false);     // the head is out travelling: the dock button is empty
   const rootRef = useRef(null);
+  const flyRef = useRef(null);
+  const flyer = useRef(null);
   const logRef = useRef(null);
   const inputRef = useRef(null);
   const nextId = useRef(1);
@@ -66,18 +70,97 @@ export default function Buddy() {
     return () => document.removeEventListener("pointerdown", unlock);
   }, []);
 
-  /* a new page: if Dalil took the visitor here (a button in the chat) the chat stays open and says where they are;
-     otherwise close the panel. Then let this page's notice pop out after a moment. */
-  const carried = useRef(false);
+  /* ---------- the head travels with the visitor ----------
+     Every page change: the little head flies from the page's tab in the bottom bar to the new page's heading, hops there,
+     says hello, and flies back to its place. When Dalil's own button took the visitor there, the trip starts earlier:
+     the head leaves the chat, flies to the tab, "presses" it, the page changes, and the same trip continues. */
+  const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const centre = el => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
+  const dockPoint = () => centre(rootRef.current.querySelector(".bd-btn"));
+  const tabPoint = path => {
+    const links = [...document.querySelectorAll(".bnav a[href]")].filter(a => {
+      const href = a.getAttribute("href");
+      return href === path || (href !== "/" && path.startsWith(href + "/"));
+    });
+    links.sort((a, b) => b.getAttribute("href").length - a.getAttribute("href").length);
+    return links[0] ? centre(links[0].querySelector("svg") || links[0]) : null;
+  };
+  /* beside the page's main heading (above it when the text fills the width), kept clear of the bars */
+  const landingPoint = () => {
+    const heading = document.querySelector("main h1") || document.querySelector("main h2");
+    const topBar = document.querySelector(".nav")?.offsetHeight || 64;
+    const bottomBar = document.querySelector(".bnav")?.offsetHeight || 0;
+    const minY = topBar + 36, maxY = innerHeight - bottomBar - 110;
+    if (!heading) return { x: innerWidth / 2, y: Math.min(maxY, Math.max(minY, 140)) };
+    const range = document.createRange();
+    range.selectNodeContents(heading);
+    const box = range.getBoundingClientRect();
+    const rtl = getComputedStyle(heading).direction === "rtl";
+    const x = rtl ? box.left - 40 : box.right + 40;
+    const y = Math.min(maxY, Math.max(minY, box.top + box.height / 2));
+    if (x > 34 && x < innerWidth - 34) return { x, y };
+    return { x: rtl ? box.right - 30 : box.left + 30, y: Math.min(maxY, Math.max(minY, box.top - 34)) };
+  };
+
+  const guided = useRef(false);      // the trip was started by a button in the chat
+  const firstPage = useRef(true);
+  const tipTimers = useRef([]);
+  const showTipLater = delay => {
+    tipTimers.current.forEach(clearTimeout);
+    tipTimers.current = [
+      setTimeout(() => { setTipShown(true); sfx.notice(); }, delay),
+      setTimeout(() => setTipShown(false), delay + TIP_TIME),
+    ];
+  };
+
   useEffect(() => {
-    if (carried.current) {
-      carried.current = false;
-      push({ from: "bot", reply: { text: localize(buddy.arrived) + "\n" + localize(buddy.tips[key]), acts: [], follow: [] } });
-    } else setOpen(false);
+    flyer.current = new Flyer(flyRef.current);
+    return () => { flyer.current.stop(); tipTimers.current.forEach(clearTimeout); };
+  }, []);
+
+  useEffect(() => {
+    const f = flyer.current;
+    setOpen(false);
     setTipShown(false);
-    const show = setTimeout(() => { setTipShown(true); sfx.notice(); }, TIP_DELAY);
-    const hide = setTimeout(() => setTipShown(false), TIP_DELAY + TIP_TIME);
-    return () => { clearTimeout(show); clearTimeout(hide); };
+    if (firstPage.current || reduce()) {
+      firstPage.current = false;
+      guided.current = false;
+      f.stop(); f.hide(); setAway(false);
+      showTipLater(TIP_DELAY);
+      return;
+    }
+    let alive = true;
+    (async () => {
+      await new Promise(resolve => setTimeout(resolve, 180)); // the new page has drawn
+      if (!alive) return;
+      const comesFromChat = guided.current;
+      guided.current = false;
+      if (!comesFromChat) {
+        const start = tabPoint(pathname) || dockPoint();
+        f.show(start, 1);
+        setAway(true);
+        sfx.go();
+      }
+      const landed = await f.move(landingPoint(), { ms: 850, lift: 90, scale: 1.25 });
+      if (!landed || !alive) return;
+      setTalking(true);
+      sfx.talk(16);
+      await f.hop(2, 460);
+      setTalking(false);
+      if (!alive) return;
+      const home = await f.move(dockPoint(), { ms: 700, lift: 70, scale: 1 });
+      if (!home || !alive) return;
+      f.hide();
+      setAway(false);
+      sfx.pop();
+      showTipLater(500);
+    })();
+    return () => {
+      alive = false;
+      setTalking(false);
+      if (!guided.current) { f.stop(); f.hide(); setAway(false); } // a trip that Dalil started keeps flying across the page change
+      tipTimers.current.forEach(clearTimeout);
+    };
   }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* the id is taken here, not inside the state updater (which React runs later), so the caller can find the message again */
@@ -94,6 +177,7 @@ export default function Buddy() {
   }, [open, push]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggle = () => {
+    if (away) return;
     unlock();
     setTipShown(false);
     setOpen(wasOpen => {
@@ -138,10 +222,20 @@ export default function Buddy() {
   };
   const tapAsk = question => { sfx.tap(); ask(question); };
 
-  const go = to => {
+  const go = async to => {
     sfx.go();
-    if (to !== pathname) { carried.current = true; navigate(to); window.scrollTo({ top: 0, behavior: "instant" }); } // the chat stays open and moves with the visitor
-    else window.scrollTo({ top: 0, behavior: "smooth" });
+    if (to === pathname) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    const f = flyer.current, tab = tabPoint(to);
+    setOpen(false);
+    if (!tab || reduce()) { navigate(to); return; }
+    f.stop();
+    f.show(dockPoint(), 1);
+    setAway(true);
+    const arrived = await f.move(tab, { ms: 650, lift: 70, scale: 1.1 });
+    if (!arrived) return;
+    await f.press();
+    guided.current = true;
+    navigate(to);
   };
   const toggleSound = () => {
     const next = !muted;
@@ -156,6 +250,8 @@ export default function Buddy() {
 
   return (
     <div className="bd" ref={rootRef}>
+      {/* the head that travels between pages (moved by lib/flyer.js) */}
+      <div className="bd-fly" ref={flyRef} hidden aria-hidden="true"><Dalil enabled={away} talking={talking} /></div>
       {/* the notice: "Did you know …?" */}
       <div className={"bd-tip" + (tipShown && !open ? " is-on" : "")} role="status" aria-live="polite">
         {tipShown && !open && (
@@ -215,8 +311,8 @@ export default function Buddy() {
         </form>
       </section>
 
-      <button type="button" className={"bd-btn" + (open ? " is-open" : "")} onClick={toggle} aria-expanded={open} aria-label={localize(buddy.label)}>
-        <span className="bd-face"><Dalil enabled={!open} /></span>
+      <button type="button" className={"bd-btn" + (open ? " is-open" : "") + (away ? " is-away" : "")} onClick={toggle} aria-expanded={open} aria-label={localize(buddy.label)}>
+        <span className="bd-face"><Dalil enabled={!open && !away} /></span>
         <span className="bd-hole" aria-hidden="true"><Icon d={ICON_X} /></span>
       </button>
     </div>
