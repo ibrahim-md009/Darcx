@@ -5,6 +5,8 @@
    An answer is { text, acts: [{ label, to | href }], follow: [{ label, ask }] }:
    text = the sentence(s), acts = buttons that open a page / link, follow = suggested next questions (tap = ask it). */
 
+import { KNOWLEDGE } from "../knowledge.js";
+
 /* makes Arabic and English comparable: no diacritics, one spelling of alef / yaa / taa marbuta, lower case, no punctuation */
 export function normalize(text) {
   return String(text)
@@ -98,10 +100,13 @@ export function makeGuide(data, lang) {
     }
     if (kind === "tech") {
       const tech = project.tech || [];
+      const byKind = project.kind === "system"
+        ? L(`${name} برنامج مبني بـ Flutter ولغة Dart 📱`, `${name} is a program built with Flutter and the Dart language 📱`)
+        : L(`${name} موقع مبني بتقنيات الويب، وعلى رأسها React ⚛️`, `${name} is a website built with web technologies, mainly React ⚛️`);
       const known = tech.length
         ? L(`${name} مبني باستخدام: ${tech.join("، ")} 🛠️`, `${name} is built with: ${tech.join(", ")} 🛠️`)
-        : L(`لم نذكر التقنيات المستخدمة في ${name} على الموقع. اسألنا مباشرة وسنخبرك 💬`, `We haven't listed the technologies used for ${name} on the site. Ask us directly and we'll tell you 💬`);
-      return { text: known, acts: [...page, ...(tech.length ? [] : waAct(L(`مرحباً، أريد معرفة التقنيات المستخدمة في ${name}.`, `Hello, I'd like to know which technologies were used for ${name}.`)))], follow: [more[0], more[2]] };
+        : byKind;
+      return { text: known, acts: [...page, ], follow: [more[0], more[2]] };
     }
     if (kind === "view") {
       const acts = [...page];
@@ -238,7 +243,7 @@ export function makeGuide(data, lang) {
     follow: packagesFollow(),
   });
   const techAnswer = () => ({
-    text: L("التقنيات التي نستخدمها: ", "Technologies we use: ") + (data.stack || []).join(L("، ", ", ")) + " 🛠️",
+    text: L("مواقعنا (الويب) نبنيها بتقنيات الويب وعلى رأسها React ⚛️، وبرامجنا وتطبيقاتنا بـ Flutter ولغة Dart 📱\nكل ما نستخدمه: ", "We build our websites with web technologies, mainly React ⚛️, and our programs and apps with Flutter and Dart 📱\nEverything we use: ") + (data.stack || []).join(L("، ", ", ")) + " 🛠️",
     acts: pageActs("/about", L("من نحن", "About us")),
     follow: [],
   });
@@ -299,6 +304,19 @@ export function makeGuide(data, lang) {
     },
   }));
 
+  /* general and site knowledge (knowledge.js): answerable, never shown as chips */
+  const known = KNOWLEDGE.map(entry => ({
+    keys: entry.keys, q: null, bonus: entry.bonus || 0,
+    make: () => {
+      const acts = [];
+      if (entry.go) acts.push({ to: entry.go.to, label: loc(entry.go.label) });
+      if (entry.wa && wa) acts.push({ label: loc(buddy.waLabel), href: waLink("") });
+      const variants = entry.a?.[lang];
+      const answer = Array.isArray(variants) ? variants[Math.floor(Math.random() * variants.length)] : loc(entry.a);
+      return { text: answer, acts, follow: [], sound: entry.sound };
+    },
+  }));
+
   const fallback = () => ({ text: loc(buddy.fallback), acts: waAct(L("مرحباً فريق DARCX، لدي سؤال.", "Hello DARCX team, I have a question.")), follow: [] });
 
   /* ---------- the question → an answer ---------- */
@@ -316,7 +334,7 @@ export function makeGuide(data, lang) {
     if (pkg) return packageAnswer(pkg[0], text, words);
 
     let best = null, bestScore = 0;
-    for (const entry of [...fixed, ...generated]) {
+    for (const entry of [...fixed, ...known, ...generated]) {
       const base = score(text, words, entry.keys || []);
       const points = base > 0 ? base + (entry.bonus || 0) : 0;
       if (points > bestScore) { best = entry; bestScore = points; }
@@ -324,14 +342,15 @@ export function makeGuide(data, lang) {
     return best ? best.make() : fallback();
   }
 
-  /* the question chips under the chat, in a sensible order */
-  function chips() {
-    const byId = id => fixed.find(entry => entry.id === id);
-    const gen = rank => generated.find(entry => entry.rank === rank);
-    return [byId("order"), gen(2), gen(3), gen(4), gen(5), gen(6), byId("works"), gen(8), gen(10), gen(11), gen(12), gen(9), gen(13), byId("contact"), byId("about"), byId("help"), byId("language")]
-      .filter(entry => entry && entry.q)
-      .map(entry => entry.q);
-  }
+  /* the question chips under the chat: only about the site's pages */
+  const PAGE_CHIPS = [
+    L("ماذا في الصفحة الرئيسية؟", "What's on the home page?"),
+    L("ماذا في صفحة الباقات والخدمات؟", "What's on the services page?"),
+    L("ماذا في صفحة الأعمال؟", "What's on the projects page?"),
+    L("ماذا في صفحة من نحن؟", "What's on the about page?"),
+    L("ماذا في صفحة التواصل؟", "What's on the contact page?"),
+  ];
+  const chips = () => PAGE_CHIPS;
 
   return { reply, chips };
 }

@@ -58,3 +58,10 @@ A round robot-face button is fixed above the bottom bar on every page (`src/comp
 - The eyes follow the pointer (phones: they glance around by themselves) and blink every 5 seconds. Reduced motion is respected.
 - The same face is the site icon: `public/assets/dalil.svg`, `favicon.png`, `apple-touch-icon.png` (the previous icons are kept as `*.original.png`).
 
+
+## v17 – Dalil knows more
+- `src/knowledge.js`: ~110 extra answers (site pages, packages, general web/tech knowledge, small talk). They answer questions but never appear as chips.
+- Chips are now only the five page questions.
+- Technology rule: websites = web technologies (React); programs/apps = Flutter + Dart. Projects without a listed `tech` answer by their `kind`.
+- New sounds in `lib/sfx.js`: hover, boing, home, dismiss, coin, calc, clock, cheer, wave, bye, giggle (answers can choose one with `sound`).
+- Hero field: the pointer now sinks into a pit (vortex of squares, dark hole, soft ripples).

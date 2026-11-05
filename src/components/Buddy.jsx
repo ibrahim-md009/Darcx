@@ -137,7 +137,7 @@ export default function Buddy() {
       const landed = await f.move(landingPoint(), { ms: 850, lift: 90, scale: 1.25 });
       if (!landed || !alive) return;
       setTalking(true);
-      sfx.talk(16);
+      sfx.boing(); sfx.talk(16);
       await f.hop(2, 460);
       setTalking(false);
       if (!alive) return;
@@ -145,7 +145,7 @@ export default function Buddy() {
       if (!home || !alive) return;
       f.hide();
       setAway(false);
-      sfx.pop();
+      sfx.home();
       showTipLater(500);
     })();
     return () => {
@@ -207,7 +207,12 @@ export default function Buddy() {
       const answer = guide.reply(text);
       const failed = answer.text === localize(buddy.fallback);
       setMessages(list => list.map(m => m.id === typingId ? { id: typingId, from: "bot", reply: answer } : m));
-      if (failed) sfx.oops(); else { sfx.reply(); sfx.talk(answer.text.length); }
+      if (failed) sfx.oops();
+      else {
+        const kind = answer.sound || (/🧮/.test(answer.text) ? "calc" : /🕒|📅/.test(answer.text) ? "clock" : /🎁|💲|🏷️/.test(answer.text) ? "coin" : "");
+        if (kind && sfx[kind]) sfx[kind](); else sfx.reply();
+        later(() => sfx.talk(answer.text.length), kind ? 450 : 0);
+      }
       if (answer.follow.length) later(sfx.pop, 450);
       setTalking(true);
       later(() => setTalking(false), Math.min(TALK_TIME + answer.text.length * 12, 2600));
@@ -250,7 +255,7 @@ export default function Buddy() {
         {tipShown && !open && (
           <>
             <button type="button" className="bd-tip-text" onClick={toggle}>{tip}</button>
-            <button type="button" className="bd-tip-x" aria-label={localize(buddy.dismiss)} onClick={() => setTipShown(false)}><Icon d={ICON_X} /></button>
+            <button type="button" className="bd-tip-x" aria-label={localize(buddy.dismiss)} onClick={() => { sfx.dismiss(); setTipShown(false); }}><Icon d={ICON_X} /></button>
           </>
         )}
       </div>
@@ -284,7 +289,7 @@ export default function Buddy() {
                   )}
                   {m.reply?.follow?.length > 0 && (
                     <span className="bd-acts bd-follow">
-                      {m.reply.follow.map(item => <button key={item.label} type="button" onClick={() => tapAsk(item.ask)}>{item.label}</button>)}
+                      {m.reply.follow.map(item => <button key={item.label} type="button" onPointerEnter={sfx.hover} onClick={() => tapAsk(item.ask)}>{item.label}</button>)}
                     </span>
                   )}
                 </>
@@ -294,7 +299,7 @@ export default function Buddy() {
         </div>
 
         <div className="bd-chips">
-          {chips.map(question => <button key={question} type="button" onClick={() => tapAsk(question)}>{question}</button>)}
+          {chips.map(question => <button key={question} type="button" onPointerEnter={sfx.hover} onClick={() => tapAsk(question)}>{question}</button>)}
         </div>
 
         <form className="bd-form" onSubmit={event => { event.preventDefault(); ask(draft); }}>
