@@ -263,6 +263,104 @@ const DARCX_DATA = {
       },
       {
         q: null,
+        keys: ["ما هو react", "ما هي react", "شو هو react", "ريأكت", "رياكت", "what is react", "what's react"],
+        a: {
+          ar: "React مكتبة JavaScript لبناء واجهات المواقع والتطبيقات التفاعلية بسرعة وبشكل منظّم ⚛️ وهي من التقنيات التي نستخدمها (وموقعك هذا مبني بها).",
+          en: "React is a JavaScript library for building interactive website and app interfaces quickly and in an organised way ⚛️ It's one of the technologies we use (and this very site is built with it).",
+        },
+      },
+      {
+        q: null,
+        keys: ["ما هو firebase", "ما هي firebase", "شو هو firebase", "فايربيس", "what is firebase", "what's firebase"],
+        a: {
+          ar: "Firebase منصة من جوجل توفّر قاعدة بيانات وتسجيل دخول المستخدمين واستضافة وغيرها، فتبني تطبيقك دون إدارة خوادم بنفسك 🔥 وهي من تقنياتنا.",
+          en: "Firebase is a Google platform that provides a database, user sign-in, hosting and more, so you can build an app without managing servers yourself 🔥 It's one of our technologies.",
+        },
+      },
+      {
+        q: null,
+        keys: ["ما هو flutter", "ما هي flutter", "شو هو flutter", "فلاتر", "ما هو dart", "ما هي dart", "what is flutter", "what's flutter", "what is dart"],
+        a: {
+          ar: "Flutter إطار من جوجل يبني تطبيقات أندرويد وiOS وغيرها من كود واحد بلغة Dart 📱 وهما من التقنيات التي نستخدمها.",
+          en: "Flutter is a Google framework that builds Android, iOS and other apps from a single codebase written in Dart 📱 Both are among the technologies we use.",
+        },
+      },
+      {
+        q: null,
+        keys: ["ما هو vite", "ما هي vite", "ما هو tailwind", "ما هي tailwind", "what is vite", "what is tailwind"],
+        a: {
+          ar: "Vite أداة بناء سريعة تجهّز المواقع للعمل بأقصى سرعة ⚡ وTailwind CSS طريقة لتنسيق الواجهات بسرعة ودقة. كلاهما من التقنيات التي نستخدمها.",
+          en: "Vite is a fast build tool that gets websites ready to run at top speed ⚡ and Tailwind CSS is a way to style interfaces quickly and precisely. Both are among the technologies we use.",
+        },
+      },
+      {
+        q: null,
+        keys: ["ما هو ui", "ما هو ux", "ui ux", "يو اي", "تجربه المستخدم", "واجهه المستخدم", "what is ui", "what is ux", "user experience", "user interface"],
+        a: {
+          ar: "UI هي شكل الواجهة (الألوان والخطوط والأزرار)، وUX هي تجربة استخدامها: هل هي واضحة وسهلة وسريعة؟ الموقع الجيد يجمع الاثنين 🎨",
+          en: "UI is how an interface looks (colours, fonts, buttons) and UX is how it feels to use: is it clear, easy and fast? A good site gets both right 🎨",
+        },
+      },
+      {
+        q: null,
+        keys: ["ما هو التصميم المتجاوب", "ما هو responsive", "متجاوب", "يناسب الجوال", "يشتغل على الجوال", "responsive", "mobile friendly", "mobile-friendly"],
+        a: {
+          ar: "التصميم المتجاوب يعني أن الموقع يتكيّف تلقائيًا مع حجم الشاشة، فيظهر مرتبًا وسهل الاستخدام على الجوال والتابلت والحاسوب. مواقعنا مبنية بهذه الطريقة 📱💻",
+          en: "Responsive design means the site adapts automatically to the screen size, so it looks tidy and is easy to use on phones, tablets and computers. Our sites are built this way 📱💻",
+        },
+      },
+      {
+        q: null,
+        keys: ["landing page", "لاندينج", "صفحه هبوط", "صفحه واحده", "ما هي صفحه الهبوط"],
+        a: {
+          ar: "صفحة الهبوط (Landing Page) صفحة واحدة مركّزة على هدف واحد، مثل التعريف بخدمة أو جمع طلبات، وتناسب من يريد بداية سريعة وبسيطة 🎯 وإن احتجت أكثر فباقاتنا تبدأ من موقع حتى 5 صفحات.",
+          en: "A landing page is a single page focused on one goal, like introducing a service or collecting requests. It suits a quick, simple start 🎯 If you need more, our packages start with a site of up to 5 pages.",
+        },
+        go: { to: "/services", label: { ar: "الباقات", en: "Packages" } },
+      },
+      {
+        q: null,
+        keys: ["الفرق بين موقع ونظام", "موقع ولا نظام", "موقع ام نظام", "website or system", "website vs system", "difference between a website and a system", "site or app"],
+        a: {
+          ar: "الموقع يعرّف الناس بنشاطك ويعرض خدماتك (مثل موقع شركة أو معرض أعمال). أما النظام أو التطبيق فيدير عملًا فعليًا: حجوزات، مبيعات، مخزون، فواتير (مثل نظام نقاط البيع). وقد يجمع مشروعك الاثنين 🧩",
+          en: "A website introduces your business and shows your services (like a company site or a portfolio). A system or app runs real work: bookings, sales, inventory, invoices (like a point-of-sale system). Your project may need both 🧩",
+        },
+        go: { to: "/projects", label: { ar: "شاهد أمثلة", en: "See examples" } },
+      },
+      {
+        q: null,
+        keys: ["لونك المفضل", "ما لونك", "شو لونك", "favorite colour", "favorite color", "your color", "your colour"],
+        a: { ar: "أحب الأخضر المريمي، لون داركس 🌿", en: "I love sage green, the DARCX colour 🌿" },
+      },
+      {
+        q: null,
+        keys: ["كم عمرك", "من صنعك", "من برمجك", "من اخترعك", "how old are you", "who made you", "who built you", "who created you"],
+        a: { ar: "أنا مساعد صغير صُنعت لموقع داركس 🤖 ولا يزال عمري بضعة أيام على الإنترنت 😄", en: "I'm a little helper made for the DARCX site 🤖 and I'm still only a few days old on the web 😄" },
+      },
+      {
+        q: null,
+        keys: ["هل تنام", "تتعب", "هل تحبني", "هل تحب", "do you sleep", "do you love me", "do you like me", "are you tired"],
+        a: { ar: ["ما أنام ولا أتعب، أنا هنا دائمًا 😄", "أحب مساعدتك، وهذا يكفيني 😊"], en: ["I never sleep or get tired, I'm always here 😄", "I like helping you, and that's enough for me 😊"] },
+      },
+      {
+        q: null,
+        keys: ["الطقس", "اخبار اليوم", "سعر الدولار", "مباراه", "نتيجه", "weather", "news", "football score", "exchange rate", "stock"],
+        a: {
+          ar: "هذا خارج ما أعرفه 🙂 أنا مختص بموقع داركس، وبأسئلة عامة عن المواقع والتقنيات.",
+          en: "That's outside what I know 🙂 I'm focused on the DARCX site and general questions about websites and technology.",
+        },
+      },
+      {
+        q: null,
+        keys: ["حمايه", "امان", "امن الموقع", "الموقع امن", "موقع امن", "هل هو امن", "هل مواقعكم امنه", "ssl", "https", "شهاده امان", "security", "secure", "backup", "نسخ احتياطي", "domain transfer"],
+        a: {
+          ar: "تفاصيل الحماية والنسخ الاحتياطي غير مكتوبة على الموقع، والأفضل أن تسألنا مباشرة لتحصل على جواب دقيق 🔒",
+          en: "Details about security and backups aren't written on the site, so it's best to ask us directly for an accurate answer 🔒",
+        },
+        wa: true,
+      },
+      {
+        q: null,
         keys: ["مرحبا", "اهلا", "السلام", "هلا", "صباح", "مساء", "hi", "hello", "hey", "hola"],
         a: {
           ar: "أهلًا بك! اسألني عن الموقع: الحجز، الأعمال، الأسعار أو التواصل 👋",

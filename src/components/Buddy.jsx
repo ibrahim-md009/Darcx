@@ -70,10 +70,10 @@ export default function Buddy() {
     return () => document.removeEventListener("pointerdown", unlock);
   }, []);
 
-  /* ---------- the head travels with the visitor ----------
-     Every page change: the little head flies from the page's tab in the bottom bar to the new page's heading, hops there,
-     says hello, and flies back to its place. When Dalil's own button took the visitor there, the trip starts earlier:
-     the head leaves the chat, flies to the tab, "presses" it, the page changes, and the same trip continues. */
+  /* ---------- the head travels with the visitor (only when a button in the chat opens a page) ----------
+     The head leaves the chat, flies to the page's tab in the bottom bar, "presses" it, the page changes, and the head
+     flies on to the new page's heading, hops there, says hello and flies back to its place.
+     Normal navigation (tabs, links) does not trigger any of this. */
   const reduce = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
   const centre = el => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };
   const dockPoint = () => centre(rootRef.current.querySelector(".bd-btn"));
@@ -122,7 +122,7 @@ export default function Buddy() {
     const f = flyer.current;
     setOpen(false);
     setTipShown(false);
-    if (firstPage.current || reduce()) {
+    if (firstPage.current || reduce() || !guided.current) {
       firstPage.current = false;
       guided.current = false;
       f.stop(); f.hide(); setAway(false);
@@ -133,14 +133,7 @@ export default function Buddy() {
     (async () => {
       await new Promise(resolve => setTimeout(resolve, 180)); // the new page has drawn
       if (!alive) return;
-      const comesFromChat = guided.current;
-      guided.current = false;
-      if (!comesFromChat) {
-        const start = tabPoint(pathname) || dockPoint();
-        f.show(start, 1);
-        setAway(true);
-        sfx.go();
-      }
+      guided.current = false; // the head is already on the tab (go() flew it there)
       const landed = await f.move(landingPoint(), { ms: 850, lift: 90, scale: 1.25 });
       if (!landed || !alive) return;
       setTalking(true);

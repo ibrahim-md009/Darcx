@@ -13,6 +13,7 @@ export default function Home() {
   return (
     <>
       <section className="hero">
+        <HeroGrid />
         <div className="wrap hero-in">
           <div className="hero-txt">
             <h1><span className="ln"><span>{t("h_title")}</span></span></h1>
@@ -22,7 +23,6 @@ export default function Home() {
               <Link className="btn btn-line" to="/projects">{t("h_cta2")}</Link>
             </div>
           </div>
-          <HeroGrid />
         </div>
       </section>
 

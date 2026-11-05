@@ -219,6 +219,53 @@ export function makeGuide(data, lang) {
   const clock = () => new Date().toLocaleTimeString(lang === "ar" ? "ar" : "en", { hour: "2-digit", minute: "2-digit" });
   const today = () => new Date().toLocaleDateString(lang === "ar" ? "ar" : "en", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
+  /* a small calculator: "5*3", "كم يساوي 12 + 7" */
+  const calc = question => {
+    const match = String(question).replace(/[×x]/g, "*").replace(/÷/g, "/").replace(/،/g, ".").match(/\d[\d.\s]*(?:[-+*/]\s*\(?\s*\d[\d.\s]*\)?\s*)+/);
+    if (!match || !/[-+*/]/.test(match[0])) return null;
+    const expression = match[0].replace(/\s+/g, "");
+    if (!/^[\d.+\-*/()]+$/.test(expression) || expression.length > 40) return null;
+    try {
+      const value = Function('"use strict"; return (' + expression + ")")();
+      if (!Number.isFinite(value)) return null;
+      return { text: `${expression.replace(/\*/g, "×").replace(/\//g, "÷")} = ${Math.round(value * 1e6) / 1e6} 🧮`, acts: [], follow: [] };
+    } catch { return null; }
+  };
+
+  const servicesAnswer = () => ({
+    text: L("ما نقدمه:\n", "What we do:\n") + list((data.serviceCards || []).map(card => `${loc(card.name)}: ${loc(card.desc)}`)),
+    acts: goServices,
+    follow: packagesFollow(),
+  });
+  const techAnswer = () => ({
+    text: L("التقنيات التي نستخدمها: ", "Technologies we use: ") + (data.stack || []).join(L("، ", ", ")) + " 🛠️",
+    acts: pageActs("/about", L("من نحن", "About us")),
+    follow: [],
+  });
+  const recommendAnswer = () => {
+    const featured = packages.find(pkg => pkg.id === data.featuredPackage);
+    return {
+      text: L("اختر بحسب حاجتك:\n", "Pick by what you need:\n") + list(packages.map(pkg => `${loc(pkg.name)}: ${loc(pkg.desc)}`))
+        + (featured ? L(`\nالأكثر اختيارًا على الموقع: باقة ${loc(featured.name)} ⭐`, `\nThe highlighted choice on the site: the ${loc(featured.name)} package ⭐`) : ""),
+      acts: [...goServices, ...waAct(L("مرحباً فريق DARCX، أحتاج مساعدة في اختيار الباقة المناسبة.", "Hello DARCX team, I need help choosing the right package."))],
+      follow: packagesFollow(),
+    };
+  };
+  const offerAnswer = () => {
+    const offers = packages.filter(pkg => pkg.offer);
+    if (!offers.length) return { text: L("لا يوجد عرض معلن حاليًا، لكن أسعار الباقات مكتوبة في صفحة الخدمات 🎁", "There's no announced offer right now, but package prices are written on the Services page 🎁"), acts: goServices, follow: [] };
+    return {
+      text: L("أسعار الإطلاق الحالية 🎁\n", "Current launch prices 🎁\n") + list(offers.map(pkg => L(`${loc(pkg.name)}: ${pkg.price}$ بدل ${pkg.original}$ (وفّر ${pkg.original - pkg.price}$)`, `${loc(pkg.name)}: $${pkg.price} instead of $${pkg.original} (save $${pkg.original - pkg.price})`))),
+      acts: goServices,
+      follow: [],
+    };
+  };
+  const numberAnswer = () => ({
+    text: L(`رقم واتساب: +${wa} 📱`, `WhatsApp number: +${wa} 📱`) + (data.contact?.email ? L(`\nالبريد: ${data.contact.email}`, `\nEmail: ${data.contact.email}`) : ""),
+    acts: waAct(L("مرحباً فريق DARCX.", "Hello DARCX team.")),
+    follow: [],
+  });
+
   /* generated entries: keys + the answer to give */
   const generated = [
     { keys: ["الباقات", "ما الباقات", "انواع الباقات", "كم باقه", "الفرق بين", "packages", "plans", "what packages", "difference between"], make: packagesOverview, q: L("ما الباقات المتوفرة؟", "What packages do you offer?"), rank: 2 },
@@ -228,6 +275,11 @@ export function makeGuide(data, lang) {
     { keys: ["دعم", "بعد التسليم", "مشكله بعد", "support after", "after delivery", "after launch", "support"], make: supportAnswer, q: L("هل يوجد دعم بعد التسليم؟", "Is there support after delivery?"), rank: 6 },
     { keys: ["الاعمال التي", "ماذا انجزتم", "اعمالكم", "مشاريعكم", "ما هي اعمالكم", "اي مشاريع", "what have you built", "your projects", "your work", "portfolio"], make: projectsOverview, q: L("ما الأعمال التي أنجزتموها؟", "What have you built?"), rank: 8 },
     { keys: ["خدمات اضافيه", "خدمات اخري", "اضافات", "extra services", "extras", "add ons", "additional services"], make: extrasOverview, q: L("هل لديكم خدمات إضافية؟", "Do you offer extra services?"), rank: 9 },
+    { keys: ["ما الخدمات", "ماذا تقدمون", "شو بتقدمو", "خدماتكم", "ايش تعملون", "ماذا تعملون", "what services", "what do you offer", "your services", "what do you do"], make: servicesAnswer, q: L("ما الخدمات التي تقدمونها؟", "What services do you offer?"), rank: 10 },
+    { keys: ["انسب باقه", "اي باقه", "ايش الباقه المناسبه", "اي باقه اختار", "ساعدني اختار", "ما الباقه المناسبه", "which package", "best package", "recommend", "which plan", "help me choose"], make: recommendAnswer, q: L("أي باقة تناسبني؟", "Which package suits me?"), rank: 11 },
+    { keys: ["عرض الاطلاق", "عروض", "خصم", "تخفيض", "launch offer", "discount", "offers", "sale", "promotion"], make: offerAnswer, q: L("هل يوجد عرض أو خصم؟", "Is there an offer or discount?"), rank: 12 },
+    { keys: ["ما التقنيات", "التقنيات", "بماذا تبنون", "بايش بتبنو", "tech stack", "technologies", "what do you build with", "which technologies"], make: techAnswer, q: L("ما التقنيات التي تستخدمونها؟", "What technologies do you use?"), rank: 13 },
+    { keys: ["رقمكم", "رقم الواتساب", "رقم واتساب", "رقم التواصل", "اعطني رقم", "your number", "phone number", "whatsapp number", "your email", "ايميلكم"], make: numberAnswer, q: null, bonus: 12 },
     { keys: ["انستغرام", "انستا", "فيسبوك", "تلغرام", "لينكدان", "سوشيال", "حساباتكم", "instagram", "facebook", "telegram", "linkedin", "social media", "social", "your accounts"], make: socialAnswer, q: null },
     { keys: ["كم الساعه", "الساعه كم", "كم الوقت", "الوقت الان", "what time", "current time", "time is it"], make: () => ({ text: L(`الساعة الآن ${clock()} 🕒 (حسب جهازك)`, `It's ${clock()} now 🕒 (by your device)`), acts: [], follow: [] }), q: null },
     { keys: ["تاريخ اليوم", "ما التاريخ", "اي يوم اليوم", "ما هو اليوم", "what date", "today's date", "what day is", "todays date"], make: () => ({ text: L(`اليوم ${today()} 📅`, `Today is ${today()} 📅`), acts: [], follow: [] }), q: null },
@@ -253,6 +305,8 @@ export function makeGuide(data, lang) {
   function reply(question) {
     const text = normalize(question);
     if (!text) return fallback();
+    const sum = calc(question);
+    if (sum) return sum;
     const words = text.split(" ");
 
     /* a project or a package named in the question wins */
@@ -263,7 +317,8 @@ export function makeGuide(data, lang) {
 
     let best = null, bestScore = 0;
     for (const entry of [...fixed, ...generated]) {
-      const points = score(text, words, entry.keys || []);
+      const base = score(text, words, entry.keys || []);
+      const points = base > 0 ? base + (entry.bonus || 0) : 0;
       if (points > bestScore) { best = entry; bestScore = points; }
     }
     return best ? best.make() : fallback();
@@ -273,7 +328,7 @@ export function makeGuide(data, lang) {
   function chips() {
     const byId = id => fixed.find(entry => entry.id === id);
     const gen = rank => generated.find(entry => entry.rank === rank);
-    return [byId("order"), gen(2), gen(3), gen(4), gen(5), gen(6), byId("works"), gen(8), gen(9), byId("contact"), byId("about"), byId("help"), byId("language")]
+    return [byId("order"), gen(2), gen(3), gen(4), gen(5), gen(6), byId("works"), gen(8), gen(10), gen(11), gen(12), gen(9), gen(13), byId("contact"), byId("about"), byId("help"), byId("language")]
       .filter(entry => entry && entry.q)
       .map(entry => entry.q);
   }
