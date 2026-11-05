@@ -20,6 +20,54 @@ export function normalize(text) {
     .trim();
 }
 
+/* ---------- understanding loose wording: stems, synonyms, typos ---------- */
+const PREFIXES = ["وبال", "وال", "بال", "كال", "فال", "لل", "ال", "و", "ب", "ل", "ف", "ك"];
+const SUFFIXES = ["كم", "كن", "نا", "ها", "هم", "هن", "ات", "ون", "ين", "ان", "ه", "ي", "ك"];
+/* a rough root of a word: "اعمالكم" → "اعمال", "بالاعمال" → "اعمال" (only used to compare words, never shown) */
+function stem(word) {
+  let w = word;
+  if (/^[a-z0-9]+$/.test(w)) return w.length > 4 ? w.replace(/(ing|ed|es|s)$/, "") : w;
+  for (const prefix of PREFIXES) if (w.startsWith(prefix) && w.length - prefix.length >= 3) { w = w.slice(prefix.length); break; }
+  for (const suffix of SUFFIXES) if (w.endsWith(suffix) && w.length - suffix.length >= 3) { w = w.slice(suffix.length); break; }
+  return w;
+}
+
+/* different ways of saying the same thing → the words the answers know. `add` is appended to the question when any `says` matches */
+const SYNONYMS = [
+  { says: ["شغلكم", "اشغالكم", "شغلاتكم", "شغلك", "نماذج", "نماذجكم", "انجازاتكم", "انجازات", "انجزتوه", "عملتوه", "عملتموه", "بنيتوه", "بنيتموه", "ماذا عملتم", "شو عملتو", "شو عملتوا", "شو بنيتو", "ماذا بنيتم", "ماذا صممتم", "تصاميمكم", "بورتفوليو", "بورتفوليو", "portfolio", "samples", "showcase", "case studies", "what have you done", "what did you make"], add: "اعمالكم اعمالنا مشاريعكم your work" },
+  { says: ["اسعاركم", "بكم", "بكام", "بقديش", "قديش", "شقد", "بشكم", "كم بدفع", "كم ادفع", "كم السعر", "كم يكلف", "تسعيره", "رسوم", "pricing", "how much", "rates", "fees", "charge", "charges"], add: "اسعار الباقات price" },
+  { says: ["كلمكم", "اكلمكم", "اراسلكم", "راسلكم", "اتواصل", "اتصل", "كلمني", "رقمكم", "ارقامكم", "ايميلكم", "بريدكم", "contact you", "reach you", "call you", "message you", "get in touch", "talk to you"], add: "التواصل معكم contact" },
+  { says: ["اطلب", "احجز", "اشتري", "اشترك", "ابدا", "ابدء", "بدي موقع", "اريد موقع", "بدي تطبيق", "بدي نظام", "order", "buy", "subscribe", "get started", "start a project", "hire you", "hire"], add: "كيف اطلب order" },
+  { says: ["متي يجهز", "كم يوم", "كم اسبوع", "كم يستغرق", "وقت التنفيذ", "how soon", "how fast", "turnaround", "deadline", "how many days"], add: "مده التنفيذ delivery" },
+  { says: ["خدماتكم", "شو بتقدمو", "شو بتقدموا", "ماذا تقدمون", "ماذا تفعلون", "شو بتعملو", "شو بتشتغلو", "شو شغلكم", "شو تخصصكم", "تخصصكم", "what do you do", "what you offer", "what you do", "your services"], add: "الخدمات services" },
+  { says: ["عروضكم", "تخفيضات", "تنزيلات", "خصومات", "خصم", "كوبون", "تخفيض", "discount", "deal", "deals", "sale", "coupon", "promo"], add: "العروض offers" },
+  { says: ["مساعده", "ساعدني", "ما افهم", "اشرحلي", "ماذا افعل", "حيرت", "تايه", "help me", "i'm lost", "guide me", "i need help"], add: "ساعدني help" },
+  { says: ["مبرمجين", "مطورين", "فريقكم", "من وراء", "اصحاب الموقع", "who made", "who built", "developers", "your team"], add: "من نحن about" },
+];
+
+const STOP = new Set(["هل", "ما", "ماذا", "كيف", "في", "من", "علي", "عن", "الي", "انا", "انت", "هو", "هي", "لا", "نعم", "بدي", "اريد", "عندكم", "عندي", "هذا", "هذه", "ذلك", "شو", "ايش", "وين", "ليش", "لماذا", "كم", "اي", "ايه", "ثم", "او", "مع", "the", "is", "are", "you", "your", "what", "how", "do", "does", "can", "i", "me", "my", "a", "an", "of", "to", "in", "on", "for", "and", "or", "it", "this", "that", "with", "about", "have", "has"]);
+
+/* "another one", "more", "again" – asking for more of the last answer */
+const MORE = new Set(["كمان", "كمل", "زيد", "زدني", "زيدني", "اخري", "اخر", "غيرها", "غيره", "ثانيه", "تاني", "تانيه", "مره", "تكمله", "واحده", "واحد", "again", "more", "another", "next", "other", "else", "continue"]);
+const FILL = new Set(["قول", "قولي", "احكي", "احكيلي", "هات", "هاتلي", "اعطني", "اعطيني", "بدي", "اريد", "لي", "لنا", "فضلك", "سمحت", "ممكن", "و", "ثم", "tell", "give", "me", "please", "can", "you", "i", "want", "a", "an", "the", "some", "one", "and", "say", "show", "now", "هيك", "كده"]);
+const isMore = words => words.length > 0 && words.length <= 5 && words.every(w => MORE.has(w) || FILL.has(w)) && words.some(w => MORE.has(w));
+
+function distance(a, b, limit) {
+  if (Math.abs(a.length - b.length) > limit) return limit + 1;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const row = [i];
+    let low = i;
+    for (let j = 1; j <= b.length; j++) {
+      row[j] = Math.min(prev[j] + 1, row[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (row[j] < low) low = row[j];
+    }
+    if (low > limit) return limit + 1;
+    prev = row;
+  }
+  return prev[b.length];
+}
+
 /* how well a question matches a list of keys: longer (more specific) keys weigh more; very short keys must be whole words */
 function score(text, words, keys) {
   let total = 0;
@@ -69,6 +117,20 @@ export function makeGuide(data, lang) {
   const withFeature = (pkg, pattern) => (loc({ [lang]: pkg.features?.[lang]?.find(feature => pattern.test(feature)) }) || null);
   const priceText = pkg =>
     pkg.offer ? L(`${pkg.price}$ بدل ${pkg.original}$ (سعر الإطلاق)`, `$${pkg.price} instead of $${pkg.original} (launch price)`) : `${pkg.price}$`.replace(/^(\d+)\$$/, lang === "ar" ? "$1$" : "$$$1");
+  /* a list of answers = several variants: they come in a shuffled order and none repeats until all were used */
+  const bags = new Map(), lastPick = new Map();
+  const pickVariant = (owner, variants) => {
+    if (!Array.isArray(variants)) return variants;
+    if (variants.length < 2) return variants[0];
+    let bag = bags.get(owner) || [];
+    if (!bag.length) {
+      bag = variants.map((_, i) => i).filter(i => i !== lastPick.get(owner));
+      for (let i = bag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [bag[i], bag[j]] = [bag[j], bag[i]]; }
+    }
+    const index = bag.pop();
+    bags.set(owner, bag); lastPick.set(owner, index);
+    return variants[index];
+  };
   const waAct = text => (wa ? [{ label: loc(buddy.waLabel), href: waLink(text) }] : []);
 
   const pageActs = (to, label) => [{ to, label }];
@@ -283,7 +345,7 @@ export function makeGuide(data, lang) {
     { keys: ["ما الخدمات", "ماذا تقدمون", "شو بتقدمو", "خدماتكم", "ايش تعملون", "ماذا تعملون", "what services", "what do you offer", "your services", "what do you do"], make: servicesAnswer, q: L("ما الخدمات التي تقدمونها؟", "What services do you offer?"), rank: 10 },
     { keys: ["انسب باقه", "اي باقه", "ايش الباقه المناسبه", "اي باقه اختار", "ساعدني اختار", "ما الباقه المناسبه", "which package", "best package", "recommend", "which plan", "help me choose"], make: recommendAnswer, q: L("أي باقة تناسبني؟", "Which package suits me?"), rank: 11 },
     { keys: ["عرض الاطلاق", "عروض", "خصم", "تخفيض", "launch offer", "discount", "offers", "sale", "promotion"], make: offerAnswer, q: L("هل يوجد عرض أو خصم؟", "Is there an offer or discount?"), rank: 12 },
-    { keys: ["ما التقنيات", "التقنيات", "بماذا تبنون", "بايش بتبنو", "tech stack", "technologies", "what do you build with", "which technologies"], make: techAnswer, q: L("ما التقنيات التي تستخدمونها؟", "What technologies do you use?"), rank: 13 },
+    { keys: ["ما التقنيات", "التقنيات", "بماذا تبنون", "بايش بتبنو", "tech stack", "technologies", "what do you build with", "which technologies"], make: techAnswer, q: L("ما التقنيات التي تستخدمونها؟", "What technologies do you use?"), rank: 13, bonus: 8 },
     { keys: ["رقمكم", "رقم الواتساب", "رقم واتساب", "رقم التواصل", "اعطني رقم", "your number", "phone number", "whatsapp number", "your email", "ايميلكم"], make: numberAnswer, q: null, bonus: 12 },
     { keys: ["انستغرام", "انستا", "فيسبوك", "تلغرام", "لينكدان", "سوشيال", "حساباتكم", "instagram", "facebook", "telegram", "linkedin", "social media", "social", "your accounts"], make: socialAnswer, q: null },
     { keys: ["كم الساعه", "الساعه كم", "كم الوقت", "الوقت الان", "what time", "current time", "time is it"], make: () => ({ text: L(`الساعة الآن ${clock()} 🕒 (حسب جهازك)`, `It's ${clock()} now 🕒 (by your device)`), acts: [], follow: [] }), q: null },
@@ -299,7 +361,7 @@ export function makeGuide(data, lang) {
       if (entry.go) acts.push({ to: entry.go.to, label: loc(entry.go.label) });
       if (entry.wa && wa) acts.push({ label: loc(buddy.waLabel), href: waLink("") });
       const follow = entry.follow === "projects" ? projectsFollow() : entry.follow === "packages" ? packagesFollow() : [];
-      const answer = Array.isArray(entry.a?.[lang]) ? entry.a[lang][Math.floor(Math.random() * entry.a[lang].length)] : loc(entry.a); // a list = several variants, one at random
+      const answer = pickVariant(entry, entry.a?.[lang] ?? loc(entry.a));
       return { text: answer, acts, follow };
     },
   }));
@@ -311,8 +373,7 @@ export function makeGuide(data, lang) {
       const acts = [];
       if (entry.go) acts.push({ to: entry.go.to, label: loc(entry.go.label) });
       if (entry.wa && wa) acts.push({ label: loc(buddy.waLabel), href: waLink("") });
-      const variants = entry.a?.[lang];
-      const answer = Array.isArray(variants) ? variants[Math.floor(Math.random() * variants.length)] : loc(entry.a);
+      const answer = pickVariant(entry, entry.a?.[lang] ?? loc(entry.a));
       return { text: answer, acts, follow: [], sound: entry.sound };
     },
   }));
@@ -320,6 +381,75 @@ export function makeGuide(data, lang) {
   const fallback = () => ({ text: loc(buddy.fallback), acts: waAct(L("مرحباً فريق DARCX، لدي سؤال.", "Hello DARCX team, I have a question.")), follow: [] });
 
   /* ---------- the question → an answer ---------- */
+  const entries = [...fixed, ...known, ...generated];
+  const nameKeys = [...projects.flatMap(projectKeys), ...packages.flatMap(packageKeys)];
+  const stemOf = new Map(); // a root of every word the answers know → the word
+  const rootsOf = entry => new Set((entry.keys || []).flatMap(key => normalize(key).split(" ")).filter(w => w.length >= 3 && !STOP.has(w)).map(stem));
+  const rootsCache = new Map();
+  for (const key of [...entries.flatMap(entry => entry.keys || []), ...nameKeys]) for (const w of normalize(key).split(" ")) if (w.length >= 4 && !STOP.has(w)) stemOf.set(stem(w), w);
+
+  let last = null; // the last answer that was understood: { make, text }
+
+  /* a project or a package named in the question wins, then the best matching entry */
+  function match(text) {
+    const words = text.split(" ");
+    const named = (items, keysOf) => items.map(item => [item, score(text, words, keysOf(item))]).filter(pair => pair[1] > 0).sort((a, b) => b[1] - a[1])[0];
+    const project = named(projects, projectKeys), pkg = named(packages, packageKeys);
+    if (project && (!pkg || project[1] >= pkg[1])) return { make: () => projectAnswer(project[0], text, words) };
+    if (pkg) return { make: () => packageAnswer(pkg[0], text, words) };
+    let best = null, bestScore = 0;
+    for (const entry of entries) {
+      const base = score(text, words, entry.keys || []);
+      const points = base > 0 ? base + (entry.bonus || 0) : 0;
+      if (points > bestScore) { best = entry; bestScore = points; }
+    }
+    return best ? { make: () => best.make() } : null;
+  }
+
+  /* second chance: fix typos, fold different wordings into the ones the answers know */
+  function loosen(text) {
+    const words = text.split(" ");
+    const known = new Set(SYNONYMS.flatMap(group => group.says.flatMap(phrase => normalize(phrase).split(" "))));
+    const fixedWords = words.map(w => {
+      if (w.length < 5 || STOP.has(w) || known.has(w)) return w;
+      const root = stem(w);
+      if (stemOf.has(root)) return stemOf.get(root);
+      const limit = w.length >= 9 ? 2 : 1;
+      let bestWord = null, bestDistance = limit + 1;
+      for (const [vocabRoot, vocab] of stemOf) {
+        const d = Math.min(distance(root, vocabRoot, limit), distance(w, vocab, limit));
+        if (d < bestDistance) { bestDistance = d; bestWord = vocab; }
+      }
+      return bestWord || w;
+    });
+    let out = fixedWords.join(" ");
+    const roots = new Set([...fixedWords, ...words].map(stem)), padded = " " + out + " " + text + " ";
+    for (const group of SYNONYMS) {
+      const hit = group.says.some(phrase => {
+        const norm = normalize(phrase);
+        return norm.includes(" ") ? padded.includes(norm) : roots.has(stem(norm)) || padded.includes(" " + norm + " ");
+      });
+      if (hit) out += " " + normalize(group.add);
+    }
+    return out;
+  }
+
+  /* last chance: the entry that shares the most meaningful words with the question */
+  function overlap(text) {
+    const mine = text.split(" ").filter(w => w.length >= 3 && !STOP.has(w)).map(stem);
+    let best = null, bestScore = 0;
+    for (const entry of entries) {
+      if (!rootsCache.has(entry)) rootsCache.set(entry, rootsOf(entry));
+      const roots = rootsCache.get(entry);
+      const points = mine.reduce((sum, w) => sum + (roots.has(w) ? w.length : 0), 0) + (points => points ? (entry.bonus || 0) / 4 : 0)(mine.some(w => roots.has(w)));
+      if (points > bestScore) { best = entry; bestScore = points; }
+    }
+    return bestScore >= 4 ? best : null;
+  }
+
+  const remember = (found, answer) => { last = { make: found.make, text: answer.text }; return answer; };
+  const noMore = () => ({ text: L("هذا كل ما عندي في هذا الموضوع 😊 اسألني عن شيء آخر، أو افتح الأسئلة الشائعة بالزر الصغير أعلى الحقل.", "That's all I have on this one 😊 Ask me something else, or open the common questions with the little button above the field."), acts: [], follow: [] });
+
   function reply(question) {
     const text = normalize(question);
     if (!text) return fallback();
@@ -327,30 +457,38 @@ export function makeGuide(data, lang) {
     if (sum) return sum;
     const words = text.split(" ");
 
-    /* a project or a package named in the question wins */
-    const named = (items, keysOf) => items.map(item => [item, score(text, words, keysOf(item))]).filter(pair => pair[1] > 0).sort((a, b) => b[1] - a[1])[0];
-    const project = named(projects, projectKeys), pkg = named(packages, packageKeys);
-    if (project && (!pkg || project[1] >= pkg[1])) return projectAnswer(project[0], text, words);
-    if (pkg) return packageAnswer(pkg[0], text, words);
-
-    let best = null, bestScore = 0;
-    for (const entry of [...fixed, ...known, ...generated]) {
-      const base = score(text, words, entry.keys || []);
-      const points = base > 0 ? base + (entry.bonus || 0) : 0;
-      if (points > bestScore) { best = entry; bestScore = points; }
+    /* "another one", "more", "again": the last answer, a different variant if it has one */
+    if (isMore(words)) {
+      if (!last) return { text: L("كمان عن ماذا؟ 😄 اسألني سؤالًا أولًا ثم قل «كمان».", "More of what? 😄 Ask me something first, then say \"more\"."), acts: [], follow: [] };
+      const again = last.make();
+      if (again.text === last.text) return noMore();
+      last.text = again.text;
+      return again;
     }
-    return best ? best.make() : fallback();
+
+    const found = match(text);
+    if (found) return remember(found, found.make());
+
+    const loose = match(loosen(text));
+    if (loose) return remember(loose, loose.make());
+
+    const close = overlap(loosen(text));
+    if (close) {
+      const answer = close.make();
+      return remember({ make: () => close.make() }, { ...answer, text: L("أظنك تسأل عن هذا 🤔\n", "I think you're asking about this 🤔\n") + answer.text });
+    }
+    return fallback();
   }
 
-  /* the question chips under the chat: only about the site's pages */
-  const PAGE_CHIPS = [
-    L("ماذا في الصفحة الرئيسية؟", "What's on the home page?"),
-    L("ماذا في صفحة الباقات والخدمات؟", "What's on the services page?"),
-    L("ماذا في صفحة الأعمال؟", "What's on the projects page?"),
-    L("ماذا في صفحة من نحن؟", "What's on the about page?"),
-    L("ماذا في صفحة التواصل؟", "What's on the contact page?"),
+  /* the common questions (the button above the field shows / hides them): the site's pages first, then the rest */
+  const CHIP_GROUPS = [
+    [L("ماذا في الصفحة الرئيسية؟", "What's on the home page?"), L("ماذا في صفحة الباقات والخدمات؟", "What's on the services page?"), L("ماذا في صفحة الأعمال؟", "What's on the projects page?"), L("ماذا في صفحة من نحن؟", "What's on the about page?"), L("ماذا في صفحة التواصل؟", "What's on the contact page?")],
+    [L("كيف أطلب باقة؟", "How do I order a package?"), L("ما أسعار الباقات؟", "What are the package prices?"), L("ماذا تشمل باقة الأعمال؟", "What does the Business package include?"), L("أي باقة تناسبني؟", "Which package suits me?"), L("هل توجد عروض؟", "Are there any offers?"), L("كم يستغرق تنفيذ الموقع؟", "How long does a website take?"), L("هل الباقة تشمل الدومين والاستضافة؟", "Does the package include a domain and hosting?"), L("هل أقدر أعدل الموقع بنفسي؟", "Can I edit the site myself?")],
+    [L("ما الأعمال التي أنجزتموها؟", "What have you built?"), L("ما تقنيات نظام نقاط البيع؟", "What technologies is the POS system built with?"), L("ما التقنيات التي تستخدمونها؟", "What technologies do you use?"), L("ما الفرق بين الموقع والبرنامج؟", "What's the difference between a website and a program?")],
+    [L("من أنتم؟", "Who are you?"), L("كيف أتواصل معكم؟", "How can I contact you?"), L("هل الموقع بلغتين؟", "Is the site in two languages?"), L("موقع أم تطبيق؟", "Website or app?"), L("كيف أجذب عملاء؟", "How do I get customers?"), L("ما الفرق بين الدومين والاستضافة؟", "Domain vs hosting?")],
+    [L("قل نكتة", "Tell me a joke"), L("أخبرني معلومة", "Tell me a fun fact"), L("كم الساعة؟", "What time is it?")],
   ];
-  const chips = () => PAGE_CHIPS;
+  const chips = () => CHIP_GROUPS.flat();
 
   return { reply, chips };
 }

@@ -30,6 +30,7 @@ const Icon = ({ d }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d={d} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 );
 const ICON_X = "M6 6l12 12M18 6L6 18";
+const ICON_CHEVRON = "M6 9l6 6 6-6";
 const ICON_SEND = "M4 12l16-8-6 16-2.6-6.4L4 12z";
 const ICON_SOUND_ON = "M4 9v6h4l5 4V5L8 9H4zM17 8.5a5 5 0 010 7M19.5 6a8.5 8.5 0 010 12";
 const ICON_SOUND_OFF = "M4 9v6h4l5 4V5L8 9H4zM17 9.5l5 5M22 9.5l-5 5";
@@ -44,6 +45,7 @@ export default function Buddy() {
 
   const [tipShown, setTipShown] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showChips, setShowChips] = useState(() => { try { return localStorage.getItem("darcx-faq") !== "off"; } catch { return true; } });
   const [messages, setMessages] = useState([]);   // { id, from: "me" | "bot", text? (mine), reply? (Dalil: { text, acts, follow }), typing? }
   const [talking, setTalking] = useState(false);
   const [draft, setDraft] = useState("");
@@ -218,6 +220,13 @@ export default function Buddy() {
       later(() => setTalking(false), Math.min(TALK_TIME + answer.text.length * 12, 2600));
     }, THINK_TIME);
   };
+  const toggleChips = () => {
+    unlock();
+    const next = !showChips;
+    setShowChips(next);
+    try { localStorage.setItem("darcx-faq", next ? "on" : "off"); } catch { /* ignore */ }
+    (next ? sfx.open : sfx.close)();
+  };
   const tapAsk = question => { sfx.tap(); ask(question); };
 
   const go = async to => {
@@ -298,9 +307,15 @@ export default function Buddy() {
           ))}
         </div>
 
-        <div className="bd-chips">
-          {chips.map(question => <button key={question} type="button" onPointerEnter={sfx.hover} onClick={() => tapAsk(question)}>{question}</button>)}
-        </div>
+        <button type="button" className={"bd-faq" + (showChips ? " is-open" : "")} onClick={toggleChips} aria-expanded={showChips} onPointerEnter={sfx.hover}>
+          <span>{localize(buddy.faqLabel)}</span>
+          <Icon d={ICON_CHEVRON} />
+        </button>
+        {showChips && (
+          <div className="bd-chips">
+            {chips.map(question => <button key={question} type="button" onPointerEnter={sfx.hover} onClick={() => tapAsk(question)}>{question}</button>)}
+          </div>
+        )}
 
         <form className="bd-form" onSubmit={event => { event.preventDefault(); ask(draft); }}>
           <input ref={inputRef} value={draft} onChange={event => { setDraft(event.target.value); sfx.key(); }} maxLength={140} enterKeyHint="send"

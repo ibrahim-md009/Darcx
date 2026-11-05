@@ -3545,7 +3545,7 @@ html {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  max-height: 108px; /* about two rows; the rest scrolls */
+  max-height: 124px; /* about three rows; the rest scrolls */
   padding: 6px 12px 8px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -3651,3 +3651,25 @@ html {
   width: 100%;
   height: 100%;
 }
+
+/* button that shows / hides the common questions */
+.bd-faq {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin: 6px 12px 0;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--fg);
+  background: color-mix(in srgb, var(--sage) 16%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.bd-faq svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.25s var(--ease); }
+.bd-faq.is-open svg { transform: rotate(180deg); }
+.bd-faq:hover { border-color: var(--sage); }

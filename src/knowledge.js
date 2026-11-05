@@ -94,7 +94,7 @@ export const KNOWLEDGE = [
     "Yes, the design is responsive, so it works and looks tidy on phones, tablets and computers 📱💻"),
 
   /* ───────────── packages and ordering: details the site states ───────────── */
-  e(["هل الباقه تشمل الدومين", "هل تشمل الاستضافه", "الدومين مشمول", "هل الاستضافه مشموله", "does the package include domain", "hosting included", "is hosting included", "domain included"],
+  e(["هل الباقه تشمل الدومين", "هل الباقه تشمل الدومين والاستضافه", "هل الدومين والاستضافه مشمولان", "does the package include a domain", "هل تشمل الاستضافه", "الدومين مشمول", "هل الاستضافه مشموله", "does the package include domain", "hosting included", "is hosting included", "domain included"],
     "الدومين والاستضافة غير مذكورين ضمن مميزات الباقات، وهما متاحان كخدمة منفصلة اسمها «إعداد النطاق والاستضافة»، وسعرها عند التواصل معنا 🏷️",
     "The domain and hosting aren't listed among the packages' features. They are available as a separate service called \"Domain and hosting setup\", priced when you contact us 🏷️",
     { go: page("/services", "الباقات", "Packages"), wa: true }),
@@ -152,7 +152,7 @@ export const KNOWLEDGE = [
     "مواقعنا (الويب) مبنية بتقنيات الويب وعلى رأسها React ⚛️، أما برامجنا وتطبيقاتنا فمبنية بـ Flutter ولغة Dart 📱",
     "Our websites (the web side) are built with web technologies, mainly React ⚛️, while our programs and apps are built with Flutter and the Dart language 📱",
     { go: page("/about", "التقنيات", "Technologies") }),
-  e(["ما هو برنامج", "ما الفرق بين الموقع والبرنامج", "ما الفرق بين الويب والبرنامج", "website or program", "web vs program", "web or desktop", "difference between web and program"],
+  e(["ما هو برنامج", "ما الفرق بين الموقع والبرنامج", "ما الفرق بين الويب والبرنامج", "website or program", "difference between a website and a program", "website and a program", "web vs program", "web or desktop", "difference between web and program"],
     "الموقع يعمل داخل المتصفح (تقنيات الويب مثل React)، أما البرنامج أو التطبيق فيُثبَّت أو يُشغَّل كتطبيق مستقل (ونبنيه بـ Flutter ولغة Dart) 🧩",
     "A website runs inside the browser (web technologies such as React), while a program or app is installed or runs as a standalone application (we build them with Flutter and Dart) 🧩"),
 
@@ -238,7 +238,7 @@ export const KNOWLEDGE = [
   e(["كيف يكون الموقع جيد", "مواصفات الموقع الجيد", "نصائح للموقع", "what makes a good website", "good website tips", "website tips", "how to make a good website"],
     "الموقع الجيد واضح من أول ثانية: يقول ماذا تقدّم، سريع التحميل، سهل على الجوال، فيه طريقة تواصل ظاهرة، وصور ونصوص مرتبة وصادقة ✅",
     "A good website is clear from the first second: it says what you offer, loads fast, is easy on a phone, has a visible way to contact you, and uses tidy, honest photos and text ✅"),
-  e(["كيف اجذب عملاء", "كيف ازيد المبيعات", "كيف اسوق", "how to get customers", "get more customers", "increase sales", "how to market"],
+  e(["كيف اجذب عملاء", "كيف ازيد المبيعات", "كيف اسوق", "how to get customers", "how do i get customers", "get customers", "get more customers", "increase sales", "how to market"],
     "ابدأ بموقع واضح يعرّف بخدمتك ويسهّل التواصل، ثم حسّن ظهوره في البحث (SEO)، وأضف أعمالك وآراء عملائك، وابقَ نشطًا على حسابات التواصل 📣",
     "Start with a clear site that explains your service and makes contact easy, then improve its visibility in search (SEO), add your work and customer feedback, and stay active on social accounts 📣",
     { go: page("/services", "الباقات", "Packages") }),

@@ -65,3 +65,8 @@ A round robot-face button is fixed above the bottom bar on every page (`src/comp
 - Technology rule: websites = web technologies (React); programs/apps = Flutter + Dart. Projects without a listed `tech` answer by their `kind`.
 - New sounds in `lib/sfx.js`: hover, boing, home, dismiss, coin, calc, clock, cheer, wave, bye, giggle (answers can choose one with `sound`).
 - Hero field: the pointer now sinks into a pit (vortex of squares, dark hole, soft ripples).
+
+## v18 – smarter Dalil
+- Button "الأسئلة الشائعة / Common questions" above the field shows or hides the chips (remembered in localStorage `darcx-faq`). ~26 common questions now (pages, packages, works, tech, general, fun).
+- Understanding: different wordings (`SYNONYMS` in `lib/guide.js`, e.g. "شغلكم / نماذجكم / شو عملتو" = our work), Arabic word roots, typo fixing, and a last "I think you're asking about this" guess before the not-understood message.
+- Follow-ups: "كمان / more / another / again" gives another variant of the last answer (no repeats until all used; jokes extended to 16).
