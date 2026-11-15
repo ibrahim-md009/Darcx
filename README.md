@@ -86,3 +86,8 @@ A round robot-face button is fixed above the bottom bar on every page (`src/comp
 - Heart on every project; bounces and floats hearts; remembered in this browser only (`components/LikeButton.jsx`, `lib/likes.js`).
 - Loading screen: a circle that fills with water as the page really loads (inline in `index.html`, once per visit).
 - Projects filter is a sliding capsule (`pages/Projects.jsx`).
+
+## v22
+- الشريط المتحرك صار فاصل بين الخلفية البيضاء والشريط الوردي (خلفية متدرجة 50/50 تحته)، وأُزيل تظليل اللمس الأزرق (`-webkit-tap-highlight-color`, `pointer-events:none`).
+- فلتر المشاريع: الحبة السوداء ما بتطلع برا الكبسولة (`overflow:hidden` + حركة أنعم)، والتنقل بين التبويبات بالسحب (pointer events).
+- صفحة "من نحن": النصوص تبدأ شفافة وتظهر كلمة كلمة عند الدخول (`Words` في `ui.jsx`)، مع دعم `prefers-reduced-motion`.

@@ -3755,7 +3755,13 @@ html {
 .curve {
   overflow: hidden;
   direction: ltr;
-  border-block-end: 1px solid var(--line);
+  /* the wave sits on the edge between the page colour (above) and the pink band (below), so it joins them */
+  background: linear-gradient(to bottom, var(--bg) 50%, var(--band-sand) 50%);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: none; /* a tap goes through: no blue selection or link highlight */
 }
 .curve svg {
   display: block;
@@ -3859,13 +3865,19 @@ html {
   background: var(--surf);
   border: 1px solid var(--line);
   border-radius: 999px;
+  overflow: hidden;          /* the capsule can never leave its track */
+  touch-action: pan-y;       /* a sideways drag moves the capsule; vertical scrolling still scrolls the page */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: grab;
 }
 .filters .pill {
   position: absolute;
   inset-block: 4px;
   background: var(--fg);
   border-radius: 999px;
-  transition: left 0.45s cubic-bezier(0.3, 1.4, 0.4, 1), width 0.45s var(--ease);
+  transition: left 0.45s cubic-bezier(0.3, 1.15, 0.4, 1), width 0.45s var(--ease);
 }
 .filters .chipf {
   position: relative;
@@ -3922,4 +3934,17 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .like.is-on > svg { animation: none; }
   .like-fx { display: none; }
+}
+
+/* ── words that appear one by one (Words in components/ui.jsx) ── */
+.wd > span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.6em);
+  filter: blur(6px);
+  transition: opacity 0.7s var(--ease) var(--w, 0s), transform 0.7s var(--ease) var(--w, 0s), filter 0.7s var(--ease) var(--w, 0s);
+}
+.wd.in > span { opacity: 1; transform: none; filter: none; }
+@media (prefers-reduced-motion: reduce) {
+  .wd > span { opacity: 1; transform: none; filter: none; transition: none; }
 }

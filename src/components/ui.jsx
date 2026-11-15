@@ -1,3 +1,4 @@
+import { Fragment, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 
@@ -92,13 +93,34 @@ export function ServiceCard({ service, index }) {
   );
 }
 
-export function PageHead({ title, sub }) {
+/* Text that is invisible at first and shows up word by word (soft blur clearing) when it comes into view.
+   Words are never split into letters, so Arabic keeps its joining. Reduced motion: shown at once. */
+export function Words({ text, as: Tag = "span", delay = 0 }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) { el.classList.add("in"); return; }
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { el.classList.add("in"); observer.disconnect(); } }, { threshold: 0.2 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <Tag ref={ref} className="wd" aria-label={text}>
+      {String(text).split(" ").map((word, index) => (
+        <Fragment key={index}>{index > 0 && " "}<span aria-hidden="true" style={{ "--w": delay + Math.min(index, 45) * 0.045 + "s" }}>{word}</span></Fragment>
+      ))}
+    </Tag>
+  );
+}
+
+export function PageHead({ title, sub, words }) {
   return (
     <header className="phead">
       <div className="wrap">
         <div className="phead-shapes" aria-hidden="true"><i /><i /><i /></div>
         <h1 className="rv">{title}</h1>
-        <p className="rv" style={{ "--d": ".08s" }}>{sub}</p>
+        <p className="rv" style={{ "--d": ".08s" }}>{words ? <Words text={sub} delay={0.25} /> : sub}</p>
       </div>
     </header>
   );

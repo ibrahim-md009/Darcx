@@ -1,17 +1,17 @@
 import { useApp } from "../context.jsx";
-import { CtaBand, PageHead } from "../components/ui.jsx";
+import { CtaBand, PageHead, Words } from "../components/ui.jsx";
 
 export default function About() {
   const { t, localize, data } = useApp();
   const dots = ["var(--sage)", "var(--blue)", "var(--taupe)"];
   return (
     <>
-      <PageHead title={t("a_page_t")} sub={t("a_page_p")} />
+      <PageHead title={t("a_page_t")} sub={t("a_page_p")} words />
 
       <section className="sec">
         <div className="wrap dgrid">
           <div className="rv"><h2>{t("a_story_t")}</h2></div>
-          <div className="rv story" style={{ "--d": ".08s" }}>{t("a_story").map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div>
+          <div className="rv story" style={{ "--d": ".08s" }}>{t("a_story").map((paragraph, index) => <p key={index}><Words text={paragraph} delay={index * 0.15} /></p>)}</div>
         </div>
       </section>
 
@@ -22,7 +22,7 @@ export default function About() {
             {t("a_values").map(([title, text], index) => (
               <div key={index} className="vcard rv" style={{ "--d": index * 0.07 + "s" }}>
                 <span className="dot" style={{ background: dots[index] }} />
-                <h3>{title}</h3><p>{text}</p>
+                <h3><Words text={title} /></h3><p><Words text={text} delay={0.15} /></p>
               </div>
             ))}
           </div>
