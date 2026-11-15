@@ -49,8 +49,6 @@ export default function ServiceStack() {
               <span className="sicon">{serviceIcons[service.id]}</span>
               <h3>{localize(service.name)}</h3>
               <p>{localize(service.desc)}</p>
-              <ul>{localize(service.points).slice(0, 4).map(point => <li key={point}>{point}</li>)}</ul>
-              <span className="stk-more">{t("svc_more")}<Arrow /></span>
             </Link>
           ))}
         </div>

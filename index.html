@@ -12,6 +12,21 @@
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* loading screen: a circle that fills with water (removed by the script below when the page has loaded) */
+#splash{position:fixed;inset:0;z-index:9999;display:grid;place-content:center;justify-items:center;gap:22px;background:#0e1116;color:#f5f5f3;transition:opacity .55s ease,visibility .55s}
+:root[data-theme="light"] #splash{background:#f5f5f3;color:#0e1116}
+#splash.sp-out{opacity:0;visibility:hidden}
+.sp-ring{position:relative;width:150px;height:150px;border:3px solid currentColor;border-radius:50%;overflow:hidden}
+.sp-fill{position:absolute;left:0;right:0;bottom:0;top:100%;background:#a7b4a8}
+.sp-fill svg{position:absolute;left:0;top:-13px;width:200%;height:14px;animation:spWave 2.6s linear infinite}
+.sp-fill svg+svg{top:-17px;opacity:.5;animation-duration:4s;animation-direction:reverse}
+@keyframes spWave{to{transform:translateX(-50%)}}
+.sp-num{position:absolute;inset:0;display:grid;place-items:center;font:800 30px/1 "Plus Jakarta Sans",system-ui,sans-serif;direction:ltr;color:#fff;text-shadow:0 0 8px rgba(14,17,22,.85),0 1px 2px rgba(14,17,22,.6)}
+.sp-name{font:700 14px/1 "Plus Jakarta Sans",system-ui,sans-serif;letter-spacing:.42em;padding-inline-start:.42em;opacity:.8}
+@media (prefers-reduced-motion:reduce){.sp-fill svg{animation:none}#splash{transition:none}}
+</style>
+<noscript><style>#splash{display:none}</style></noscript>
 <script>
 /* applies saved language + theme before first paint (no flash) */
 (function(){var d=document.documentElement,g=function(k){try{return localStorage.getItem(k)}catch(e){return null}};
@@ -20,6 +35,25 @@ d.lang=l;d.dir=l==="ar"?"rtl":"ltr";d.dataset.theme=t;})();
 </script>
 </head>
 <body>
+<div id="splash" role="status" aria-live="polite" aria-label="DARCX">
+  <div class="sp-ring"><div class="sp-fill"><svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 7Q25 0 50 7T100 7T150 7T200 7V14H0Z" fill="#a7b4a8"/></svg><svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 7Q25 14 50 7T100 7T150 7T200 7V14H0Z" fill="#a7b4a8"/></svg></div><b class="sp-num">0%</b></div>
+  <div class="sp-name">DARCX</div>
+</div>
+<script>
+/* the level of the water follows how far the page has really loaded (HTML, then fonts, then everything); shown once per visit */
+(function(){var s=document.getElementById("splash");if(!s)return;
+try{if(sessionStorage.getItem("dx-splash")){s.remove();return}}catch(e){}
+var fill=s.querySelector(".sp-fill"),num=s.querySelector(".sp-num"),shown=0,t0=Date.now(),closing=false;
+function goal(){var g=document.readyState==="loading"?18:document.readyState==="interactive"?60:100;if(g>85&&document.fonts&&document.fonts.status==="loading")g=85;return g}
+function close(){if(closing)return;closing=true;try{sessionStorage.setItem("dx-splash","1")}catch(e){}s.classList.add("sp-out");setTimeout(function(){s.remove()},700)}
+var timer=setInterval(function(){
+  var target=goal(),late=Date.now()-t0>5000;if(late)target=100;
+  shown+=Math.max(.5,(target-shown)*.1);if(shown>target)shown=target;
+  fill.style.top=(100-shown)+"%";num.textContent=Math.round(shown)+"%";
+  if(shown>=99.5&&Date.now()-t0>1100){clearInterval(timer);num.textContent="100%";fill.style.top="0%";setTimeout(close,250)}
+},40);
+})();
+</script>
 <div id="root"></div>
 <noscript><p style="padding:140px 24px">DARCX — Digital Solutions.</p></noscript>
 <script type="module" src="/src/main.jsx"></script>

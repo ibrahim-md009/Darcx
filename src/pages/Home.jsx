@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow, CtaBand } from "../components/ui.jsx";
 import ServiceStack from "../components/ServiceStack.jsx";
-import TechStrip from "../components/TechStrip.jsx";
+import CurveStrip from "../components/CurveStrip.jsx";
+import HeroColumns from "../components/HeroColumns.jsx";
 import ProjectShowcase from "../components/ProjectShowcase.jsx";
 import HeroGrid from "../components/HeroGrid.jsx";
 
@@ -16,6 +17,7 @@ export default function Home() {
     <>
       <section className="hero">
         <HeroGrid />
+        <HeroColumns />
         <div className="wrap hero-in">
           <div className="hero-txt">
             <h1><span className="ln"><span>{t("h_title")}</span></span></h1>
@@ -28,8 +30,8 @@ export default function Home() {
         </div>
       </section>
 
+      <CurveStrip />
       <ServiceStack />
-      <TechStrip />
 
       <section className="sec">
         <div className="wrap">

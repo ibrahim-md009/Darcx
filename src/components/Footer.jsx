@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Logo } from "./ui.jsx";
 import { channels } from "../channels.jsx";
+import FooterWord from "./FooterWord.jsx";
 
 export default function Footer() {
   const { t, data } = useApp();
@@ -9,6 +10,7 @@ export default function Footer() {
   return (
     <footer className="foot">
       <div className="foot-bar" aria-hidden="true" />
+      <div className="wrap"><FooterWord /></div>
       <div className="wrap foot-in">
         <Link className="logo" to="/" aria-label="DARCX"><Logo /></Link>
         <p className="foot-desc">{t("f_desc")}</p>

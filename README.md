@@ -77,3 +77,12 @@ A round robot-face button is fixed above the bottom bar on every page (`src/comp
 - **Pointer light on cards** (`lib/glow.js`): a faint glow follows the mouse on service / project cards (desktop with a mouse only).
 - **Light running around the featured package banner** (CSS `@property --ring`).
 - Fix: `body { overflow-x: clip }` (was `hidden`, which made <body> a scroll container and broke `position: sticky`).
+
+## v21
+- Wavy line of words (DARCX + the stack) right after the hero replaces the tech strip (`components/CurveStrip.jsx`).
+- Service cards: icon, title and description only (points / link removed).
+- Hero (desktop + mouse only): two columns of real project screenshots drifting in opposite directions (`components/HeroColumns.jsx`).
+- Footer: DARCX made of dots that scatter under the pointer / finger (`components/FooterWord.jsx`).
+- Heart on every project; bounces and floats hearts; remembered in this browser only (`components/LikeButton.jsx`, `lib/likes.js`).
+- Loading screen: a circle that fills with water as the page really loads (inline in `index.html`, once per visit).
+- Projects filter is a sliding capsule (`pages/Projects.jsx`).

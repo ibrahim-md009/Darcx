@@ -3701,11 +3701,11 @@ html {
   inset-block-start: calc(var(--bar-h) + 24px + var(--i) * 18px);
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-template-areas: "icon title" "text text" "pts pts" "more more";
+  grid-template-areas: "icon title" "text text";
   column-gap: 16px;
   row-gap: 12px;
   align-items: center;
-  min-height: clamp(250px, 30vw, 310px);
+  min-height: clamp(170px, 20vw, 210px);
   margin-block-end: 22px;
   padding: clamp(20px, 2.8vw, 30px);
   overflow: hidden;
@@ -3724,42 +3724,6 @@ html {
 .stk-card .sicon { grid-area: icon; }
 .stk-card h3 { grid-area: title; font-size: clamp(1.2rem, 2.2vw, 1.5rem); }
 .stk-card p { grid-area: text; color: var(--mut); max-width: 52ch; }
-.stk-card ul {
-  grid-area: pts;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 18px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-size: 0.88rem;
-}
-.stk-card li {
-  position: relative;
-  padding-inline-start: 16px;
-}
-.stk-card li::before {
-  content: "";
-  position: absolute;
-  inset-inline-start: 0;
-  inset-block-start: 0.62em;
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
-  background: var(--ac);
-}
-.stk-more {
-  grid-area: more;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 0.92rem;
-  justify-self: start;
-}
-.stk-more .arr { transition: transform 0.3s var(--ease); }
-.stk-card:hover .stk-more .arr { transform: translateX(4px); }
-[dir="rtl"] .stk-card:hover .stk-more .arr { transform: scaleX(-1) translateX(4px); }
 .stk-no {
   position: absolute;
   inset-block-start: 8px;
@@ -3775,7 +3739,6 @@ html {
   .stk-in { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .stk-head { position: static; }
   .stk-card { inset-block-start: calc(var(--bar-h) + 14px + var(--i) * 12px); min-height: 0; }
-  .stk-card ul { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
   .stk-card { position: relative; inset-block-start: auto; transform: none; filter: none; margin-block-end: 16px; }
@@ -3788,39 +3751,23 @@ html {
   background-image: radial-gradient(240px circle at var(--gx, -300px) var(--gy, -300px), color-mix(in srgb, var(--ac, var(--sage)) 24%, transparent), transparent 72%);
 }
 
-/* ── the strip of technologies ── */
-.tech {
+/* ── the wavy line of words right after the hero (components/CurveStrip.jsx) ── */
+.curve {
   overflow: hidden;
   direction: ltr;
-  border-block: 1px solid var(--line);
-  padding-block: clamp(8px, 1.6vw, 16px);
+  border-block-end: 1px solid var(--line);
 }
-.tech-track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
+.curve svg {
+  display: block;
+  width: 100%;
+  height: clamp(120px, 15vw, 190px);
 }
-.tech-track span {
-  padding-inline: 0.45em;
-  font-size: clamp(2rem, 6.4vw, 4.6rem);
+.curve text {
+  font-family: var(--font);
   font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.tech-track span::after {
-  content: "";
-  display: inline-block;
-  width: 0.16em;
-  height: 0.16em;
-  margin-inline-start: 0.9em;
-  border-radius: 50%;
-  background: var(--sage);
-  vertical-align: middle;
-}
-.tech-track .is-line {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--fg);
+  font-size: 30px;
+  letter-spacing: 3px;
+  fill: var(--fg);
 }
 
 /* ── a light that runs around the featured package banner ── */
@@ -3839,4 +3786,140 @@ html {
 }
 @media (prefers-reduced-motion: reduce) {
   .pkb { animation: none; }
+}
+
+/* ── hero: two columns of real project screenshots moving in opposite directions (desktop with a mouse only) ── */
+.hcol {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: max(var(--pad), calc((100% - 1160px) / 2 + var(--pad)));
+  z-index: 1;
+  display: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  width: min(42%, 500px);
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+}
+@media (min-width: 1024px) and (hover: hover) {
+  .hcol { display: grid; }
+}
+.hcol-track {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  animation: hcolUp 46s linear infinite;
+}
+.hcol-track:nth-child(2) { animation-direction: reverse; animation-duration: 56s; }
+@keyframes hcolUp { to { transform: translateY(-50%); } }
+.hcol-card {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+}
+.hcol-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hcol-card span {
+  position: absolute;
+  inset-inline-start: 8px;
+  inset-block-end: 8px;
+  padding: 2px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--white) 88%, transparent);
+  border-radius: 999px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hcol-track { animation: none; }
+}
+
+/* ── footer: DARCX made of dots (components/FooterWord.jsx) ── */
+.foot-word {
+  display: block;
+  width: 100%;
+  height: clamp(110px, 20vw, 210px);
+  margin-block-start: 18px;
+  touch-action: pan-y; /* a finger can still scroll the page */
+}
+
+/* ── project filter as a sliding capsule (pages/Projects.jsx) ── */
+.filters {
+  position: relative;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  max-width: 100%;
+  padding: 4px;
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.filters .pill {
+  position: absolute;
+  inset-block: 4px;
+  background: var(--fg);
+  border-radius: 999px;
+  transition: left 0.45s cubic-bezier(0.3, 1.4, 0.4, 1), width 0.45s var(--ease);
+}
+.filters .chipf {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  padding: 9px 22px;
+  font-weight: 600;
+  color: var(--fg);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.filters .chipf:hover { border-color: transparent; }
+.filters .chipf.on { color: var(--bg); background: transparent; }
+
+/* ── heart on every project (components/LikeButton.jsx) ── */
+.like {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-inline-start: auto;
+  color: var(--mut);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s, background-color 0.25s;
+}
+.like:hover { color: #e5566d; border-color: #e5566d; }
+.like svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.like.is-on { color: #e5566d; border-color: #e5566d; background: color-mix(in srgb, #e5566d 10%, transparent); }
+.like.is-on > svg { fill: currentColor; animation: likePop 0.5s var(--ease); }
+@keyframes likePop { 30% { transform: scale(1.55) rotate(-8deg); } 60% { transform: scale(0.9) rotate(4deg); } }
+.like-fx { position: absolute; inset: 0; pointer-events: none; }
+.like-fx svg {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px;
+  fill: #e5566d;
+  stroke: none;
+  opacity: 0;
+  animation: likeFloat 0.9s var(--ease) var(--d, 0s) forwards;
+}
+@keyframes likeFloat {
+  from { opacity: 1; transform: translate(0, 0) scale(0.6); }
+  to { opacity: 0; transform: translate(var(--x), -46px) scale(1.2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .like.is-on > svg { animation: none; }
+  .like-fx { display: none; }
 }

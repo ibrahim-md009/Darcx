@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
 import { Arrow } from "./ui.jsx";
+import LikeButton from "./LikeButton.jsx";
 
 /* One project = one composition: two real screenshots of THAT project, overlapped at different angles.
    - mouse: hovering a screenshot brings it forward; leaving returns the original arrangement
@@ -57,6 +58,7 @@ function ProjectShow({ project, shots, index, hidden }) {
               <svg className="ext" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 14L14 6M7.5 6H14v6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </a>
           )}
+          <LikeButton slug={project.slug} />
         </div>
       </div>
     </article>
