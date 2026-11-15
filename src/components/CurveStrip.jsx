@@ -36,6 +36,7 @@ export default function CurveStrip() {
   return (
     <div className="curve" ref={boxRef} aria-label={words.join(", ")} role="img">
       <svg viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path d={WAVE + " L1400 400 L-100 400 Z"} fill="var(--band-sand)" stroke="none" />
         <path id="curve-wave" d={WAVE} fill="none" stroke="var(--line)" strokeWidth="2" />
         <text><textPath href="#curve-wave" ref={pathRef} startOffset="0">{unit.repeat(6)}</textPath></text>
       </svg>

@@ -3756,7 +3756,7 @@ html {
   overflow: hidden;
   direction: ltr;
   /* the wave sits on the edge between the page colour (above) and the pink band (below), so it joins them */
-  background: linear-gradient(to bottom, var(--bg) 50%, var(--band-sand) 50%);
+  background: var(--bg);
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
@@ -3765,6 +3765,7 @@ html {
 }
 .curve svg {
   display: block;
+  overflow: visible;
   width: 100%;
   height: clamp(120px, 15vw, 190px);
 }

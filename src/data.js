@@ -496,7 +496,7 @@ const DARCX_DATA = {
       kind: "system",
       accent: "#A7B4A8",
       name: { ar: "نظام نقاط البيع", en: "Business POS System" },
-      cat: { ar: "نظام إدارة أعمال", en: "Business system" },
+      cat: { ar: "نظام إدارة", en: "Business system" },
       short: {
         ar: "نظام نقاط بيع لإدارة المبيعات والمنتجات اليومية بكفاءة.",
         en: "A point-of-sale system for managing daily sales and products efficiently.",
@@ -553,7 +553,7 @@ const DARCX_DATA = {
       kind: "system",
       accent: "#8E9A88",
       name: { ar: "نظام إدارة الاستوديو", en: "Studio Management System" },
-      cat: { ar: "نظام إدارة أعمال", en: "Business system" },
+      cat: { ar: "نظام إدارة", en: "Business system" },
       short: {
         ar: "نظام إدارة يجمع العمل اليومي للاستوديو في لوحة واحدة.",
         en: "A management system that brings a studio's daily work into one dashboard.",
@@ -999,7 +999,7 @@ const DARCX_DATA = {
       like: "أعجبني هذا العمل",
       unlike: "إلغاء الإعجاب",
       f_web: "مواقع إلكترونية",
-      f_sys: "أنظمة إدارة أعمال",
+      f_sys: "أنظمة إدارة",
       d_overview: "نظرة عامة",
       d_features: "أبرز المزايا",
       d_tech: "التقنيات",

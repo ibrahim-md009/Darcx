@@ -107,8 +107,9 @@ export default function Buddy() {
   const guided = useRef(false);      // the trip was started by a button in the chat
   const firstPage = useRef(true);
   const tipTimers = useRef([]);
-  const showTipLater = delay => {
+  const showTipLater = () => {   // the "did you know" notices are switched off
     tipTimers.current.forEach(clearTimeout);
+    return;
     tipTimers.current = [
       setTimeout(() => { setTipShown(true); sfx.notice(); }, delay),
       setTimeout(() => setTipShown(false), delay + TIP_TIME),
