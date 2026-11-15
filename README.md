@@ -70,3 +70,10 @@ A round robot-face button is fixed above the bottom bar on every page (`src/comp
 - Button "الأسئلة الشائعة / Common questions" above the field shows or hides the chips (remembered in localStorage `darcx-faq`). ~26 common questions now (pages, packages, works, tech, general, fun).
 - Understanding: different wordings (`SYNONYMS` in `lib/guide.js`, e.g. "شغلكم / نماذجكم / شو عملتو" = our work), Arabic word roots, typo fixing, and a last "I think you're asking about this" guess before the not-understood message.
 - Follow-ups: "كمان / more / another / again" gives another variant of the last answer (no repeats until all used; jokes extended to 16).
+
+## v20 – motion (from the effects library)
+- **"What we build"** (home): four service cards that pile up while you scroll (`components/ServiceStack.jsx`, effect "كروت بتتراكم", lab 3). Each card sticks lower than the one before; covered cards shrink/dim slightly. Reduced motion → a normal column.
+- **Tech strip** (`components/TechStrip.jsx`): the stack words drift sideways and lean with scroll speed (from "شريط نص ضخم"). Stands still with reduced motion.
+- **Pointer light on cards** (`lib/glow.js`): a faint glow follows the mouse on service / project cards (desktop with a mouse only).
+- **Light running around the featured package banner** (CSS `@property --ring`).
+- Fix: `body { overflow-x: clip }` (was `hidden`, which made <body> a scroll container and broke `position: sticky`).

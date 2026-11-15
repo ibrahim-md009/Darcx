@@ -77,6 +77,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   overflow-x: hidden;
+  overflow-x: clip; /* "clip" does not turn <body> into a scroll container, which would break position: sticky (the pile of service cards) */
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -3673,3 +3674,169 @@ html {
 .bd-faq svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.25s var(--ease); }
 .bd-faq.is-open svg { transform: rotate(180deg); }
 .bd-faq:hover { border-color: var(--sage); }
+
+
+/* ── "What we build": cards that pile up while you scroll ───────────────
+   Each card sticks a little lower than the one before it, so the next one slides over. --p (set in ServiceStack.jsx) = how far
+   the next card has covered this one (0–1): the covered card shrinks and dims slightly. */
+.stk-in {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: start;
+}
+.stk-head {
+  position: sticky;
+  inset-block-start: calc(var(--bar-h) + 28px);
+}
+.stk-head p {
+  color: var(--mut);
+  margin-block: 8px 20px;
+  max-width: 40ch;
+}
+.stk { display: block; }
+.stk-card {
+  --p: 0;
+  position: sticky;
+  inset-block-start: calc(var(--bar-h) + 24px + var(--i) * 18px);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "icon title" "text text" "pts pts" "more more";
+  column-gap: 16px;
+  row-gap: 12px;
+  align-items: center;
+  min-height: clamp(250px, 30vw, 310px);
+  margin-block-end: 22px;
+  padding: clamp(20px, 2.8vw, 30px);
+  overflow: hidden;
+  color: var(--fg);
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-block-start: 4px solid var(--ac);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  transform-origin: 50% 0;
+  transform: scale(calc(1 - var(--p) * 0.05));
+  filter: brightness(calc(1 - var(--p) * 0.14));
+  will-change: transform;
+}
+.stk-card:last-child { margin-block-end: 0; }
+.stk-card .sicon { grid-area: icon; }
+.stk-card h3 { grid-area: title; font-size: clamp(1.2rem, 2.2vw, 1.5rem); }
+.stk-card p { grid-area: text; color: var(--mut); max-width: 52ch; }
+.stk-card ul {
+  grid-area: pts;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 18px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.88rem;
+}
+.stk-card li {
+  position: relative;
+  padding-inline-start: 16px;
+}
+.stk-card li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--ac);
+}
+.stk-more {
+  grid-area: more;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  justify-self: start;
+}
+.stk-more .arr { transition: transform 0.3s var(--ease); }
+.stk-card:hover .stk-more .arr { transform: translateX(4px); }
+[dir="rtl"] .stk-card:hover .stk-more .arr { transform: scaleX(-1) translateX(4px); }
+.stk-no {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 18px;
+  font-size: clamp(3.2rem, 7vw, 5rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ac);
+  opacity: 0.22;
+  pointer-events: none;
+}
+@media (max-width: 900px) {
+  .stk-in { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .stk-head { position: static; }
+  .stk-card { inset-block-start: calc(var(--bar-h) + 14px + var(--i) * 12px); min-height: 0; }
+  .stk-card ul { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stk-card { position: relative; inset-block-start: auto; transform: none; filter: none; margin-block-end: 16px; }
+}
+
+/* ── soft light that follows the pointer over cards (see lib/glow.js) ── */
+.stk-card,
+.pcard,
+.scard {
+  background-image: radial-gradient(240px circle at var(--gx, -300px) var(--gy, -300px), color-mix(in srgb, var(--ac, var(--sage)) 24%, transparent), transparent 72%);
+}
+
+/* ── the strip of technologies ── */
+.tech {
+  overflow: hidden;
+  direction: ltr;
+  border-block: 1px solid var(--line);
+  padding-block: clamp(8px, 1.6vw, 16px);
+}
+.tech-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.tech-track span {
+  padding-inline: 0.45em;
+  font-size: clamp(2rem, 6.4vw, 4.6rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.tech-track span::after {
+  content: "";
+  display: inline-block;
+  width: 0.16em;
+  height: 0.16em;
+  margin-inline-start: 0.9em;
+  border-radius: 50%;
+  background: var(--sage);
+  vertical-align: middle;
+}
+.tech-track .is-line {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--fg);
+}
+
+/* ── a light that runs around the featured package banner ── */
+@property --ring {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes ring { to { --ring: 360deg; } }
+.pkb {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--sage), var(--sage)) padding-box,
+    conic-gradient(from var(--ring), color-mix(in srgb, var(--sage) 70%, var(--ink)) 0 50%, var(--ink) 78%, var(--white) 90%, color-mix(in srgb, var(--sage) 70%, var(--ink)) 100%) border-box;
+  animation: ring 6s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pkb { animation: none; }
+}

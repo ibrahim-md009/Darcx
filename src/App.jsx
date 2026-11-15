@@ -4,6 +4,7 @@ import { useApp } from "./context.jsx";
 import Header from "./components/Header.jsx";
 import BottomNav from "./components/BottomNav.jsx";
 import Buddy from "./components/Buddy.jsx";
+import { startGlow } from "./lib/glow.js";
 import Footer from "./components/Footer.jsx";
 import { PageHead } from "./components/ui.jsx";
 import Home from "./pages/Home.jsx";
@@ -63,6 +64,8 @@ export default function App() {
     if (isFirstVisit) return;
     scrollTo({ top: 0, behavior: isSamePath ? "smooth" : "instant" });
   }, [currentLocation.key]);
+
+  useEffect(() => startGlow(), []); // the soft light that follows the pointer over cards
 
   /* reveal-on-scroll (threshold 0: tall blocks such as screenshots appear as soon as they enter the screen) */
   useEffect(() => {

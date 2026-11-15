@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useApp } from "../context.jsx";
-import { Arrow, CtaBand, ServiceCard } from "../components/ui.jsx";
+import { Arrow, CtaBand } from "../components/ui.jsx";
+import ServiceStack from "../components/ServiceStack.jsx";
+import TechStrip from "../components/TechStrip.jsx";
 import ProjectShowcase from "../components/ProjectShowcase.jsx";
 import HeroGrid from "../components/HeroGrid.jsx";
 
@@ -26,15 +28,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="band band-sand">
-        <div className="wrap">
-          <div className="sec-h rv">
-            <div><h2>{t("home_services_t")}</h2><p>{t("home_services_p")}</p></div>
-            <Link className="link" to="/services">{t("all_services")}<Arrow /></Link>
-          </div>
-          <div className="grid4">{data.services.map((service, index) => <ServiceCard key={service.id} service={service} index={index} />)}</div>
-        </div>
-      </section>
+      <ServiceStack />
+      <TechStrip />
 
       <section className="sec">
         <div className="wrap">
